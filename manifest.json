@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "DKCL Báo cáo BĐHN",
+  "version": "1.2.0",
+  "description": "Lấy dữ liệu KPI DKCL BĐHN từ dkcl.vnpost.vn và xuất Excel theo tỉnh hoặc bưu cục.",
+  "action": {
+    "default_title": "DKCL Báo cáo BĐHN"
+  },
+  "side_panel": {
+    "default_path": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["downloads", "storage", "sidePanel", "tabs"],
+  "host_permissions": ["https://dkcl.vnpost.vn/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://dkcl.vnpost.vn/*"],
+      "js": ["content-sidebar.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["popup.html", "popup.css", "popup.js"],
+      "matches": ["https://dkcl.vnpost.vn/*"]
+    }
+  ]
+}
