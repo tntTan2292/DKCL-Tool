@@ -798,7 +798,7 @@ function buildProvinceComparisonText({ rows, provinceComparison, from, to, compa
     `📊 P.DVVH – Kết quả xếp hạng BĐ Hà Nội (So sánh ${totalUnits} đơn vị)`,
     `Kỳ báo cáo: ${periodText}`,
     `So sánh với kỳ: ${comparePeriodText}`,
-    "so sánh 2 dữ lieu của 2 kỳ báo cáo và xếp hang 2 dữ lieu của 2 kỳ báo cáo",
+    "so sánh 2 dữ liệu của 2 kỳ báo cáo và xếp hạng 2 dữ liệu của 2 kỳ báo cáo",
     "",
     metricBlocks.join("\n\n")
   ].join("\n");
