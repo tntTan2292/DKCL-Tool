@@ -65,7 +65,9 @@ const V2_EXCEL_COLUMNS = [
   "SL bưu gửi phát thành công/Nộp tiền/CH",
   "Sản lượng bưu gửi PTC/nộp tiền đúng thời gian QĐ 2026",
   "Tỷ lệ bưu gửi PTC/Nộp tiền đúng QĐ theo chi tiêu 2026",
-  "TT mạng lưới"
+  "TT mạng lưới",
+  "Tỷ lệ BQ( TGLT+ PTC LT)",
+  "TT"
 ];
 
 const TEMPLATE_GROUP_HEADERS = [
@@ -81,7 +83,8 @@ const V2_GROUP_HEADERS = [
   { label: "Chất lượng phát thành công tại bưu cục (F4.1)", colspan: 4 },
   { label: "Nội tỉnh F1.1", colspan: 5 },
   { label: "Thu gom bưu gửi đi liên tỉnh (F1.2)", colspan: 5 },
-  { label: "Chất lượng phát bưu gửi liên tỉnh (F1.3)", colspan: 4 }
+  { label: "Chất lượng phát bưu gửi liên tỉnh (F1.3)", colspan: 4 },
+  { label: "Tỷ lệ trung bình chung chất lượng (TGLT,PTC LT)", colspan: 2 }
 ];
 
 const GROUP_HEADERS = [
@@ -130,7 +133,7 @@ const SOURCE_CONFIGS = [
 ];
 
 const V2_SOURCE_CONFIGS = [
-  { key: "phatThanhCongBuuCuc", name: "Chất lượng phát thành công tại bưu cục (F4.1)", status: "Đang gọi curl V2 F4.1...", buildParams: buildPhatThanhCongV2Params, values: { total: 8, onTime: 25 }, targets: { total: 17, onTime: 18, rate: 19, rank: 20 } },
+  { key: "phatThanhCongBuuCuc", name: "Chất lượng phát thành công tại bưu cục (F4.1)", status: "Đang gọi curl V2 F4.1...", buildParams: buildPhatThanhCongV2Params, values: { total: 10, onTime: 25 }, targets: { total: 17, onTime: 18, rate: 19, rank: 20 } },
   { key: "noiTinhF11", name: "Nội tỉnh F1.1", status: "Đang gọi curl V2 Nội tỉnh F1.1...", buildParams: buildNoiTinhF11Params, codeIndex: 1, nameIndex: 2, values: { total: 10, subTotal: 11, onTime: 12 }, targets: { total: 21, subTotal: 22, onTime: 23, rate: 24, rank: 25 } },
   { key: "thuGomLienTinhF12", name: "Thu gom bưu gửi đi liên tỉnh (F1.2)", status: "Đang gọi curl V2 Thu gom liên tỉnh F1.2...", buildParams: buildThuGomLienTinhF12Params, codeIndex: 1, nameIndex: 2, values: { total: 5, subTotal: 6, onTime: 7 }, targets: { total: 26, subTotal: 27, onTime: 28, rate: 29, rank: 30 } },
   { key: "phatLienTinhF13", name: "Chất lượng phát bưu gửi liên tỉnh (F1.3)", status: "Đang gọi curl V2 Phát liên tỉnh F1.3...", buildParams: buildPhatLienTinhF13Params, codeIndex: 1, nameIndex: 2, values: { total: 8, onTime: 16 }, targets: { total: 31, onTime: 32, rate: 33, rank: 34 } }
@@ -164,11 +167,17 @@ const v2Buttons = [...document.querySelectorAll("button[data-v2-group]")];
 const buttons = [...document.querySelectorAll("button[data-group]")];
 const datePickerButtons = [...document.querySelectorAll(".date-picker-btn")];
 const allActionButtons = templateReportButton ? [...buttons, templateReportButton, ...v2Buttons] : [...buttons, ...v2Buttons];
+const pinUiButton = document.getElementById("pin-ui");
+const PIN_STORAGE_KEY = "dkclSidebarPinned";
 
 initDefaultDates();
 buttons.forEach((button) => button.addEventListener("click", () => exportReport(button.dataset.group)));
 v2Buttons.forEach((button) => button.addEventListener("click", () => exportReportV2(button.dataset.v2Group, button.dataset.v2Mode || "data")));
 if (templateReportButton) templateReportButton.addEventListener("click", exportProvinceTemplateReport);
+if (pinUiButton) {
+  initPinnedUi();
+  pinUiButton.addEventListener("click", togglePinnedUi);
+}
 [fromDateInput, toDateInput, nextFromDateInput, nextToDateInput].forEach((input) => {
   input.addEventListener("change", () => syncDateDisplay(input));
   input.addEventListener("input", () => syncDateDisplay(input));
@@ -188,6 +197,33 @@ datePickerButtons.forEach((button) => {
     else nativeInput.click();
   });
 });
+
+function initPinnedUi() {
+  const pinned = localStorage.getItem(PIN_STORAGE_KEY) === "true";
+  updatePinUiButton(pinned);
+  notifyParentPinnedState(pinned);
+}
+
+function togglePinnedUi() {
+  const pinned = pinUiButton.getAttribute("aria-pressed") !== "true";
+  localStorage.setItem(PIN_STORAGE_KEY, String(pinned));
+  updatePinUiButton(pinned);
+  notifyParentPinnedState(pinned);
+  setStatus(pinned ? "Đã ghim giao diện: sidebar sẽ luôn mở." : "Đã bỏ ghim giao diện: có thể ẩn/hiện sidebar bằng nút DKCL.", "ok");
+}
+
+function updatePinUiButton(pinned) {
+  pinUiButton.classList.toggle("is-pinned", pinned);
+  pinUiButton.setAttribute("aria-pressed", String(pinned));
+  pinUiButton.title = pinned ? "Bỏ ghim giao diện" : "Ghim giao diện luôn mở";
+  const text = pinUiButton.querySelector(".pin-text");
+  if (text) text.textContent = pinned ? "Đã ghim" : "Ghim";
+}
+
+function notifyParentPinnedState(pinned) {
+  if (window.parent === window) return;
+  window.parent.postMessage({ source: "dkcl-report-popup", type: "pin-state", pinned }, "*");
+}
 
 function initDefaultDates() {
   const today = new Date();
@@ -231,7 +267,6 @@ async function exportReport(tuyChonGR) {
     downloadExcel({ rows: finalRows, tuyChonGR, from, to, fileName });
     setStatus(`Hoàn tất: đã gọi ${SOURCE_CONFIGS.length} curl, hiển thị ${finalRows.length} dòng và xuất ${fileName}.`, "ok");
   } catch (error) {
-    console.error(error);
     setStatus(error.message || "Có lỗi khi lấy dữ liệu.", "error");
   } finally {
     setBusy(false);
@@ -255,10 +290,10 @@ async function exportProvinceTemplateReport() {
     const weights = readWeights();
 
     setStatus("Đang gọi dữ liệu Tỉnh: kỳ báo cáo...");
-    const currentRows = finalizeRows(await fetchCombinedReport(tuyChonGR, from, to), weights, tuyChonGR);
+    const currentRows = finalizeRows(await fetchCombinedReport(tuyChonGR, from, to, "kỳ báo cáo"), weights, tuyChonGR);
 
     setStatus("Đang gọi dữ liệu Tỉnh: kỳ so sánh...");
-    const compareRows = finalizeRows(await fetchCombinedReport(tuyChonGR, compareFrom, compareTo), weights, tuyChonGR);
+    const compareRows = finalizeRows(await fetchCombinedReport(tuyChonGR, compareFrom, compareTo, "kỳ so sánh"), weights, tuyChonGR);
 
     if (!currentRows.length || !compareRows.length) {
       throw new Error("Không đủ dữ liệu cấp Tỉnh cho 2 kỳ để lập báo cáo so sánh.");
@@ -289,7 +324,6 @@ async function exportProvinceTemplateReport() {
     });
     setStatus(`Hoàn tất báo cáo so sánh kỳ Tỉnh: ${comparisonRows.length} đơn vị, đã xuất ${fileName}.`, "ok");
   } catch (error) {
-    console.error(error);
     setStatus(error.message || "Có lỗi khi lấy dữ liệu báo cáo so sánh kỳ Tỉnh.", "error");
   } finally {
     setBusy(false);
@@ -311,13 +345,11 @@ async function exportReportV2(tuyChonGR, mode = "data") {
   try {
     const weights = readWeights();
     setStatus("Đang gọi dữ liệu V2: kỳ báo cáo...");
-    const currentRows = await fetchV2ReportRows(tuyChonGR, from, to, weights);
-    if (!currentRows.length) throw new Error("Không tìm thấy dữ liệu V2 kỳ báo cáo.");
+    const currentRows = await fetchV2ReportRows(tuyChonGR, from, to, weights, mode === "compare" ? "kỳ báo cáo" : "");
 
     if (mode === "compare") {
       setStatus("Đang gọi dữ liệu V2: kỳ so sánh...");
-      const compareRows = await fetchV2ReportRows(tuyChonGR, compareFrom, compareTo, weights);
-      if (!compareRows.length) throw new Error("Không tìm thấy dữ liệu V2 kỳ so sánh.");
+      const compareRows = await fetchV2ReportRows(tuyChonGR, compareFrom, compareTo, weights, "kỳ so sánh");
       const comparisonRows = buildV2ComparisonRows(currentRows, compareRows);
       const provinceComparison = comparisonRows.find((row) => String(row.code) === "10");
       if (!provinceComparison) {
@@ -336,29 +368,44 @@ async function exportReportV2(tuyChonGR, mode = "data") {
     downloadV2Excel({ rows: currentRows, tuyChonGR, from, to, fileName });
     setStatus(`Hoàn tất Báo cáo ${tuyChonGR === "TINH" ? "theo tỉnh" : "theo bưu cục"} V2: ${currentRows.length} dòng, đã xuất ${fileName}.`, "ok");
   } catch (error) {
-    console.error(error);
     setStatus(error.message || "Có lỗi khi lấy dữ liệu V2.", "error");
   } finally {
     setBusy(false);
   }
 }
 
-async function fetchCombinedReport(tuyChonGR, from, to) {
+async function fetchCombinedReport(tuyChonGR, from, to, periodLabel = "") {
   const sourceTables = [];
 
   for (const config of SOURCE_CONFIGS) {
     setStatus(config.status);
+    const requestUrl = buildApiRequestUrl(config.key, config.buildParams(tuyChonGR, from, to));
     const payload = await fetchApi(config.key, config.buildParams(tuyChonGR, from, to));
     const records = parseApiRows(payload.data || "", config, tuyChonGR);
     console.log(`[DKCL][${tuyChonGR}] ${config.name}: parsed records`, records.length, records.slice(0, 3));
+    if (!records.length) {
+      throw new Error(buildMissingSourceDataMessage(config.name, periodLabel, from, to, requestUrl));
+    }
     sourceTables.push({ config, records });
   }
 
   return joinProvinceTables(sourceTables, tuyChonGR);
 }
 
-async function fetchV2ReportRows(tuyChonGR, from, to, weights) {
-  const baseRows = finalizeRows(await fetchCombinedReport(tuyChonGR, from, to), weights, tuyChonGR)
+function buildMissingSourceDataMessage(sourceName, periodLabel, from, to, requestUrl = "") {
+  const periodText = periodLabel ? `${periodLabel} ` : "";
+  const curlText = requestUrl ? `\nLink curl: ${requestUrl}` : "";
+  return `Biểu "${sourceName}" không có dữ liệu cho ${periodText}(${toApiDate(from)} - ${toApiDate(to)}).${curlText}\nVui lòng kiểm tra đăng nhập, khoảng ngày hoặc điều kiện lọc.`;
+}
+
+async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "") {
+  const combinedRows = await fetchCombinedReport(tuyChonGR, from, to, periodLabel);
+  const finalizedBaseRows = finalizeRows(combinedRows, weights, tuyChonGR);
+  if (!finalizedBaseRows.length) {
+    throw new Error(buildMissingSourceDataMessage(SOURCE_CONFIGS.map((config) => config.name).join(" / "), periodLabel, from, to));
+  }
+
+  const baseRows = finalizedBaseRows
     .map((row) => {
       const v2Row = Array(V2_EXCEL_COLUMNS.length).fill("");
       TEMPLATE_EXCEL_COLUMNS.forEach((_, index) => (v2Row[index] = row[index] ?? ""));
@@ -375,11 +422,15 @@ async function fetchV2ReportRows(tuyChonGR, from, to, weights) {
 
   for (const config of V2_SOURCE_CONFIGS) {
     setStatus(config.status);
+    const requestUrl = buildApiRequestUrl(config.key, config.buildParams(tuyChonGR, from, to));
     const payload = await fetchApi(config.key, config.buildParams(tuyChonGR, from, to));
     const records = parseV2ApiRows(payload.data || "", config, tuyChonGR, joinCodeSet);
     const aggregatedRecords = aggregateV2RecordsByCode(records, config);
     console.log(`[DKCL][V2][${tuyChonGR}] ${config.name}: parsed records`, records.length, records.slice(0, 3));
     console.log(`[DKCL][V2][${tuyChonGR}] ${config.name}: aggregated records before join`, aggregatedRecords.length, aggregatedRecords.slice(0, 5));
+    if (!aggregatedRecords.length) {
+      throw new Error(buildMissingSourceDataMessage(config.name, periodLabel, from, to, requestUrl));
+    }
     for (const record of aggregatedRecords) {
       if (!Number.isInteger(record.provinceCodeInt)) continue;
       if (tuyChonGR === "TINH" && [1, 8].includes(record.provinceCodeInt)) continue;
@@ -482,6 +533,12 @@ function finalizeV2Rows(rows) {
     });
     assignRankByColumn(rows, config.targets.rate, config.targets.rank);
   });
+  rows.forEach((row) => {
+    const adVal = toNumberValue(row[29]);
+    const ahVal = toNumberValue(row[33]);
+    row[35] = String((adVal + ahVal) / 2);
+  });
+  assignRankByColumn(rows, 35, 36);
   rows.forEach((row, index) => (row[0] = String(index + 1)));
 }
 
@@ -489,11 +546,11 @@ function buildPhatThanhCongV2Params(tuyChonGR, from, to) {
   return {
     TuyChonGR: tuyChonGR,
     stMaTinhPhat: tuyChonGR === "BC" ? "10" : "ALL",
-    stMaLoaiBCPhat: "ALL",
-    stMaBuuCucPhat: tuyChonGR === "BC" ? "ALL" : "NULL",
+    stMaLoaiBCPhat: tuyChonGR === "BC" ? "ALL" : "NULL",
+    stMaBuuCucPhat: "ALL",
     stLoaiDichVu: "ALL",
     stNhomLoaiKH: "ALL",
-    stPhamViTinhMoi: "NULL",
+    stPhamViTinh: "NULL",
     stLoaiTuyenPhat: "NULL",
     stLoaiPhuongXa: "NULL",
     iFrom: toApiDate(from),
@@ -525,13 +582,15 @@ function buildNoiTinhF11Params(tuyChonGR, from, to) {
 function buildThuGomLienTinhF12Params(tuyChonGR, from, to) {
   return {
     TuyChonGR: tuyChonGR,
+    stMaTinhNhan: tuyChonGR === "BC" ? "10" : "ALL",
+    stMaBuuCucNhan: "NULL",
+    stMaBCKTTinhNhan: "ALL",
     stLoaiDichVu: "ALL",
     stNhomLoaiKH: "ALL",
     iFrom: toApiDate(from),
     iTo: toApiDate(to),
-    stMaTinhNhan: tuyChonGR === "BC" ? "10" : "ALL",
-    stMaBuuCucNhan: "ALL",
-    stMaBCKTTinhNhan: "ALL"
+    iPageSize: "50000",
+    iPage: "1"
   };
 }
 
@@ -569,9 +628,13 @@ function joinProvinceTables(sourceTables, tuyChonGR) {
   return [...rowMap.values()];
 }
 
-async function fetchApi(apiKey, paramsObject) {
+function buildApiRequestUrl(apiKey, paramsObject) {
   const params = new URLSearchParams(paramsObject);
-  const requestUrl = `${API_URLS[apiKey]}?${params.toString()}`;
+  return `${API_URLS[apiKey]}?${params.toString()}`;
+}
+
+async function fetchApi(apiKey, paramsObject) {
+  const requestUrl = buildApiRequestUrl(apiKey, paramsObject);
   console.log(`[DKCL] Request ${apiKey}:`, requestUrl, paramsObject);
 
   const response = await fetch(requestUrl, {
@@ -604,16 +667,18 @@ async function fetchApi(apiKey, paramsObject) {
   }
 }
 
+
 function buildPhatThanhCongTmdtParams(tuyChonGR, from, to) {
   return {
     TuyChonGR: tuyChonGR,
+    stMaHuyenPhat: "",
     stMaTinhPhat: tuyChonGR === "BC" ? "10" : "ALL",
     stMaLoaiBCPhat: tuyChonGR === "BC" ? "ALL" : "NULL",
-    stMaBuuCucPhat: "NULL",
+    stMaBuuCucPhat: "ALL",
     stLoaiDichVu: "ALL",
-    stNhomLoaiBuuGui: "TMĐT",
+    "stNhomLoaiBuuGui[]": "TMĐT",
     stNhomLoaiKH: "ALL",
-    stPhamViTinhMoi: "NULL",
+    stPhamViTinh: "NULL",
     stLoaiTuyenPhat: "NULL",
     stLoaiPhuongXa: "NULL",
     iFrom: toApiDate(from),
@@ -625,8 +690,7 @@ function buildPhatThanhCongTmdtParams(tuyChonGR, from, to) {
 
 function buildPhatThanhCongTruyenThongParams(tuyChonGR, from, to) {
   const params = buildPhatThanhCongTmdtParams(tuyChonGR, from, to);
-  params.stNhomLoaiBuuGui = "Truyền thống";
-  delete params["stNhomLoaiBuuGui[]"];
+  params["stNhomLoaiBuuGui[]"] = "Truyền thống";
   return params;
 }
 
@@ -634,14 +698,14 @@ function buildThuGomParams(tuyChonGR, from, to) {
   return {
     TuyChonGR: tuyChonGR,
     stMaTinhThuGom: tuyChonGR === "BC" ? "10" : "ALL",
-    stMaBuuCucThuGom: "ALL",
+    stMaBuuCucThuGom: "NULL",
     stMaBCKTTinhNhan: "NULL",
     stLoaiDichVu: "ALL",
     stNhomLoaiKH: "ALL",
-    stPhamViTinhMoi: "NULL",
+    stPhamViTinh: "NULL",
     iFrom: toApiDate(from),
     iTo: toApiDate(to),
-    iPageSize: tuyChonGR === "BC" ? "50000" : "10000",
+    iPageSize: "50000",
     iPage: "1"
   };
 }
@@ -677,7 +741,7 @@ function mapPhatThanhCongRecord(cells, provinceCodeText, provinceCodeInt, provin
     provinceCodeText,
     provinceCodeInt,
     provinceName,
-    total: cells[8] || "",
+    total: cells[10] || "",
     success8h: cells[25] || ""
   };
 }
@@ -789,7 +853,7 @@ function buildProvinceComparisonText({ rows, provinceComparison, from, to, compa
   const periodText = `${toApiDate(from)} - ${toApiDate(to)}`;
   const comparePeriodText = `${toApiDate(compareFrom)} - ${toApiDate(compareTo)}`;
   const metricBlocks = provinceComparison.metrics.map((metric) => {
-    const isAverage = metric.label.includes("Trung bình");
+    const isAverage = metric.label.toLowerCase().includes("trung bình");
     const rateLabel = isAverage ? "Tỷ lệ bình quân" : "Tỷ lệ";
     return `🔹 ${metric.label}\n${rateLabel}: ${formatPercentValue(metric.currentRate)} (${rateTrendText(metric)})\nXếp hạng: ${formatRank(metric.currentRank, totalUnits)} (${rankTrendText(metric)})`;
   });
@@ -965,8 +1029,8 @@ function renderWorkbookPropertiesAndStyles() {
 function renderV2DataWorksheet(sheetName, rows, title) {
   return `<Worksheet ss:Name="${escapeXml(sheetName)}">
     <Table>
-      ${renderColumnWidths([46, 78, 190, 115, 150, 90, 70, 115, 150, 90, 70, 115, 150, 90, 70, 90, 70, 115, 150, 90, 70, 120, 120, 150, 90, 70, 140, 150, 150, 90, 70, 140, 160, 100, 70])}
-      <Row><Cell ss:MergeAcross="34" ss:StyleID="Title"><Data ss:Type="String">${escapeXml(title)}</Data></Cell></Row>
+      ${renderColumnWidths([46, 78, 190, 115, 150, 90, 70, 115, 150, 90, 70, 115, 150, 90, 70, 90, 70, 115, 150, 90, 70, 120, 120, 150, 90, 70, 140, 150, 150, 90, 70, 140, 160, 100, 70, 150, 70])}
+      <Row><Cell ss:MergeAcross="36" ss:StyleID="Title"><Data ss:Type="String">${escapeXml(title)}</Data></Cell></Row>
       ${renderExcelXmlGroupHeaderRow(V2_GROUP_HEADERS)}
       <Row>${V2_EXCEL_COLUMNS.map((column) => excelXmlCell(column, "String", "Header")).join("")}</Row>
       ${rows.map((row) => `<Row>${row.map((cell, index) => excelXmlCell(cell, getV2ExcelXmlDataType(cell, index), getV2ExcelXmlStyle(index))).join("")}</Row>`).join("")}
@@ -991,7 +1055,8 @@ function buildV2ComparisonRows(currentRows, compareRows) {
         buildMetricComparison("F4.1 – Chất lượng phát thành công tại bưu cục", currentRow, compareRow, 19, 20),
         buildMetricComparison("F1.1 – Nội tỉnh", currentRow, compareRow, 24, 25),
         buildMetricComparison("F1.2 – Thu gom bưu gửi đi liên tỉnh", currentRow, compareRow, 29, 30),
-        buildMetricComparison("F1.3 – Chất lượng phát bưu gửi liên tỉnh", currentRow, compareRow, 33, 34)
+        buildMetricComparison("F1.3 – Chất lượng phát bưu gửi liên tỉnh", currentRow, compareRow, 33, 34),
+        buildMetricComparison("Tỷ lệ trung bình chung chất lượng (TGLT,PTC LT)", currentRow, compareRow, 35, 36)
       ]
     };
   }).filter(Boolean).sort((a, b) => compareNumberOrText(a.code, b.code));
@@ -1166,7 +1231,7 @@ function isPercentColumn(index) {
 }
 
 function isV2PercentColumn(index) {
-  return [5, 9, 13, 15, 19, 24, 29, 33].includes(index);
+  return [5, 9, 13, 15, 19, 24, 29, 33, 35].includes(index);
 }
 
 function isV2NumberColumn(index) {
@@ -1527,7 +1592,7 @@ function pickReportName(cells, config, tuyChonGR) {
 
 function getReportCodeIndex(cells, config, tuyChonGR) {
   if (Number.isInteger(config.codeIndex)) return config.codeIndex;
-  if (tuyChonGR === "BC") return config.key === "thuGomLienTinh" ? 3 : 5;
+  if (tuyChonGR === "BC") return (config.key === "thuGomLienTinh" || config.key === "thuGomLienTinhF12") ? 3 : 5;
   return getProvinceCodeIndex(cells);
 }
 
@@ -1545,7 +1610,7 @@ function pickPostOfficeName(cells, config) {
 }
 
 function getPostOfficeCodeIndex(cells, config) {
-  return config.key === "thuGomLienTinh" ? 3 : 5;
+  return (config.key === "thuGomLienTinh" || config.key === "thuGomLienTinhF12") ? 3 : 5;
 }
 
 function pickProvinceCodeText(cells) {

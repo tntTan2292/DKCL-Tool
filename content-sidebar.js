@@ -1,5 +1,6 @@
 const DKCL_SIDEBAR_ID = "dkcl-report-extension-sidebar";
 const DKCL_TOGGLE_ID = "dkcl-report-extension-toggle";
+const DKCL_PIN_STORAGE_KEY = "dkclSidebarPinned";
 
 function mountDkclSidebar() {
   if (document.getElementById(DKCL_SIDEBAR_ID)) return;
@@ -20,7 +21,7 @@ function mountDkclSidebar() {
     "border-radius: 24px",
     "transition: transform 220ms ease, opacity 220ms ease",
     "overflow: hidden",
-    "transform: translateX(calc(100% + 28px))",
+    `transform: ${localStorage.getItem(DKCL_PIN_STORAGE_KEY) === "true" ? "translateX(0)" : "translateX(calc(100% + 28px))"}`,
     "opacity: 0.96"
   ].join(";");
 
@@ -59,12 +60,28 @@ function mountDkclSidebar() {
     "transition: right 220ms ease, transform 220ms ease"
   ].join(";");
 
-  let collapsed = true;
+  let collapsed = localStorage.getItem(DKCL_PIN_STORAGE_KEY) !== "true";
+  let pinned = localStorage.getItem(DKCL_PIN_STORAGE_KEY) === "true";
+  toggle.style.right = collapsed ? "12px" : "408px";
+  toggle.textContent = pinned ? "Đã ghim" : collapsed ? "DKCL" : "Ẩn";
+
   toggle.addEventListener("click", () => {
+    if (pinned) return;
     collapsed = !collapsed;
     sidebar.style.transform = collapsed ? "translateX(calc(100% + 28px))" : "translateX(0)";
     toggle.style.right = collapsed ? "12px" : "408px";
     toggle.textContent = collapsed ? "DKCL" : "Ẩn";
+  });
+
+  window.addEventListener("message", (event) => {
+    if (event.source !== iframe.contentWindow || event.data?.source !== "dkcl-report-popup" || event.data?.type !== "pin-state") return;
+    pinned = Boolean(event.data.pinned);
+    localStorage.setItem(DKCL_PIN_STORAGE_KEY, String(pinned));
+    collapsed = false;
+    sidebar.style.transform = "translateX(0)";
+    toggle.style.right = "408px";
+    toggle.textContent = pinned ? "Đã ghim" : "Ẩn";
+    toggle.title = pinned ? "Giao diện DKCL đang được ghim" : "Ẩn/hiện DKCL Sidebar";
   });
 
   sidebar.appendChild(iframe);
@@ -85,3 +102,4 @@ const retryTimer = setInterval(() => {
   retryCount += 1;
   if (retryCount >= 10) clearInterval(retryTimer);
 }, 1000);
+

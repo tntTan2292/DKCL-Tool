@@ -56,7 +56,15 @@ body {
   display: flex;
   gap: 14px;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 18px;
+}
+
+.hero-main {
+  display: flex;
+  min-width: 0;
+  gap: 14px;
+  align-items: center;
 }
 
 .logo-mark {
@@ -71,6 +79,39 @@ body {
   box-shadow: 0 14px 36px rgba(239, 59, 79, 0.35);
   font-weight: 900;
   letter-spacing: -1px;
+}
+
+.pin-ui-btn {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(255, 209, 102, 0.42);
+  border-radius: 999px;
+  padding: 10px 12px;
+  color: #07111f;
+  background: linear-gradient(135deg, #ffd166, #54d6ff);
+  box-shadow: 0 12px 28px rgba(84, 214, 255, 0.24);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pin-ui-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  filter: brightness(1.06);
+  box-shadow: 0 16px 34px rgba(255, 209, 102, 0.30);
+}
+
+.pin-ui-btn.is-pinned {
+  color: #fff7ed;
+  background: linear-gradient(135deg, #ef3b4f, #ec4899 52%, #7c3aed);
+  box-shadow: 0 16px 36px rgba(236, 72, 153, 0.34);
+}
+
+.pin-icon {
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.18));
 }
 
 .eyebrow {
