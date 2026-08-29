@@ -1,49 +1,69 @@
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DKCL Báo cáo BĐHN</title>
-    <meta name="description" content="Sidebar Chrome xuất báo cáo KPI DKCL BĐHN theo tỉnh hoặc bưu cục ra Excel." />
-    <link rel="stylesheet" href="popup.css" />
-  </head>
-  <body>
-    <main class="app-shell">
-      <section class="hero" aria-labelledby="page-title">
-        <div class="hero-main">
-          <div class="logo-mark" aria-hidden="true">VN</div>
-          <div>
-            <p class="eyebrow">DKCL Báo cáo BĐHN</p>
-            <h1 id="page-title">DKCL Báo cáo BĐHN</h1>
-            <p class="subtitle">Thao tác nhanh ở sidebar bên phải, không che nội dung trang DKCL.</p>
-          </div>
-        </div>
-        <button id="pin-ui" class="pin-ui-btn" type="button" aria-pressed="false" title="Ghim giao diện luôn mở">
-          <span class="pin-icon" aria-hidden="true">📌</span>
-          <span class="pin-text">Ghim</span>
-        </button>
-      </section>
 
-      <form id="report-form" class="card control-card">
-        <div class="section-label">Khoảng thời gian</div>
-        <div class="period-grid" aria-label="Chọn thời gian báo cáo">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DKCL Báo cáo BĐTP HUẾ</title>
+  <meta name="description" content="Sidebar Chrome xuất báo cáo KPI DKCL BĐTP HUẾ theo tỉnh hoặc bưu cục ra Excel." />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+
+<body>
+  <main class="app-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-main">
+        <div class="logo-mark" aria-hidden="true">VN</div>
+        <div>
+          <p class="eyebrow">DKCL Báo cáo BĐTP HUẾ</p>
+
+          <p class="subtitle">Thao tác nhanh ở sidebar bên phải, không che nội dung trang DKCL.</p>
+        </div>
+      </div>
+      <button id="pin-ui" class="pin-ui-btn" type="button" aria-pressed="false" title="Ghim giao diện luôn mở">
+        <span class="pin-icon" aria-hidden="true">📌</span>
+        <span class="pin-text">Ghim</span>
+      </button>
+    </section>
+
+    <form id="report-form" class="card control-card">
+      <div class="section-label">Chế độ báo cáo</div>
+      <div class="mode-switch-grid">
+        <label class="mode-option active" id="mode-option-date">
+          <input type="radio" name="report-mode" id="mode-date" value="date" checked />
+          <span>📅 So sánh 2 kỳ (Ngày)</span>
+        </label>
+        <label class="mode-option" id="mode-option-month">
+          <input type="radio" name="report-mode" id="mode-month" value="month" />
+          <span>📊 So sánh Lũy kế (Tháng)</span>
+        </label>
+      </div>
+
+      <!-- KHOẢNG THỜI GIAN THEO NGÀY (MẶC ĐỊNH) -->
+      <div id="date-mode-container">
+        <div class="section-label" style="margin-top: 14px;">Khoảng thời gian (2 kỳ theo ngày)</div>
+        <div class="period-grid" aria-label="Chọn thời gian báo cáo theo ngày">
           <fieldset class="period-card">
             <legend>Đầu kỳ</legend>
             <div class="field-grid">
               <label class="field" for="from-date-display">
                 <span>Từ ngày</span>
                 <div class="date-control">
-                  <input id="from-date-display" class="date-display" type="text" placeholder="dd/MM/yyyy" inputmode="numeric" autocomplete="off" />
+                  <input id="from-date-display" class="date-display" type="text" placeholder="dd/MM/yyyy"
+                    inputmode="numeric" autocomplete="off" />
                   <button class="date-picker-btn" type="button" aria-label="Mở lịch chọn ngày">📅</button>
-                  <input id="from-date" class="date-native" type="date" required aria-label="Từ ngày đầu kỳ" tabindex="-1" />
+                  <input id="from-date" class="date-native" type="date" required aria-label="Từ ngày đầu kỳ"
+                    tabindex="-1" />
                 </div>
               </label>
               <label class="field" for="to-date-display">
                 <span>Đến ngày</span>
                 <div class="date-control">
-                  <input id="to-date-display" class="date-display" type="text" placeholder="dd/MM/yyyy" inputmode="numeric" autocomplete="off" />
+                  <input id="to-date-display" class="date-display" type="text" placeholder="dd/MM/yyyy"
+                    inputmode="numeric" autocomplete="off" />
                   <button class="date-picker-btn" type="button" aria-label="Mở lịch chọn ngày">📅</button>
-                  <input id="to-date" class="date-native" type="date" required aria-label="Đến ngày đầu kỳ" tabindex="-1" />
+                  <input id="to-date" class="date-native" type="date" required aria-label="Đến ngày đầu kỳ"
+                    tabindex="-1" />
                 </div>
               </label>
             </div>
@@ -55,109 +75,176 @@
               <label class="field" for="next-from-date-display">
                 <span>Từ ngày</span>
                 <div class="date-control">
-                  <input id="next-from-date-display" class="date-display" type="text" placeholder="dd/MM/yyyy" inputmode="numeric" autocomplete="off" />
+                  <input id="next-from-date-display" class="date-display" type="text" placeholder="dd/MM/yyyy"
+                    inputmode="numeric" autocomplete="off" />
                   <button class="date-picker-btn" type="button" aria-label="Mở lịch chọn ngày">📅</button>
-                  <input id="next-from-date" class="date-native" type="date" required aria-label="Từ ngày kỳ so sánh" tabindex="-1" />
+                  <input id="next-from-date" class="date-native" type="date" required aria-label="Từ ngày kỳ so sánh"
+                    tabindex="-1" />
                 </div>
               </label>
               <label class="field" for="next-to-date-display">
                 <span>Đến ngày</span>
                 <div class="date-control">
-                  <input id="next-to-date-display" class="date-display" type="text" placeholder="dd/MM/yyyy" inputmode="numeric" autocomplete="off" />
+                  <input id="next-to-date-display" class="date-display" type="text" placeholder="dd/MM/yyyy"
+                    inputmode="numeric" autocomplete="off" />
                   <button class="date-picker-btn" type="button" aria-label="Mở lịch chọn ngày">📅</button>
-                  <input id="next-to-date" class="date-native" type="date" required aria-label="Đến ngày kỳ so sánh" tabindex="-1" />
+                  <input id="next-to-date" class="date-native" type="date" required aria-label="Đến ngày kỳ so sánh"
+                    tabindex="-1" />
                 </div>
               </label>
             </div>
           </fieldset>
         </div>
+      </div>
 
-        <div class="section-label weight-label">Trọng số bình quân cột P</div>
-        <div class="weight-grid" aria-label="Trọng số tính bình quân">
-          <label class="field weight-field" for="weight-tmdt">
-            <span>TMĐT (%)</span>
-            <input id="weight-tmdt" type="number" min="0" max="100" step="0.01" value="40" required />
-          </label>
-          <label class="field weight-field" for="weight-traditional">
-            <span>Truyền thống (%)</span>
-            <input id="weight-traditional" type="number" min="0" max="100" step="0.01" value="30" required />
-          </label>
-          <label class="field weight-field" for="weight-pickup">
-            <span>Thu gom (%)</span>
-            <input id="weight-pickup" type="number" min="0" max="100" step="0.01" value="30" required />
-          </label>
-        </div>
-
-        <div class="report-action-group report-action-group-v1" aria-label="Lấy dữ liệu báo cáo V1">
-          <div class="section-label action-label">Lấy dữ liệu báo cáo V1</div>
-          <div class="button-grid" role="group" aria-label="Chọn loại báo cáo V1">
-            <button id="export-province" class="btn btn-primary" type="button" data-group="TINH">
-              <span>Báo cáo theo tỉnh</span>
-              <small>TuyChonGR = TINH</small>
-            </button>
-            <button id="export-post-office" class="btn btn-secondary" type="button" data-group="BC">
-              <span>Báo cáo theo bưu cục</span>
-              <small>TuyChonGR = BC</small>
-            </button>
-          </div>
-
-          <div class="template-action-card" aria-label="Báo cáo so sánh kỳ cấp tỉnh">
-            <div>
-              <span class="template-kicker">So sánh kỳ</span>
-              <strong>Báo cáo riêng theo Tỉnh</strong>
-              <small>Gọi 2 kỳ, xếp hạng 36 đơn vị và so sánh biến động</small>
+      <!-- KHOẢNG THỜI GIAN THEO THÁNG (ẨN MẶC ĐỊNH) -->
+      <div id="month-mode-container" hidden>
+        <div class="section-label" style="margin-top: 14px;">Khoảng tháng so sánh lũy kế</div>
+        <div class="period-grid" aria-label="Chọn khoảng tháng so sánh lũy kế">
+          <fieldset class="period-card period-card-month">
+            <legend>Chuỗi tháng so sánh lũy kế</legend>
+            <div class="field-grid">
+              <label class="field" for="from-month">
+                <span>Từ tháng</span>
+                <input id="from-month" class="month-input" type="month" required aria-label="Từ tháng" />
+              </label>
+              <label class="field" for="to-month">
+                <span>Đến tháng</span>
+                <input id="to-month" class="month-input" type="month" required aria-label="Đến tháng" />
+              </label>
             </div>
-            <button id="export-province-template" class="btn btn-template" type="button">
-              <span>So sánh kỳ</span>
-              <small>So sánh kỳ</small>
-            </button>
+          </fieldset>
+        </div>
+      </div>
+
+      <div class="section-label weight-label">Tỉnh / Thành phố báo cáo</div>
+      <div class="field" style="margin-bottom: 12px;">
+        <select id="province-select" class="date-display" style="width: 100%; height: 38px; padding: 0 10px; font-weight: 600; cursor: pointer; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #fff;">
+          <option value="53" selected style="background: #111827; color: #fff;">53 - Thừa Thiên Huế</option>
+          <option value="10" style="background: #111827; color: #fff;">10 - TP. Hà Nội</option>
+          <option value="16" style="background: #111827; color: #fff;">16 - Hưng Yên</option>
+          <option value="18" style="background: #111827; color: #fff;">18 - TP. Hải Phòng</option>
+          <option value="20" style="background: #111827; color: #fff;">20 - Quảng Ninh</option>
+          <option value="22" style="background: #111827; color: #fff;">22 - Bắc Ninh</option>
+          <option value="24" style="background: #111827; color: #fff;">24 - Lạng Sơn</option>
+          <option value="25" style="background: #111827; color: #fff;">25 - Thái Nguyên</option>
+          <option value="27" style="background: #111827; color: #fff;">27 - Cao Bằng</option>
+          <option value="29" style="background: #111827; color: #fff;">29 - Phú Thọ</option>
+          <option value="30" style="background: #111827; color: #fff;">30 - Tuyên Quang</option>
+          <option value="33" style="background: #111827; color: #fff;">33 - Lào Cai</option>
+          <option value="36" style="background: #111827; color: #fff;">36 - Sơn La</option>
+          <option value="38" style="background: #111827; color: #fff;">38 - Điện Biên</option>
+          <option value="39" style="background: #111827; color: #fff;">39 - Lai Châu</option>
+          <option value="43" style="background: #111827; color: #fff;">43 - Ninh Bình</option>
+          <option value="44" style="background: #111827; color: #fff;">44 - Thanh Hóa</option>
+          <option value="46" style="background: #111827; color: #fff;">46 - Nghệ An</option>
+          <option value="48" style="background: #111827; color: #fff;">48 - Hà Tĩnh</option>
+          <option value="52" style="background: #111827; color: #fff;">52 - Quảng Trị</option>
+          <option value="55" style="background: #111827; color: #fff;">55 - TP. Đà Nẵng</option>
+          <option value="57" style="background: #111827; color: #fff;">57 - Quảng Ngãi</option>
+          <option value="60" style="background: #111827; color: #fff;">60 - Gia Lai</option>
+          <option value="63" style="background: #111827; color: #fff;">63 - Đắk Lắk</option>
+          <option value="65" style="background: #111827; color: #fff;">65 - Khánh Hòa</option>
+          <option value="67" style="background: #111827; color: #fff;">67 - Lâm Đồng</option>
+          <option value="70" style="background: #111827; color: #fff;">70 - TP. Hồ Chí Minh</option>
+          <option value="81" style="background: #111827; color: #fff;">81 - Đồng Nai</option>
+          <option value="84" style="background: #111827; color: #fff;">84 - Tây Ninh</option>
+          <option value="87" style="background: #111827; color: #fff;">87 - Đồng Tháp</option>
+          <option value="88" style="background: #111827; color: #fff;">88 - An Giang</option>
+          <option value="89" style="background: #111827; color: #fff;">89 - Vĩnh Long</option>
+          <option value="90" style="background: #111827; color: #fff;">90 - TP. Cần Thơ</option>
+          <option value="97" style="background: #111827; color: #fff;">97 - Cà Mau</option>
+        </select>
+      </div>
+
+      <div class="section-label weight-label">Trọng số bình quân cột P</div>
+      <div class="weight-grid" aria-label="Trọng số tính bình quân">
+        <label class="field weight-field" for="weight-tmdt">
+          <span>TMĐT (%)</span>
+          <input id="weight-tmdt" type="number" min="0" max="100" step="0.01" value="40" required />
+        </label>
+        <label class="field weight-field" for="weight-traditional">
+          <span>Truyền thống (%)</span>
+          <input id="weight-traditional" type="number" min="0" max="100" step="0.01" value="30" required />
+        </label>
+        <label class="field weight-field" for="weight-pickup">
+          <span>Thu gom (%)</span>
+          <input id="weight-pickup" type="number" min="0" max="100" step="0.01" value="30" required />
+        </label>
+      </div>
+
+      <div class="section-label action-label">Bấm chọn loại báo cáo để xuất Excel</div>
+      <div class="action-card-grid" role="group" aria-label="Lựa chọn Báo cáo xuất Excel">
+        <button id="export-compare-v2" class="action-card-btn btn-province" type="button" data-v2-group="TINH" data-v2-mode="compare">
+          <div class="card-icon">📊</div>
+          <div class="card-content">
+            <span class="card-title">So sánh kỳ V2 (Tỉnh)</span>
+            <span class="card-desc">So sánh 34 đơn vị toàn quốc + Dashboard Tỉnh &amp; Biểu đồ</span>
+          </div>
+        </button>
+
+        <button id="export-compare-bc-v2" class="action-card-btn btn-bc" type="button" data-v2-group="BC" data-v2-mode="compare">
+          <div class="card-icon">🏢</div>
+          <div class="card-content">
+            <span class="card-title">So sánh kỳ V2 (Bưu cục)</span>
+            <span class="card-desc">So sánh Bưu cục trực thuộc Tỉnh + Dashboard BC &amp; Biểu đồ</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- KHUNG THỦ TỤC CHỌN CHỈ TIÊU & XÁC NHẬN TẢI FILE (ẨN MẶC ĐỊNH) -->
+      <div id="metric-selection-panel" class="metric-selection-panel" hidden>
+        <div class="metric-section-header">
+          <div class="metric-panel-title">
+            <span class="metric-panel-icon">📋</span>
+            <span id="selected-report-title">Danh sách chỉ tiêu tải báo cáo</span>
+          </div>
+          <label class="tick-all-label" for="tick-all-metrics">
+            <input type="checkbox" id="tick-all-metrics" checked />
+            <span>☑️ Chọn tất cả</span>
+          </label>
+        </div>
+
+        <div id="metrics-selection-container" class="metrics-selection-box">
+          <div id="metrics-checkbox-list" class="metrics-grid">
+            <!-- Populated dynamically by popup.js -->
           </div>
         </div>
 
-        <div class="section-label action-label">Lấy dữ liệu báo cáo V2</div>
-        <div class="button-grid v2-button-grid" role="group" aria-label="Chọn loại báo cáo V2">
-          <button id="export-province-v2" class="btn btn-v2-primary" type="button" data-v2-group="TINH" data-v2-mode="data">
-            <span>Báo cáo theo tỉnh V2</span>
-            <small>filebaocaov2.xlsx · TuyChonGR = TINH</small>
-          </button>
-          <button id="export-post-office-v2" class="btn btn-v2-secondary" type="button" data-v2-group="BC" data-v2-mode="data">
-            <span>Báo cáo theo bưu cục V2</span>
-            <small>filebaocaov2.xlsx · mã tỉnh 10</small>
-          </button>
-          <button id="export-compare-v2" class="btn btn-v2-compare" type="button" data-v2-group="TINH" data-v2-mode="compare">
-            <span>Báo cáo so sánh kỳ V2</span>
-            <small>Gọi 2 kỳ và so sánh F4.1/F1.1/F1.2/F1.3</small>
-          </button>
+        <button id="confirm-export-btn" class="confirm-export-btn" type="button">
+          <span>🚀 XÁC NHẬN &amp; TẢI BÁO CÁO EXCEL</span>
+        </button>
+      </div>
+    </form>
+
+    <section id="report-panel" class="card report-panel is-empty" aria-labelledby="report-title">
+      <div class="report-head">
+        <div>
+          <p class="eyebrow">Kết quả sau khi click</p>
+          <h2 id="report-title">Dữ liệu báo cáo</h2>
         </div>
-      </form>
+        <span id="report-badge" class="report-badge">Chưa có</span>
+      </div>
 
-      <section id="report-panel" class="card report-panel is-empty" aria-labelledby="report-title">
-        <div class="report-head">
-          <div>
-            <p class="eyebrow">Kết quả sau khi click</p>
-            <h2 id="report-title">Dữ liệu báo cáo</h2>
-          </div>
-          <span id="report-badge" class="report-badge">Chưa có</span>
-        </div>
+      <div id="status" class="status" role="status" aria-live="polite">
+        Chọn khoảng ngày và bấm một trong hai nút để hiển thị dữ liệu báo cáo.
+      </div>
 
-        <div id="status" class="status" role="status" aria-live="polite">
-          Chọn khoảng ngày và bấm một trong hai nút để hiển thị dữ liệu báo cáo.
-        </div>
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon" aria-hidden="true">📊</div>
+        <strong>Chưa tải dữ liệu</strong>
+        <span>Dữ liệu chỉ xuất hiện tại đây sau khi bấm “Báo cáo theo tỉnh” hoặc “Báo cáo theo bưu cục”.</span>
+      </div>
 
-        <div id="empty-state" class="empty-state">
-          <div class="empty-icon" aria-hidden="true">📊</div>
-          <strong>Chưa tải dữ liệu</strong>
-          <span>Dữ liệu chỉ xuất hiện tại đây sau khi bấm “Báo cáo theo tỉnh” hoặc “Báo cáo theo bưu cục”.</span>
-        </div>
+      <div id="report-summary" class="report-summary" hidden></div>
+      <pre id="report-text" class="report-text" hidden></pre>
+    </section>
 
-        <div id="report-summary" class="report-summary" hidden></div>
-        <pre id="report-text" class="report-text" hidden></pre>
-      </section>
+    <section class="note-card">
+      <strong>Lưu ý:</strong> Hãy đăng nhập <span>dkcl.vnpost.vn</span> trên Chrome trước khi xuất báo cáo.
+    </section>
+  </main>
+  <script src="popup.js"></script>
+</body>
 
-      <section class="note-card">
-        <strong>Lưu ý:</strong> Hãy đăng nhập <span>dkcl.vnpost.vn</span> trên Chrome trước khi xuất báo cáo.
-      </section>
-    </main>
-    <script src="popup.js"></script>
-  </body>
 </html>

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "DKCL Báo cáo BĐHN",
+  "name": "DKCL Báo cáo BĐTP HUẾ",
   "version": "1.2.3",
-  "description": "Lấy dữ liệu KPI DKCL BĐHN từ dkcl.vnpost.vn và xuất Excel theo tỉnh hoặc bưu cục.",
+  "description": "Lấy dữ liệu KPI DKCL BĐTP HUẾ từ dkcl.vnpost.vn và xuất Excel theo tỉnh hoặc bưu cục.",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
@@ -10,7 +10,7 @@
     "128": "icons/icon128.png"
   },
   "action": {
-    "default_title": "DKCL Báo cáo BĐHN",
+    "default_title": "DKCL Báo cáo BĐTP HUẾ",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -24,7 +24,7 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": [],
+  "permissions": ["sidePanel"],
   "host_permissions": ["https://dkcl.vnpost.vn/*"],
   "content_scripts": [
     {

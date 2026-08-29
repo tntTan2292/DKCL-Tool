@@ -170,9 +170,106 @@ const allActionButtons = templateReportButton ? [...buttons, templateReportButto
 const pinUiButton = document.getElementById("pin-ui");
 const PIN_STORAGE_KEY = "dkclSidebarPinned";
 
+const modeDateRadio = document.getElementById("mode-date");
+const modeMonthRadio = document.getElementById("mode-month");
+const dateModeContainer = document.getElementById("date-mode-container");
+const monthModeContainer = document.getElementById("month-mode-container");
+const modeOptionDate = document.getElementById("mode-option-date");
+const modeOptionMonth = document.getElementById("mode-option-month");
+
+function updateReportModeUi() {
+  const isMonthMode = modeMonthRadio && modeMonthRadio.checked;
+  if (dateModeContainer) dateModeContainer.hidden = isMonthMode;
+  if (monthModeContainer) monthModeContainer.hidden = !isMonthMode;
+  if (modeOptionDate) modeOptionDate.classList.toggle("active", !isMonthMode);
+  if (modeOptionMonth) modeOptionMonth.classList.toggle("active", isMonthMode);
+}
+
+if (modeDateRadio && modeMonthRadio) {
+  modeDateRadio.addEventListener("change", updateReportModeUi);
+  modeMonthRadio.addEventListener("change", updateReportModeUi);
+  updateReportModeUi();
+}
+
+let pendingExportAction = null;
+
+const metricSelectionPanel = document.getElementById("metric-selection-panel");
+const selectedReportTitle = document.getElementById("selected-report-title");
+const metricsCheckboxList = document.getElementById("metrics-checkbox-list");
+const tickAllMetrics = document.getElementById("tick-all-metrics");
+const confirmExportBtn = document.getElementById("confirm-export-btn");
+
+const AVAILABLE_METRICS = [
+  "F4.1 – Chất lượng phát thành công tại bưu cục",
+  "F1.3 – Chất lượng phát bưu gửi liên tỉnh",
+  "F1.1 – Nội tỉnh",
+  "F1.2 – Thu gom bưu gửi đi liên tỉnh"
+];
+
+function populateMetricsList() {
+  if (!metricsCheckboxList) return;
+  metricsCheckboxList.innerHTML = AVAILABLE_METRICS.map((m) => `
+    <label class="metric-chk-item" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: #e2e8f0; cursor: pointer; padding: 6px 10px; background: rgba(255,255,255,0.05); border-radius: 6px;">
+      <input type="checkbox" class="metric-item-chk" value="${escapeHtml(m)}" checked />
+      <span>${escapeHtml(m)}</span>
+    </label>
+  `).join("");
+}
+
+if (tickAllMetrics) {
+  tickAllMetrics.addEventListener("change", () => {
+    const chks = document.querySelectorAll(".metric-item-chk");
+    chks.forEach((c) => (c.checked = tickAllMetrics.checked));
+  });
+}
+
+function openMetricSelectionPanel(v2Group, v2Mode) {
+  pendingExportAction = { v2Group, v2Mode };
+  populateMetricsList();
+  if (tickAllMetrics) tickAllMetrics.checked = true;
+
+  const isMonthMode = modeMonthRadio && modeMonthRadio.checked;
+  const groupLabel = v2Group === "BC" ? "Bưu cục" : "34 Tỉnh/TP";
+  const modeLabel = isMonthMode ? "Lũy kế đa tháng" : "So sánh 2 kỳ (Ngày)";
+
+  if (selectedReportTitle) {
+    selectedReportTitle.textContent = `Chọn chỉ tiêu xuất Báo cáo V2 ${groupLabel} (${modeLabel})`;
+  }
+
+  if (metricSelectionPanel) {
+    metricSelectionPanel.hidden = false;
+    metricSelectionPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+}
+
+if (confirmExportBtn) {
+  confirmExportBtn.addEventListener("click", () => {
+    const selectedLabels = getSelectedMetricLabels();
+    if (!selectedLabels || selectedLabels.length === 0) {
+      setStatus("Vui lòng chọn ít nhất 1 chỉ tiêu chất lượng.", "error");
+      return;
+    }
+
+    if (!pendingExportAction) {
+      pendingExportAction = { v2Group: "TINH", v2Mode: "compare" };
+    }
+
+    const isMonthMode = modeMonthRadio && modeMonthRadio.checked;
+    if (isMonthMode) {
+      exportReportV2MultiMonth(pendingExportAction.v2Group);
+    } else {
+      exportReportV2(pendingExportAction.v2Group, pendingExportAction.v2Mode || "compare");
+    }
+  });
+}
+
 initDefaultDates();
 buttons.forEach((button) => button.addEventListener("click", () => exportReport(button.dataset.group)));
-v2Buttons.forEach((button) => button.addEventListener("click", () => exportReportV2(button.dataset.v2Group, button.dataset.v2Mode || "data")));
+v2Buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    openMetricSelectionPanel(button.dataset.v2Group, button.dataset.v2Mode || "compare");
+  });
+});
 if (templateReportButton) templateReportButton.addEventListener("click", exportProvinceTemplateReport);
 if (pinUiButton) {
   initPinnedUi();
@@ -236,6 +333,18 @@ function initDefaultDates() {
   nextFromDateInput.value = toInputDate(nextFirstDay);
   nextToDateInput.value = toInputDate(nextLastDay);
   syncAllDateDisplays();
+
+  const fromMonthInput = document.getElementById("from-month");
+  const toMonthInput = document.getElementById("to-month");
+  if (fromMonthInput && !fromMonthInput.value) {
+    const currentYear = today.getFullYear();
+    fromMonthInput.value = `${currentYear}-01`;
+  }
+  if (toMonthInput && !toMonthInput.value) {
+    const currentYear = today.getFullYear();
+    const currentMonthStr = pad(today.getMonth() + 1);
+    toMonthInput.value = `${currentYear}-${currentMonthStr}`;
+  }
 }
 
 async function exportReport(tuyChonGR) {
@@ -357,7 +466,7 @@ async function exportReportV2(tuyChonGR, mode = "data") {
       }
       const fileName = `filebaocaov2_so_sanh_ky_${toFileDate(from)}_${toFileDate(to)}_vs_${toFileDate(compareFrom)}_${toFileDate(compareTo)}.xls`;
       renderV2ReportPreview({ rows: comparisonRows, tuyChonGR, from, to, compareFrom, compareTo, fileName, mode: "compare", provinceComparison });
-      downloadV2ComparisonExcel({ currentRows, compareRows, comparisonRows, from, to, compareFrom, compareTo, fileName });
+      downloadV2ComparisonExcel({ currentRows, compareRows, comparisonRows, tuyChonGR, from, to, compareFrom, compareTo, fileName });
       setStatus(`Hoàn tất Báo cáo so sánh kỳ V2: ${comparisonRows.length} dòng, đã xuất ${fileName}.`, "ok");
       return;
     }
@@ -398,29 +507,49 @@ function buildMissingSourceDataMessage(sourceName, periodLabel, from, to, reques
   return `Biểu "${sourceName}" không có dữ liệu cho ${periodText}(${toApiDate(from)} - ${toApiDate(to)}).${curlText}\nVui lòng kiểm tra đăng nhập, khoảng ngày hoặc điều kiện lọc.`;
 }
 
-async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "") {
-  const combinedRows = await fetchCombinedReport(tuyChonGR, from, to, periodLabel);
-  const finalizedBaseRows = finalizeRows(combinedRows, weights, tuyChonGR);
-  if (!finalizedBaseRows.length) {
-    throw new Error(buildMissingSourceDataMessage(SOURCE_CONFIGS.map((config) => config.name).join(" / "), periodLabel, from, to));
-  }
+function getActiveV2SourceConfigs() {
+  const selected = getSelectedMetricLabels();
+  return V2_SOURCE_CONFIGS.filter((config) => {
+    if (config.key === "phatThanhCongBuuCuc") return selected.includes("F4.1 – Chất lượng phát thành công tại bưu cục");
+    if (config.key === "noiTinhF11") return selected.includes("F1.1 – Nội tỉnh");
+    if (config.key === "thuGomLienTinhF12") return selected.includes("F1.2 – Thu gom bưu gửi đi liên tỉnh");
+    if (config.key === "phatLienTinhF13") return selected.includes("F1.3 – Chất lượng phát bưu gửi liên tỉnh");
+    return true;
+  });
+}
 
-  const baseRows = finalizedBaseRows
-    .map((row) => {
+async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "", selectedBcProvCode = null, selectedBcProvName = null) {
+  let baseRows = [];
+
+  if (tuyChonGR === "TINH") {
+    const PROVINCE_NAMES = {
+      10: "TP. Hà Nội", 16: "Hưng Yên", 18: "TP. Hải Phòng", 20: "Quảng Ninh", 22: "Bắc Ninh",
+      24: "Lạng Sơn", 25: "Thái Nguyên", 27: "Cao Bằng", 29: "Phú Thọ", 30: "Tuyên Quang",
+      33: "Lào Cai", 36: "Sơn La", 38: "Điện Biên", 39: "Lai Châu", 43: "Ninh Bình",
+      44: "Thanh Hóa", 46: "Nghệ An", 48: "Hà Tĩnh", 52: "Quảng Trị", 53: "Thừa Thiên Huế",
+      55: "TP. Đà Nẵng", 57: "Quảng Ngãi", 60: "Gia Lai", 63: "Đắc Lắk", 65: "Khánh Hòa",
+      67: "Lâm Đồng", 70: "TP. Hồ Chí Minh", 81: "Đồng Nai", 84: "Tây Ninh", 87: "Đồng Tháp",
+      88: "An Giang", 89: "Vĩnh Long", 90: "TP. Cần Thơ", 97: "Cà Mau"
+    };
+
+    baseRows = Object.entries(PROVINCE_NAMES).map(([code, name], idx) => {
       const v2Row = Array(V2_EXCEL_COLUMNS.length).fill("");
-      TEMPLATE_EXCEL_COLUMNS.forEach((_, index) => (v2Row[index] = row[index] ?? ""));
+      v2Row[0] = String(idx + 1);
+      v2Row[PROVINCE_CODE_INDEX] = code;
+      v2Row[PROVINCE_NAME_INDEX] = name;
       return v2Row;
     });
-  const rowMap = new Map(baseRows.map((row) => [String(row[PROVINCE_CODE_INDEX]), row]));
-  const joinCodeSet = new Set(rowMap.keys());
+  }
 
-  console.log(`[DKCL][V2][${tuyChonGR}] base rows for join`, {
-    rows: baseRows.length,
-    joinCodes: [...joinCodeSet].slice(0, 30),
-    sampleRows: baseRows.slice(0, 5)
-  });
+  const activeConfigs = getActiveV2SourceConfigs();
+  if (!activeConfigs.length) {
+    throw new Error("Vui lòng chọn ít nhất 1 chỉ tiêu chất lượng.");
+  }
 
-  for (const config of V2_SOURCE_CONFIGS) {
+  let rowMap = new Map(baseRows.map((row) => [String(row[PROVINCE_CODE_INDEX]), row]));
+  let joinCodeSet = new Set(rowMap.keys());
+
+  for (const config of activeConfigs) {
     setStatus(config.status);
     const requestUrl = buildApiRequestUrl(config.key, config.buildParams(tuyChonGR, from, to));
     const payload = await fetchApi(config.key, config.buildParams(tuyChonGR, from, to));
@@ -428,22 +557,42 @@ async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "")
     const aggregatedRecords = aggregateV2RecordsByCode(records, config);
     console.log(`[DKCL][V2][${tuyChonGR}] ${config.name}: parsed records`, records.length, records.slice(0, 3));
     console.log(`[DKCL][V2][${tuyChonGR}] ${config.name}: aggregated records before join`, aggregatedRecords.length, aggregatedRecords.slice(0, 5));
-    if (!aggregatedRecords.length) {
-      throw new Error(buildMissingSourceDataMessage(config.name, periodLabel, from, to, requestUrl));
-    }
-    for (const record of aggregatedRecords) {
-      if (!Number.isInteger(record.provinceCodeInt)) continue;
-      if (tuyChonGR === "TINH" && [1, 8].includes(record.provinceCodeInt)) continue;
-      const row = rowMap.get(String(record.provinceCodeInt));
-      if (!row) {
-        console.warn(`[DKCL][V2][${tuyChonGR}] ${config.name}: missing join row for code`, record.provinceCodeInt, record);
-        continue;
-      }
-      Object.entries(config.targets).forEach(([field, target]) => {
-        if (field === "rate" || field === "rank") return;
-        row[target] = zeroIfBlank(record[field]);
+
+    if (!baseRows.length && aggregatedRecords.length) {
+      aggregatedRecords.forEach((rec, idx) => {
+        const v2Row = Array(V2_EXCEL_COLUMNS.length).fill("");
+        v2Row[0] = String(idx + 1);
+        v2Row[PROVINCE_CODE_INDEX] = String(rec.provinceCodeInt);
+        v2Row[PROVINCE_NAME_INDEX] = rec.provinceName || `Đơn vị ${rec.provinceCodeInt}`;
+        baseRows.push(v2Row);
+        rowMap.set(String(rec.provinceCodeInt), v2Row);
       });
+      joinCodeSet = new Set(rowMap.keys());
     }
+
+    if (aggregatedRecords.length) {
+      for (const record of aggregatedRecords) {
+        if (!Number.isInteger(record.provinceCodeInt)) continue;
+        if (tuyChonGR === "TINH" && [1, 8].includes(record.provinceCodeInt)) continue;
+        let row = rowMap.get(String(record.provinceCodeInt));
+        if (!row) {
+          row = Array(V2_EXCEL_COLUMNS.length).fill("");
+          row[0] = String(baseRows.length + 1);
+          row[PROVINCE_CODE_INDEX] = String(record.provinceCodeInt);
+          row[PROVINCE_NAME_INDEX] = record.provinceName || `Đơn vị ${record.provinceCodeInt}`;
+          baseRows.push(row);
+          rowMap.set(String(record.provinceCodeInt), row);
+        }
+        Object.entries(config.targets).forEach(([field, target]) => {
+          if (field === "rate" || field === "rank") return;
+          row[target] = zeroIfBlank(record[field]);
+        });
+      }
+    }
+  }
+
+  if (!baseRows.length) {
+    throw new Error(buildMissingSourceDataMessage(activeConfigs.map((c) => c.name).join(" / "), periodLabel, from, to));
   }
 
   finalizeV2Rows(baseRows);
@@ -522,7 +671,8 @@ function toNumberValue(value) {
 }
 
 function finalizeV2Rows(rows) {
-  V2_SOURCE_CONFIGS.forEach((config) => {
+  const activeConfigs = getActiveV2SourceConfigs();
+  activeConfigs.forEach((config) => {
     rows.forEach((row) => {
       const denominator = zeroIfBlank(row[config.targets.total]);
       const numerator = zeroIfBlank(row[config.targets.onTime]);
@@ -926,6 +1076,25 @@ function downloadProvinceTemplateExcel({ currentRows, compareRows, comparisonRow
     <Style ss:ID="Up"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#008000"/><NumberFormat ss:Format="@"/></Style>
     <Style ss:ID="Down"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#C00000"/><NumberFormat ss:Format="@"/></Style>
     <Style ss:ID="Same"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#666666"/><NumberFormat ss:Format="@"/></Style>
+
+    <Style ss:ID="s134"><Font ss:FontName="Arial" ss:Bold="1"/><Interior ss:Color="#D9E1F2" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+    <Style ss:ID="s135"><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center"/></Style>
+    <Style ss:ID="s136"><Borders>${excelXmlBorders()}</Borders><NumberFormat ss:Format="0.00%"/><Alignment ss:Horizontal="Right"/></Style>
+    <Style ss:ID="s137"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#C00000"/><Alignment ss:Horizontal="Right"/></Style>
+    <Style ss:ID="s138"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#008000"/><Alignment ss:Horizontal="Right"/></Style>
+    <Style ss:ID="s139"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#C00000"/></Style>
+    <Style ss:ID="s140"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#00B050"/></Style>
+    <Style ss:ID="s141"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#A6A6A6"/></Style>
+    <Style ss:ID="s142"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#FFC000"/></Style>
+    <Style ss:ID="s63"><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Font ss:FontName="Arial" ss:Size="14" ss:Bold="1"/></Style>
+    <Style ss:ID="s64"><Borders>${excelXmlBorders()}</Borders><NumberFormat ss:Format="@"/></Style>
+    <Style ss:ID="m1730392435924"><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Font ss:FontName="Arial" ss:Italic="1"/></Style>
+    <Style ss:ID="m1730392435944"><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1"/><Interior ss:Color="#D9E1F2" ss:Pattern="Solid"/></Style>
+    <Style ss:ID="m1730392434032"><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Size="12" ss:Bold="1"/><Interior ss:Color="#F2F2F2" ss:Pattern="Solid"/></Style>
+    <Style ss:ID="m1730392434112"><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Font ss:FontName="Arial" ss:Size="12" ss:Bold="1"/></Style>
+    <Style ss:ID="m1730392434132"><Font ss:FontName="Arial" ss:Size="12" ss:Bold="1"/><Interior ss:Color="#FFF2CC" ss:Pattern="Solid"/></Style>
+    <Style ss:ID="m1730392431952"><Alignment ss:Vertical="Top" ss:WrapText="1"/><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Size="11"/><Interior ss:Color="#F2F2F2" ss:Pattern="Solid"/></Style>
+
   </Styles>
   ${renderDataWorksheet("Du lieu dau ky", currentRows, `Dữ liệu đầu kỳ: ${toApiDate(from)} - ${toApiDate(to)}`)}
   ${renderDataWorksheet("Ky so sanh", compareRows, `Dữ liệu kỳ so sánh: ${toApiDate(compareFrom)} - ${toApiDate(compareTo)}`)}
@@ -976,7 +1145,7 @@ function downloadV2Excel({ rows, tuyChonGR, from, to, fileName }) {
   saveBlobAsFile(blob, fileName);
 }
 
-function downloadV2ComparisonExcel({ currentRows, compareRows, comparisonRows, from, to, compareFrom, compareTo, fileName }) {
+function downloadV2ComparisonExcel({ currentRows, compareRows, comparisonRows, tuyChonGR, from, to, compareFrom, compareTo, fileName }) {
   const workbookXml = `<?xml version="1.0" encoding="UTF-8"?>
 <?mso-application progid="Excel.Sheet"?>
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
@@ -985,6 +1154,7 @@ function downloadV2ComparisonExcel({ currentRows, compareRows, comparisonRows, f
   xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
   xmlns:html="http://www.w3.org/TR/REC-html40">
   ${renderWorkbookPropertiesAndStyles()}
+  ${renderV2ComparisonDashboardWorksheet(comparisonRows, tuyChonGR, from, to, compareFrom, compareTo)}
   ${renderV2DataWorksheet("Du lieu dau ky V2", currentRows, `Dữ liệu V2 đầu kỳ: ${toApiDate(from)} - ${toApiDate(to)}`)}
   ${renderV2DataWorksheet("Ky so sanh V2", compareRows, `Dữ liệu V2 kỳ so sánh: ${toApiDate(compareFrom)} - ${toApiDate(compareTo)}`)}
   ${renderV2ComparisonWorksheet(comparisonRows, from, to, compareFrom, compareTo)}
@@ -1023,6 +1193,19 @@ function renderWorkbookPropertiesAndStyles() {
     <Style ss:ID="Up"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#008000"/><NumberFormat ss:Format="@"/></Style>
     <Style ss:ID="Down"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#C00000"/><NumberFormat ss:Format="@"/></Style>
     <Style ss:ID="Same"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#666666"/><NumberFormat ss:Format="@"/></Style>
+    <Style ss:ID="ProvCard1Title"><Font ss:FontName="Arial" ss:Size="10" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#1B365D" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>
+    <Style ss:ID="ProvCard1Val"><Font ss:FontName="Arial" ss:Size="11" ss:Bold="1" ss:Color="#1B365D"/><Interior ss:Color="#E8EEF5" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+    <Style ss:ID="ProvCard2Title"><Font ss:FontName="Arial" ss:Size="10" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#006666" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>
+    <Style ss:ID="ProvCard2Val"><Font ss:FontName="Arial" ss:Size="11" ss:Bold="1" ss:Color="#006666"/><Interior ss:Color="#E0F2F1" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+    <Style ss:ID="ProvCard3Title"><Font ss:FontName="Arial" ss:Size="10" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#8B4513" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>
+    <Style ss:ID="ProvCard3Val"><Font ss:FontName="Arial" ss:Size="11" ss:Bold="1" ss:Color="#8B4513"/><Interior ss:Color="#F5EBE6" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+    <Style ss:ID="ProvCard4Title"><Font ss:FontName="Arial" ss:Size="10" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#4B0082" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>
+    <Style ss:ID="ProvCard4Val"><Font ss:FontName="Arial" ss:Size="11" ss:Bold="1" ss:Color="#4B0082"/><Interior ss:Color="#F0E6FA" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+    <Style ss:ID="RankTop"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#004085"/><Interior ss:Color="#CCE5FF" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders></Style>
+    <Style ss:ID="RankUp"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#155724"/><Interior ss:Color="#D4EDDA" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders></Style>
+    <Style ss:ID="RankDown"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#721C24"/><Interior ss:Color="#F8D7DA" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders></Style>
+    <Style ss:ID="NoteHeader"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#383D41"/><Interior ss:Color="#E2E3E5" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Left" ss:Vertical="Center"/></Style>
+    <Style ss:ID="NoteText"><Font ss:FontName="Arial" ss:Size="10" ss:Color="#1B1E21"/><Interior ss:Color="#F8F9FA" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Left" ss:Vertical="Top" ss:WrapText="1"/></Style>
   </Styles>`;
 }
 
@@ -1063,6 +1246,160 @@ function buildV2ComparisonRows(currentRows, compareRows) {
 
   rows.forEach((row) => (row.totalUnits = rows.length));
   return rows;
+}
+
+
+function renderV2ComparisonDashboardWorksheet(rows, tuyChonGR, from, to, compareFrom, compareTo) {
+  const entityName = tuyChonGR === 'TINH' ? 'TOÀN QUỐC' : 'BƯU CỤC';
+  const unitCode = rows.length > 0 && tuyChonGR === 'BC' ? rows[0].code.substring(0, 2) : '34';
+  const dashName = tuyChonGR === 'TINH' ? 'Dashboard_Tinh' : `Dashboard_BC_${unitCode}`;
+  
+  let totalCurrentVol = 0;
+  let totalCompareVol = 0;
+  let totalCurrentSuccess = 0;
+  let totalCompareSuccess = 0;
+  
+  let highestVolUnit = null;
+  let highestVol = -1;
+  let riskUnits = [];
+  
+  const processedRows = rows.map((r, idx) => {
+    const curVol = Number(r.metrics.find(m => m.key === 'phatThanhCongV2')?.currentVolume || 0);
+    const compVol = Number(r.metrics.find(m => m.key === 'phatThanhCongV2')?.compareVolume || 0);
+    const curRate = Number(r.metrics.find(m => m.key === 'phatThanhCongV2')?.currentRate || 0);
+    const compRate = Number(r.metrics.find(m => m.key === 'phatThanhCongV2')?.compareRate || 0);
+    const curSucc = Math.round(curVol * curRate);
+    const compSucc = Math.round(compVol * compRate);
+    
+    totalCurrentVol += curVol;
+    totalCompareVol += compVol;
+    totalCurrentSuccess += curSucc;
+    totalCompareSuccess += compSucc;
+    
+    if (curVol > highestVol) {
+      highestVol = curVol;
+      highestVolUnit = r.name;
+    }
+    
+    const diffRate = (curRate - compRate) * 100;
+    let category = '';
+    let categoryStyle = '';
+    
+    if (curVol > 100 && curRate < 0.8 && diffRate < 5) {
+      category = '🔴 NGUY CƠ CAO (SL lớn, Tỷ lệ giảm/thấp)';
+      categoryStyle = 's139';
+      riskUnits.push({ name: r.name, vol: curVol, rate: curRate });
+    } else if (curVol > 100 && curRate >= 0.85) {
+      category = '🟢 XUẤT SẮC (SL lớn, Tỷ lệ cao)';
+      categoryStyle = 's140';
+    } else if (diffRate >= 10) {
+      category = '🟡 TIẾN BỘ (Tỷ lệ tăng tốt)';
+      categoryStyle = 's142';
+    } else {
+      category = '⚪ THÚC ĐẨY (SL nhỏ / Tỷ lệ chưa đạt)';
+      categoryStyle = 's141';
+    }
+    
+    let chartBar = '';
+    let chartStyle = '';
+    if (diffRate >= 0) {
+      chartBar = '📈 ' + '█'.repeat(Math.min(10, Math.ceil(diffRate/2))) + ' +' + diffRate.toFixed(2) + '%';
+      chartStyle = 's138';
+    } else {
+      chartBar = '📉 ' + '█'.repeat(Math.min(10, Math.ceil(-diffRate/2))) + ' ' + diffRate.toFixed(2) + '%';
+      chartStyle = 's137';
+    }
+    
+    return {
+      stt: idx + 1, code: r.code, name: r.name,
+      curVol, compVol, curRate, compRate, diffRate,
+      category, categoryStyle, chartBar, chartStyle
+    };
+  });
+  
+  riskUnits.sort((a, b) => b.vol - a.vol);
+  const topRisk = riskUnits.slice(0, 3);
+  
+  const avgCurRate = totalCurrentVol > 0 ? (totalCurrentSuccess / totalCurrentVol) : 0;
+  const avgCompRate = totalCompareVol > 0 ? (totalCompareSuccess / totalCompareVol) : 0;
+  
+  let headerXml = `<Worksheet ss:Name="${escapeXml(dashName)}">
+  <Table ss:ExpandedColumnCount="12" ss:ExpandedRowCount="${processedRows.length + 20}" x:FullColumns="1" x:FullRows="1">
+   <Column ss:Width="45.75" />
+   <Column ss:Width="84.75" />
+   <Column ss:AutoFitWidth="0" ss:Width="141.75" />
+   <Column ss:AutoFitWidth="0" ss:Width="72.75" ss:Span="4" />
+   <Column ss:Index="9" ss:AutoFitWidth="0" ss:Width="74.25" />
+   <Column ss:Width="180" />
+   <Column ss:Width="150" />
+   <Column ss:Width="230.25" />
+   <Row ss:Height="18">
+    <Cell ss:MergeAcross="11" ss:StyleID="s63"><Data ss:Type="String">📊 BI EXECUTIVE DASHBOARD - TỔNG QUAN NĂNG SUẤT &amp; CHẤT LƯỢNG ${escapeXml(entityName)} (MÃ ${unitCode})</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="11" ss:StyleID="m1730392435924"><Data ss:Type="String">Kỳ báo cáo: ${toApiDate(from)} - ${toApiDate(to)}  |  Kỳ so sánh: ${toApiDate(compareFrom)} - ${toApiDate(compareTo)}</Data></Cell>
+   </Row>
+   <Row ss:Height="13.5" />
+   <Row ss:AutoFitHeight="0" ss:Height="21.9375">
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392435944"><Data ss:Type="String">1. TỔNG SẢN LƯỢNG PHÁT</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392435944"><Data ss:Type="String">2. TỶ LỆ PHÁT THÀNH CÔNG BQ</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392435944"><Data ss:Type="String">3. ĐƠN VỊ GÁNH SẢN LƯỢNG LỚN NHẤT</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392435944"><Data ss:Type="String">4. CẢNH BÁO NGUY CƠ NĂNG SUẤT</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="38.0625">
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392434032"><Data ss:Type="String">${totalCurrentVol.toLocaleString()} bưu gửi&#10;(${totalCurrentVol - totalCompareVol > 0 ? '+' : ''}${(totalCurrentVol - totalCompareVol).toLocaleString()} đơn so với kỳ trước)</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392434032"><Data ss:Type="String">${(avgCurRate * 100).toFixed(2)}%&#10;(${avgCurRate - avgCompRate > 0 ? '+' : ''}${((avgCurRate - avgCompRate) * 100).toFixed(2)} điểm % so với kỳ trước)</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392434032"><Data ss:Type="String">${escapeXml(highestVolUnit || 'N/A')}&#10;(${highestVol.toLocaleString()} đơn - chiếm ${((highestVol / (totalCurrentVol||1)) * 100).toFixed(1)}% toàn mạng)</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392434032"><Data ss:Type="String">${topRisk.length > 0 ? `🔴 ${riskUnits.length} Đơn vị nguy cơ cao&#10;(${topRisk.map(r => r.name).join(', ')})` : '🟢 Không có Đơn vị nguy cơ cao'}</Data></Cell>
+   </Row>
+   <Row ss:Index="7">
+    <Cell ss:MergeAcross="11" ss:StyleID="m1730392434112"><Data ss:Type="String">BẢNG PHÂN TÍCH SO SÁNH 2 KỲ KÉP: SẢN LƯỢNG (ĐƠN VỊ) &amp; TỶ LỆ CHẤT LƯỢNG PHÁT F4.1 (%)</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">STT</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Mã BC</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tên Đơn Vị</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ trọng SL (%)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL Kỳ này</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL Kỳ trước</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Biến động SL</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ Kỳ này</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ Kỳ trước</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">So sánh Tỷ lệ</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Biểu đồ Biến động</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Phân loại BI</Data></Cell>
+   </Row>`;
+   
+  const tableXml = processedRows.map(r => {
+    const slDiff = r.curVol - r.compVol;
+    const diffStr = slDiff > 0 ? `+${slDiff} đơn` : `${slDiff} đơn`;
+    const slDiffStyle = slDiff > 0 ? 's138' : (slDiff < 0 ? 's137' : 's135');
+    const rateDiffStr = r.diffRate > 0 ? `tăng ${r.diffRate.toFixed(2)} điểm %, từ ${(r.compRate*100).toFixed(2)}% lên ${(r.curRate*100).toFixed(2)}%` : `giảm ${Math.abs(r.diffRate).toFixed(2)} điểm %, từ ${(r.compRate*100).toFixed(2)}% xuống ${(r.curRate*100).toFixed(2)}%`;
+    return `   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">${r.stt}</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">${escapeXml(r.code)}</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">${escapeXml(r.name)}</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">${r.curVol / (totalCurrentVol || 1)}</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">${r.curVol}</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">${r.compVol}</Data></Cell>
+    <Cell ss:StyleID="${slDiffStyle}"><Data ss:Type="String">${diffStr}</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">${r.curRate}</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">${r.compRate}</Data></Cell>
+    <Cell ss:StyleID="${r.chartStyle}"><Data ss:Type="String">${rateDiffStr}</Data></Cell>
+    <Cell ss:StyleID="${r.chartStyle}"><Data ss:Type="String">${r.chartBar}</Data></Cell>
+    <Cell ss:StyleID="${r.categoryStyle}"><Data ss:Type="String">${escapeXml(r.category)}</Data></Cell>
+   </Row>`;
+  }).join('\n');
+  
+  const footerXml = `   <Row ss:Index="${processedRows.length + 10}" ss:Height="15">
+    <Cell ss:MergeAcross="11" ss:StyleID="m1730392434132"><Data ss:Type="String">📝 PHÂN TÍCH QUẢN TRỊ BI &amp; CHỈ ĐẠO ĐIỀU HÀNH TỰ ĐỘNG - ${escapeXml(entityName)}</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="110.0625">
+    <Cell ss:MergeAcross="11" ss:StyleID="m1730392431952"><Data ss:Type="String">📊 BÁO CÁO PHÂN TÍCH QUẢN TRỊ NĂNG SUẤT &amp; CHẤT LƯỢNG (BI EXECUTIVE REPORT) - ${escapeXml(entityName)}:&#10;1. Tổng sản lượng phát toàn mạng: ${totalCurrentVol.toLocaleString()} bưu gửi (kỳ trước ${totalCompareVol.toLocaleString()} đơn, ${totalCurrentVol - totalCompareVol > 0 ? 'tăng' : 'giảm'} ${(totalCurrentVol - totalCompareVol).toLocaleString()} đơn).&#10;2. Tỷ lệ phát thành công (F4.1) toàn mạng: ${(avgCurRate * 100).toFixed(2)}% (kỳ trước ${(avgCompRate * 100).toFixed(2)}%, ${avgCurRate - avgCompRate > 0 ? 'tăng' : 'giảm'} ${((avgCurRate - avgCompRate) * 100).toFixed(2)} điểm %).&#10;3. Đơn vị gánh sản lượng lớn nhất: ${escapeXml(highestVolUnit || 'N/A')} với ${highestVol.toLocaleString()} đơn (chiếm ${((highestVol / (totalCurrentVol||1)) * 100).toFixed(1)}% tổng sản lượng).&#10;4. ${topRisk.length > 0 ? `🔴 CẢNH BÁO NGUY CƠ CAO (${riskUnits.length} đơn vị): ${topRisk.map(r => `${r.name} (SL ${r.vol} đơn, đạt ${(r.rate*100).toFixed(1)}%)`).join('; ')}. Cần kiểm tra khâu phát gấp!` : '🟢 KHÔNG CÓ CẢNH BÁO NGUY CƠ CAO.'}&#10;5. CHỈ ĐẠO ĐIỀU HÀNH: Yêu cầu Trưởng các Đơn vị thuộc nhóm Cảnh báo nguy cơ tập trung rà soát lực lượng bưu tá và kiểm soát quét TMS hoàn thành đúng chỉ tiêu.</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>`;
+  return headerXml + '\n' + tableXml + '\n' + footerXml;
 }
 
 function renderV2ComparisonWorksheet(rows, from, to, compareFrom, compareTo) {
@@ -1668,4 +2005,452 @@ function setStatus(message, type = "") {
 
 function setBusy(isBusy) {
   allActionButtons.forEach((button) => (button.disabled = isBusy));
+}
+
+function getSelectedProvinceCode() {
+  const select = document.getElementById("province-select");
+  return select ? select.value : "53";
+}
+
+function getSelectedProvinceName() {
+  const select = document.getElementById("province-select");
+  if (!select || !select.selectedOptions || !select.selectedOptions.length) return "Thừa Thiên Huế";
+  const text = select.selectedOptions[0].textContent.trim();
+  return text.replace(/^\d+\s*-\s*/, "");
+}
+
+function getSelectedMetricLabels() {
+  const chks = document.querySelectorAll("#metrics-checkbox-list input[type='checkbox']:checked");
+  if (!chks || !chks.length) {
+    return [
+      "F4.1 – Chất lượng phát thành công tại bưu cục",
+      "F1.3 – Chất lượng phát bưu gửi liên tỉnh",
+      "F1.1 – Nội tỉnh",
+      "F1.2 – Thu gom bưu gửi đi liên tỉnh"
+    ];
+  }
+  return Array.from(chks).map(c => c.value);
+}
+
+function generateMonthRanges(fromMonthStr, toMonthStr) {
+  if (!fromMonthStr || !toMonthStr) {
+    throw new Error("Vui lòng chọn đầy đủ Từ tháng và Đến tháng.");
+  }
+  const [y1, m1] = fromMonthStr.split("-").map(Number);
+  const [y2, m2] = toMonthStr.split("-").map(Number);
+
+  const startYearMonth = y1 * 12 + (m1 - 1);
+  const endYearMonth = y2 * 12 + (m2 - 1);
+
+  if (startYearMonth > endYearMonth) {
+    throw new Error("Từ tháng không được lớn hơn Đến tháng.");
+  }
+  if (endYearMonth - startYearMonth >= 12) {
+    throw new Error("Khoảng thời gian so sánh không được vượt quá 12 tháng.");
+  }
+
+  const list = [];
+  for (let ym = startYearMonth; ym <= endYearMonth; ym++) {
+    const year = Math.floor(ym / 12);
+    const month = (ym % 12) + 1;
+    const monthStr = pad(month);
+
+    const fromDate = new Date(year, month - 1, 1);
+    const toDate = new Date(year, month, 0);
+
+    list.push({
+      year,
+      month,
+      monthKey: `${monthStr}/${year}`,
+      label: `Tháng ${monthStr}/${year}`,
+      sheetName: `Thang_${monthStr}_${year}`,
+      from: fromDate,
+      to: toDate
+    });
+  }
+  return list;
+}
+
+async function fetchMultiMonthV2Report(monthsList, tuyChonGR, selectedBcProvCode, selectedBcProvName) {
+  const weights = readWeights();
+  const results = [];
+
+  for (let i = 0; i < monthsList.length; i++) {
+    const monthObj = monthsList[i];
+    setStatus(`Đang lấy dữ liệu V2 [Tháng ${i + 1}/${monthsList.length}]: ${monthObj.label}...`);
+    const rows = await fetchV2ReportRows(
+      tuyChonGR,
+      monthObj.from,
+      monthObj.to,
+      weights,
+      monthObj.label,
+      selectedBcProvCode,
+      selectedBcProvName
+    );
+    results.push({
+      monthObj,
+      rows
+    });
+  }
+
+  return results;
+}
+
+function buildVisualTrendBar(diffPts) {
+  if (diffPts == null || isNaN(diffPts)) return "⚪ 0.00%";
+  const sign = diffPts >= 0 ? "+" : "";
+  const valStr = `${sign}${diffPts.toFixed(2)}%`;
+  if (diffPts >= 3.0) return `🟢▲▲ ${valStr}`;
+  if (diffPts > 0) return `🟢▲ ${valStr}`;
+  if (diffPts <= -3.0) return `🔴▼▼ ${valStr}`;
+  if (diffPts < 0) return `🔴▼ ${valStr}`;
+  return `⚪ ${valStr}`;
+}
+
+const MULTI_MONTH_METRICS_MAP = {
+  "F1.1 – Nội tỉnh": { shortName: "F1.1", totalCol: 21, onTimeCol: 23 },
+  "F1.2 – Thu gom bưu gửi đi liên tỉnh": { shortName: "F1.2", totalCol: 26, onTimeCol: 28 },
+  "F1.3 – Chất lượng phát bưu gửi liên tỉnh": { shortName: "F1.3", totalCol: 31, onTimeCol: 32 },
+  "F4.1 – Chất lượng phát thành công tại bưu cục": { shortName: "F4.1", totalCol: 17, onTimeCol: 18 }
+};
+
+function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyChonGR) {
+  const provCode = getSelectedProvinceCode();
+  const provName = getSelectedProvinceName();
+  const fromLabel = monthsList[0]?.label || "";
+  const toLabel = monthsList[monthsList.length - 1]?.label || "";
+  const totalMonths = monthsList.length;
+
+  const selectedLabels = getSelectedMetricLabels();
+  const activeMetrics = selectedLabels
+    .map(label => MULTI_MONTH_METRICS_MAP[label])
+    .filter(Boolean);
+
+  if (activeMetrics.length === 0) {
+    activeMetrics.push(MULTI_MONTH_METRICS_MAP["F4.1 – Chất lượng phát thành công tại bưu cục"]);
+    activeMetrics.push(MULTI_MONTH_METRICS_MAP["F1.3 – Chất lượng phát bưu gửi liên tỉnh"]);
+  }
+
+  const unitMap = new Map();
+
+  monthlyResults.forEach(({ monthObj, rows }, monthIdx) => {
+    (rows || []).forEach(row => {
+      const code = String(row[PROVINCE_CODE_INDEX]);
+      const name = row[PROVINCE_NAME_INDEX];
+      if (!unitMap.has(code)) {
+        unitMap.set(code, {
+          code,
+          name,
+          monthRows: Array(totalMonths).fill(null)
+        });
+      }
+      unitMap.get(code).monthRows[monthIdx] = row;
+    });
+  });
+
+  const units = Array.from(unitMap.values()).sort((a, b) => compareNumberOrText(a.code, b.code));
+
+  const unitSummaries = units.map((u) => {
+    const isTargetUnit = String(u.code) === String(provCode);
+
+    const metricStats = activeMetrics.map((m) => {
+      let sumVol = 0;
+      let sumOnTime = 0;
+      const rates = [];
+
+      u.monthRows.forEach(r => {
+        if (r) {
+          const v = toNumberValue(r[m.totalCol]);
+          const o = toNumberValue(r[m.onTimeCol]);
+          const rate = v > 0 ? o / v : 0;
+          sumVol += v;
+          sumOnTime += o;
+          rates.push(rate);
+        } else {
+          rates.push(0);
+        }
+      });
+
+      const cumRate = sumVol > 0 ? sumOnTime / sumVol : 0;
+      const firstRate = rates[0] || 0;
+      const lastRate = rates[totalMonths - 1] || 0;
+      const diffRate = (lastRate - firstRate) * 100;
+
+      return { rates, sumVol, sumOnTime, cumRate, diffRate, rank: 0 };
+    });
+
+    const minDiff = metricStats.length ? Math.min(...metricStats.map(s => s.diffRate)) : 0;
+    const minCum = metricStats.length ? Math.min(...metricStats.map(s => s.cumRate)) : 0;
+
+    let segment = "⚪ ỔN ĐỊNH DUY TRÌ";
+    let segStyle = isTargetUnit ? "RankTop" : "Same";
+    if (minDiff >= 2.0) {
+      segment = "🟢 TĂNG TRƯỞNG MẠNH (MoM >= +2%)";
+      segStyle = "RankUp";
+    } else if (minDiff < -2.0) {
+      segment = "🔴 CẢNH BÁO SUY GIẢM (MoM < -2%)";
+      segStyle = "RankDown";
+    } else if (minCum >= 0.95) {
+      segment = "🥇 TOP CHẤT LƯỢNG CAO (>=95%)";
+      segStyle = "RankTop";
+    }
+
+    return {
+      code: u.code,
+      name: u.name,
+      isTargetUnit,
+      metricStats,
+      segment,
+      segStyle
+    };
+  });
+
+  activeMetrics.forEach((m, mIdx) => {
+    const sorted = [...unitSummaries]
+      .filter(u => u.metricStats[mIdx].sumVol > 0)
+      .sort((a, b) => b.metricStats[mIdx].cumRate - a.metricStats[mIdx].cumRate);
+    sorted.forEach((u, rankIdx) => {
+      u.metricStats[mIdx].rank = rankIdx + 1;
+    });
+  });
+
+  const focusSummary = unitSummaries.find(u => u.isTargetUnit) || unitSummaries[0];
+
+  // -------------------------------------------------------------
+  // TAB 1: EXECUTIVE DASHBOARD FOR FOCUS TARGET UNIT (HUẾ)
+  // Clean 13-column grid (fits 100% on laptop/desktop screen)
+  // -------------------------------------------------------------
+  const dashColWidths = [40, 220];
+  monthsList.forEach(() => dashColWidths.push(80));
+  dashColWidths.push(95, 120, 110);
+  const dashTotalCols = dashColWidths.length;
+
+  const widgets = activeMetrics.map((m, mIdx) => {
+    const ms = focusSummary ? focusSummary.metricStats[mIdx] : { sumVol: 0, cumRate: 0, diffRate: 0, rank: 0 };
+    const rankText = ms.rank > 0 ? `Hạng ${ms.rank}/${units.length} toàn quốc` : "";
+    const diffSign = ms.diffRate >= 0 ? `+${ms.diffRate.toFixed(2)}%` : `${ms.diffRate.toFixed(2)}%`;
+
+    return {
+      title: `${mIdx + 1}. CHẤT LƯỢNG BQ (${m.shortName})`,
+      value: `${(ms.cumRate * 100).toFixed(2)}%\nMoM: ${diffSign} | ${rankText}\n(SL: ${ms.sumVol.toLocaleString()} bg)`,
+      styleTitle: `ProvCard${mIdx % 4 + 1}Title`,
+      styleVal: `ProvCard${mIdx % 4 + 1}Val`
+    };
+  });
+
+  const widgetSpanList = [
+    { start: 0, span: 3 },
+    { start: 3, span: 3 },
+    { start: 6, span: 3 },
+    { start: 9, span: dashTotalCols - 9 }
+  ];
+
+  const widgetTitleRow = `<Row ss:Height="22">${widgets.map((w, idx) => {
+    const sp = widgetSpanList[idx] || { span: 3 };
+    return `<Cell ss:MergeAcross="${sp.span - 1}" ss:StyleID="${w.styleTitle}"><Data ss:Type="String">${escapeXml(w.title)}</Data></Cell>`;
+  }).join("")}</Row>`;
+
+  const widgetValRow = `<Row ss:Height="56">${widgets.map((w, idx) => {
+    const sp = widgetSpanList[idx] || { span: 3 };
+    return `<Cell ss:MergeAcross="${sp.span - 1}" ss:StyleID="${w.styleVal}"><Data ss:Type="String">${escapeXml(w.value).replace(/\n/g, '&#10;')}</Data></Cell>`;
+  }).join("")}</Row>`;
+
+  const focusTrendRowsXml = activeMetrics.map((m, mIdx) => {
+    const ms = focusSummary ? focusSummary.metricStats[mIdx] : { rates: [], cumRate: 0, diffRate: 0, rank: 0 };
+    const fullName = m.shortName === 'F4.1' ? 'Chất lượng phát thành công tại bưu cục'
+                   : m.shortName === 'F1.3' ? 'Chất lượng phát bưu gửi liên tỉnh'
+                   : m.shortName === 'F1.1' ? 'Chất lượng phát bưu gửi nội tỉnh'
+                   : 'Chất lượng thu gom bưu gửi đi liên tỉnh';
+    return `
+      <Row ss:Height="22">
+        ${excelXmlCell(mIdx + 1, "Number", "Number")}
+        ${excelXmlCell(`${m.shortName} – ${fullName}`, "String", "Text")}
+        ${ms.rates.map(r => excelXmlCell(r, "Number", "Percent")).join("")}
+        ${excelXmlCell(ms.cumRate, "Number", "Percent")}
+        ${excelXmlCell(buildVisualTrendBar(ms.diffRate), "String", trendStyle(ms.diffRate))}
+        ${excelXmlCell(ms.rank > 0 ? `${ms.rank} / ${units.length}` : "", "String", "Text")}
+      </Row>`;
+  }).join("");
+
+  const notesTextLines = [
+    `🏆 BÁO CÁO LŨY KẾ & MA TRẬN SO SÁNH CHUỖI XU HƯỚNG ĐA THÁNG (EXECUTIVE BI DASHBOARD):`,
+    `1. ĐƠN VỊ TRỌNG ĐIỂM QUAN SÁT: ${provName} (Mã ${provCode}) | KHOẢNG THỜI GIAN: ${fromLabel} ➔ ${toLabel} (${totalMonths} tháng liên tục).`
+  ];
+  activeMetrics.forEach((m, mIdx) => {
+    const ms = focusSummary ? focusSummary.metricStats[mIdx] : { sumVol: 0, cumRate: 0, rank: 0 };
+    notesTextLines.push(`${mIdx + 2}. TIÊU ĐIỂM ${m.shortName} (${provName}): Sản lượng lũy kế ${ms.sumVol.toLocaleString()} bưu gửi, Tỷ lệ bình quân ${(ms.cumRate * 100).toFixed(2)}% (Xếp hạng ${ms.rank}/${units.length} toàn quốc).`);
+  });
+  notesTextLines.push(`${activeMetrics.length + 2}. 🎯 CHỈ ĐẠO ĐIỀU HÀNH BAN GIÁM ĐỐC: Đề nghị các đơn vị có biến động suy giảm (🔴 MoM < -2%) rà soát lại các công đoạn để cải thiện chất lượng.`);
+  const notesText = notesTextLines.join("\n");
+
+  const executiveDashboardSheet = `<Worksheet ss:Name="Dashboard_${escapeXml(provName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, ''))}">
+    <Table>
+      ${renderColumnWidths(dashColWidths)}
+      <Row ss:Height="26"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Title"><Data ss:Type="String">🏆 BAN GIÁM ĐỐC BI DASHBOARD - TỔNG QUAN CHẤT LƯỢNG KÉP &amp; CHUỖI XU HƯỚNG BƯU ĐIỆN TỈNH ${escapeXml(provName.toUpperCase())} (MÃ ${provCode})</Data></Cell></Row>
+      <Row ss:Height="18"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Text"><Data ss:Type="String">Đơn vị tiêu điểm: ${escapeXml(provName)} (Mã ${provCode})  |  Theo dõi chuỗi xu hướng ${totalMonths} tháng liên tục (${escapeXml(fromLabel)} ➔ ${escapeXml(toLabel)})  |  Đối sánh ${units.length} BĐT/TP toàn quốc</Data></Cell></Row>
+      <Row></Row>
+
+      <!-- KHỐI 1: 04 KPI CARDS TIÊU ĐIỂM QUẢN TRỊ RIÊNG CHO HUẾ -->
+      ${widgetTitleRow}
+      ${widgetValRow}
+      <Row></Row>
+
+      <!-- KHỐI 2: BẢNG CHUỖI XU HƯỚNG CHẤT LƯỢNG HÀNG THÁNG RIÊNG CHO HUẾ -->
+      <Row ss:Height="22"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Group"><Data ss:Type="String">📈 BẢNG CHUỖI XU HƯỚNG CHẤT LƯỢNG TỪNG THÁNG (MONTH-BY-MONTH TREND) RIÊNG CHO ${escapeXml(provName.toUpperCase())}</Data></Cell></Row>
+      <Row ss:Height="24">
+        ${excelXmlCell("STT", "String", "Header")}
+        ${excelXmlCell("Chỉ Tiêu Chất Lượng", "String", "Header")}
+        ${monthsList.map(m => excelXmlCell(m.monthKey, "String", "Header")).join("")}
+        ${excelXmlCell("BQ Lũy Kế", "String", "Header")}
+        ${excelXmlCell(`MoM (${monthsList[totalMonths - 1]?.monthKey} vs ${monthsList[0]?.monthKey})`, "String", "Header")}
+        ${excelXmlCell("Hạng Toàn Quốc", "String", "Header")}
+      </Row>
+      ${focusTrendRowsXml}
+      <Row></Row>
+
+      <!-- KHỐI 3: PHÂN TÍCH QUẢN TRỊ & CHỈ ĐẠO ĐIỀU HÀNH -->
+      <Row ss:Height="22"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="NoteHeader"><Data ss:Type="String">📝 BẢN PHÂN TÍCH TIÊU ĐIỂM BI &amp; CHỈ ĐẠO ĐIỀU HÀNH - ${escapeXml(provName.toUpperCase())}</Data></Cell></Row>
+      <Row ss:Height="80"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="NoteText"><Data ss:Type="String">${escapeXml(notesText).replace(/\n/g, '&#10;')}</Data></Cell></Row>
+    </Table>
+    <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>5</SplitHorizontal><TopRowBottomPane>5</TopRowBottomPane><ActivePane>2</ActivePane></WorksheetOptions>
+  </Worksheet>`;
+
+  // -------------------------------------------------------------
+  // TAB 2: FULL BENCHMARK MATRIX FOR 34 PROVINCES TOÀN QUỐC
+  // Full detailed matrix table
+  // -------------------------------------------------------------
+  const headerCols = [
+    "STT", "Mã", "Tên Đơn Vị"
+  ];
+  activeMetrics.forEach(m => {
+    monthsList.forEach(month => {
+      headerCols.push(`${m.shortName} ${month.monthKey}`);
+    });
+    headerCols.push(`Lũy Kế ${m.shortName} BQ`, `MoM ${m.shortName} (Tn vs T1)`);
+  });
+  headerCols.push("Phân loại Vị thế BI");
+
+  const colWidths = [40, 60, 190];
+  activeMetrics.forEach(() => {
+    monthsList.forEach(() => colWidths.push(85));
+    colWidths.push(100, 130);
+  });
+  colWidths.push(180);
+  const totalCols = headerCols.length;
+
+  const metricShortNames = activeMetrics.map(m => m.shortName).join(" &amp; ");
+
+  const unitMatrixRowsXml = unitSummaries.map((u, idx) => {
+    const rowStyle = u.isTargetUnit ? "RankTop" : "";
+    const displayName = u.isTargetUnit ? `${u.name} ★` : u.name;
+
+    let rowXml = `
+      <Row ss:Height="20">
+        ${excelXmlCell(idx + 1, "Number", rowStyle || "Number")}
+        ${excelXmlCell(u.code, "String", rowStyle || "Text")}
+        ${excelXmlCell(displayName, "String", rowStyle || "Text")}`;
+
+    u.metricStats.forEach(ms => {
+      rowXml += ms.rates.map(r => excelXmlCell(r, "Number", rowStyle || "Percent")).join("");
+      rowXml += excelXmlCell(ms.cumRate, "Number", rowStyle || "Percent");
+      rowXml += excelXmlCell(buildVisualTrendBar(ms.diffRate), "String", trendStyle(ms.diffRate));
+    });
+
+    rowXml += `
+        ${excelXmlCell(u.segment, "String", u.segStyle)}
+      </Row>`;
+    return rowXml;
+  }).join("");
+
+  const benchmarkMatrixSheet = `<Worksheet ss:Name="MaTran_34_Tinh_ToanQuoc">
+    <Table>
+      ${renderColumnWidths(colWidths)}
+      <Row ss:Height="24"><Cell ss:MergeAcross="${totalCols - 1}" ss:StyleID="Group"><Data ss:Type="String">📊 BẢNG MA TRẬN ĐỐI SÁNH &amp; XẾP HẠNG 34 BƯU ĐIỆN TỈNH/TP TOÀN QUỐC (${metricShortNames}) (${totalMonths} THÁNG - HIGHLIGHT DÒNG HUẾ ★)</Data></Cell></Row>
+      <Row ss:Height="24">${headerCols.map(c => excelXmlCell(c, "String", "Header")).join("")}</Row>
+      ${unitMatrixRowsXml}
+    </Table>
+    <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>2</SplitHorizontal><TopRowBottomPane>2</TopRowBottomPane><SplitVertical>3</SplitVertical><LeftColumnRightPane>3</LeftColumnRightPane><ActivePane>0</ActivePane></WorksheetOptions>
+  </Worksheet>`;
+
+  return `${executiveDashboardSheet}\n${benchmarkMatrixSheet}`;
+}
+
+async function exportReportV2MultiMonth(tuyChonGR) {
+  const fromMonthInput = document.getElementById("from-month");
+  const toMonthInput = document.getElementById("to-month");
+  if (!fromMonthInput || !toMonthInput || !fromMonthInput.value || !toMonthInput.value) {
+    setStatus("Vui lòng chọn Từ tháng và Đến tháng.", "error");
+    return;
+  }
+
+  let monthsList;
+  try {
+    monthsList = generateMonthRanges(fromMonthInput.value, toMonthInput.value);
+  } catch (err) {
+    setStatus(err.message, "error");
+    return;
+  }
+
+  setBusy(true);
+  const provCode = getSelectedProvinceCode();
+  const provName = getSelectedProvinceName();
+  setStatus(`Bắt đầu tải dữ liệu lũy kế ${monthsList.length} tháng cho V2 (${tuyChonGR === "TINH" ? "34 Tỉnh/TP" : "Bưu cục thuộc " + provName})...`);
+
+  try {
+    const selectedBcProvCode = tuyChonGR === "BC" ? provCode : null;
+    const selectedBcProvName = tuyChonGR === "BC" ? provName : null;
+
+    const monthlyResults = await fetchMultiMonthV2Report(monthsList, tuyChonGR, selectedBcProvCode, selectedBcProvName);
+
+    if (!monthlyResults || !monthlyResults.length) {
+      throw new Error("Không lấy được dữ liệu cho các tháng đã chọn.");
+    }
+
+    setStatus("Đang khởi tạo Dashboard Ma trận Lũy kế Đa tháng XML...");
+    const dashboardSheetXml = renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyChonGR);
+
+    const dataSheetsXml = monthlyResults.map(({ monthObj, rows }) => {
+      return renderV2DataWorksheet(monthObj.sheetName, rows, `Dữ liệu V2 ${monthObj.label} (${tuyChonGR})`);
+    }).join("\n");
+
+    const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:x="urn:schemas-microsoft-com:office:excel"
+          xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+  ${renderWorkbookPropertiesAndStyles()}
+  ${dashboardSheetXml}
+  ${dataSheetsXml}
+</Workbook>`;
+
+    const fileName = `filebaocaov2_luyke_thang_${tuyChonGR === "TINH" ? "tinh" : "bc"}_${fromMonthInput.value}_vs_${toMonthInput.value}.xls`;
+    const blob = new Blob([xmlContent], { type: "application/vnd.ms-excel;charset=utf-8" });
+    saveBlobAsFile(blob, fileName);
+
+    renderV2MultiMonthPreview(monthlyResults, monthsList, tuyChonGR);
+    setStatus(`Hoàn tất xuất Báo cáo Lũy kế Ma trận ${monthsList.length} tháng (${tuyChonGR}): Đã tải ${fileName}.`, "ok");
+  } catch (error) {
+    console.error("[DKCL][MultiMonth] Error:", error);
+    setStatus(error.message || "Có lỗi xảy ra khi xuất báo cáo lũy kế tháng.", "error");
+  } finally {
+    setBusy(false);
+  }
+}
+
+function renderV2MultiMonthPreview(monthlyResults, monthsList, tuyChonGR) {
+  if (reportPanel) reportPanel.classList.remove("is-empty");
+  if (emptyState) emptyState.hidden = true;
+  if (reportBadge) reportBadge.textContent = "Multi-Month BI Report";
+
+  const totalUnits = monthlyResults[0]?.rows?.length || 0;
+  if (reportSummary) {
+    reportSummary.hidden = false;
+    reportSummary.innerHTML = `
+      <div class="metric"><span>Chế độ báo cáo</span><strong>Lũy kế đa tháng (V2)</strong></div>
+      <div class="metric"><span>Số tháng so sánh</span><strong>${monthsList.length} tháng</strong></div>
+      <div class="metric"><span>Đơn vị tổng hợp</span><strong>${tuyChonGR === "BC" ? "Bưu cục" : "34 Tỉnh/TP"} (${totalUnits} đơn vị)</strong></div>
+      <div class="metric"><span>Khoảng tháng</span><strong>${monthsList[0].monthKey} ➔ ${monthsList[monthsList.length - 1].monthKey}</strong></div>
+    `;
+  }
 }

@@ -26,7 +26,7 @@ function mountDkclSidebar() {
   ].join(";");
 
   const iframe = document.createElement("iframe");
-  iframe.title = "DKCL Báo cáo BĐHN";
+  iframe.title = "DKCL Báo cáo BĐTP HUẾ";
   iframe.src = chrome.runtime.getURL("popup.html?embedded=1");
   iframe.style.cssText = [
     "width: 100%",
