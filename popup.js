@@ -1101,7 +1101,7 @@ function downloadProvinceTemplateExcel({ currentRows, compareRows, comparisonRow
   ${renderComparisonWorksheet(comparisonRows, from, to, compareFrom, compareTo)}
 </Workbook>`;
 
-  const blob = new Blob([workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
+  const blob = new Blob(["\ufeff", workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
   saveBlobAsFile(blob, fileName);
 }
 
@@ -1141,7 +1141,7 @@ function renderV2ReportPreview({ rows, tuyChonGR, from, to, compareFrom, compare
 
 function downloadV2Excel({ rows, tuyChonGR, from, to, fileName }) {
   const workbookXml = buildV2WorkbookXml({ rows, tuyChonGR, from, to });
-  const blob = new Blob([workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
+  const blob = new Blob(["\ufeff", workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
   saveBlobAsFile(blob, fileName);
 }
 
@@ -1154,12 +1154,12 @@ function downloadV2ComparisonExcel({ currentRows, compareRows, comparisonRows, t
   xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
   xmlns:html="http://www.w3.org/TR/REC-html40">
   ${renderWorkbookPropertiesAndStyles()}
-  ${renderV2ComparisonDashboardWorksheet(comparisonRows, tuyChonGR, from, to, compareFrom, compareTo)}
+  ${renderV2ComparisonDashboardWorksheet(currentRows, compareRows, tuyChonGR, from, to, compareFrom, compareTo)}
   ${renderV2DataWorksheet("Du lieu dau ky V2", currentRows, `Dữ liệu V2 đầu kỳ: ${toApiDate(from)} - ${toApiDate(to)}`)}
   ${renderV2DataWorksheet("Ky so sanh V2", compareRows, `Dữ liệu V2 kỳ so sánh: ${toApiDate(compareFrom)} - ${toApiDate(compareTo)}`)}
   ${renderV2ComparisonWorksheet(comparisonRows, from, to, compareFrom, compareTo)}
 </Workbook>`;
-  const blob = new Blob([workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
+  const blob = new Blob(["\ufeff", workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
   saveBlobAsFile(blob, fileName);
 }
 
@@ -1249,9 +1249,9 @@ function buildV2ComparisonRows(currentRows, compareRows) {
 }
 
 
-function renderV2ComparisonDashboardWorksheet(rows, tuyChonGR, from, to, compareFrom, compareTo) {
+function renderV2ComparisonDashboardWorksheet(currentRows, compareRows, tuyChonGR, from, to, compareFrom, compareTo) {
   const entityName = tuyChonGR === 'TINH' ? 'TOÀN QUỐC' : 'BƯU CỤC';
-  const unitCode = rows.length > 0 && tuyChonGR === 'BC' ? rows[0].code.substring(0, 2) : '34';
+  const unitCode = currentRows.length > 0 && tuyChonGR === 'BC' ? currentRows[0][PROVINCE_CODE_INDEX].substring(0, 2) : '34';
   const dashName = tuyChonGR === 'TINH' ? 'Dashboard_Tinh' : `Dashboard_BC_${unitCode}`;
   
   let totalCurrentVol = 0;
@@ -1263,11 +1263,33 @@ function renderV2ComparisonDashboardWorksheet(rows, tuyChonGR, from, to, compare
   let highestVol = -1;
   let riskUnits = [];
   
-  const processedRows = rows.map((r, idx) => {
-    const curVol = Number(r.metrics.find(m => m.key === 'phatThanhCongV2')?.currentVolume || 0);
-    const compVol = Number(r.metrics.find(m => m.key === 'phatThanhCongV2')?.compareVolume || 0);
-    const curRate = Number(r.metrics.find(m => m.key === 'phatThanhCongV2')?.currentRate || 0);
-    const compRate = Number(r.metrics.find(m => m.key === 'phatThanhCongV2')?.compareRate || 0);
+  const compareMap = new Map(compareRows.map((row) => [String(row[PROVINCE_CODE_INDEX]), row]));
+
+  const parseFormattedNumber = (val) => {
+    if (!val) return 0;
+    if (typeof val === 'number') return val;
+    const clean = String(val).replace(/,/g, '');
+    const parsed = Number(clean);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  const processedRows = currentRows.map((currentRow, idx) => {
+    const compareRow = compareMap.get(String(currentRow[PROVINCE_CODE_INDEX]));
+    if (!compareRow) return null;
+
+    const code = currentRow[PROVINCE_CODE_INDEX];
+    const name = currentRow[PROVINCE_NAME_INDEX];
+    
+    // index 17 = total volume for F4.1, 19 = rate
+    const curVol = parseFormattedNumber(currentRow[17]);
+    const compVol = parseFormattedNumber(compareRow[17]);
+    const curRateStr = currentRow[19] || "0";
+    const compRateStr = compareRow[19] || "0";
+    
+    // rates are often strings like "50.5%", need to parse them
+    const curRate = Number(String(curRateStr).replace(/[^0-9.-]/g, '')) / 100 || 0;
+    const compRate = Number(String(compRateStr).replace(/[^0-9.-]/g, '')) / 100 || 0;
+    
     const curSucc = Math.round(curVol * curRate);
     const compSucc = Math.round(compVol * compRate);
     
@@ -1278,7 +1300,7 @@ function renderV2ComparisonDashboardWorksheet(rows, tuyChonGR, from, to, compare
     
     if (curVol > highestVol) {
       highestVol = curVol;
-      highestVolUnit = r.name;
+      highestVolUnit = name;
     }
     
     const diffRate = (curRate - compRate) * 100;
@@ -1288,7 +1310,7 @@ function renderV2ComparisonDashboardWorksheet(rows, tuyChonGR, from, to, compare
     if (curVol > 100 && curRate < 0.8 && diffRate < 5) {
       category = '🔴 NGUY CƠ CAO (SL lớn, Tỷ lệ giảm/thấp)';
       categoryStyle = 's139';
-      riskUnits.push({ name: r.name, vol: curVol, rate: curRate });
+      riskUnits.push({ name: name, vol: curVol, rate: curRate });
     } else if (curVol > 100 && curRate >= 0.85) {
       category = '🟢 XUẤT SẮC (SL lớn, Tỷ lệ cao)';
       categoryStyle = 's140';
@@ -1311,12 +1333,11 @@ function renderV2ComparisonDashboardWorksheet(rows, tuyChonGR, from, to, compare
     }
     
     return {
-      stt: idx + 1, code: r.code, name: r.name,
-      curVol, compVol, curRate, compRate, diffRate,
-      category, categoryStyle, chartBar, chartStyle
+      code, name, curVol, compVol, curRate, compRate, diffRate, category, categoryStyle, chartBar, chartStyle
     };
-  });
+  }).filter(Boolean);
   
+  processedRows.forEach((r, idx) => r.stt = idx + 1);
   riskUnits.sort((a, b) => b.vol - a.vol);
   const topRisk = riskUnits.slice(0, 3);
   
@@ -1350,7 +1371,7 @@ function renderV2ComparisonDashboardWorksheet(rows, tuyChonGR, from, to, compare
     <Cell ss:MergeAcross="2" ss:StyleID="m1730392434032"><Data ss:Type="String">${totalCurrentVol.toLocaleString()} bưu gửi&#10;(${totalCurrentVol - totalCompareVol > 0 ? '+' : ''}${(totalCurrentVol - totalCompareVol).toLocaleString()} đơn so với kỳ trước)</Data></Cell>
     <Cell ss:MergeAcross="2" ss:StyleID="m1730392434032"><Data ss:Type="String">${(avgCurRate * 100).toFixed(2)}%&#10;(${avgCurRate - avgCompRate > 0 ? '+' : ''}${((avgCurRate - avgCompRate) * 100).toFixed(2)} điểm % so với kỳ trước)</Data></Cell>
     <Cell ss:MergeAcross="2" ss:StyleID="m1730392434032"><Data ss:Type="String">${escapeXml(highestVolUnit || 'N/A')}&#10;(${highestVol.toLocaleString()} đơn - chiếm ${((highestVol / (totalCurrentVol||1)) * 100).toFixed(1)}% toàn mạng)</Data></Cell>
-    <Cell ss:MergeAcross="2" ss:StyleID="m1730392434032"><Data ss:Type="String">${topRisk.length > 0 ? `🔴 ${riskUnits.length} Đơn vị nguy cơ cao&#10;(${topRisk.map(r => r.name).join(', ')})` : '🟢 Không có Đơn vị nguy cơ cao'}</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392434032"><Data ss:Type="String">${topRisk.length > 0 ? `🔴 ${riskUnits.length} Đơn vị nguy cơ cao&#10;(${escapeXml(topRisk.map(r => r.name).join(', '))})` : '🟢 Không có Đơn vị nguy cơ cao'}</Data></Cell>
    </Row>
    <Row ss:Index="7">
     <Cell ss:MergeAcross="11" ss:StyleID="m1730392434112"><Data ss:Type="String">BẢNG PHÂN TÍCH SO SÁNH 2 KỲ KÉP: SẢN LƯỢNG (ĐƠN VỊ) &amp; TỶ LỆ CHẤT LƯỢNG PHÁT F4.1 (%)</Data></Cell>
@@ -1372,14 +1393,14 @@ function renderV2ComparisonDashboardWorksheet(rows, tuyChonGR, from, to, compare
    
   const tableXml = processedRows.map(r => {
     const slDiff = r.curVol - r.compVol;
-    const diffStr = slDiff > 0 ? `+${slDiff} đơn` : `${slDiff} đơn`;
+    const diffStr = slDiff > 0 ? `+${slDiff.toLocaleString()} đơn` : `${slDiff.toLocaleString()} đơn`;
     const slDiffStyle = slDiff > 0 ? 's138' : (slDiff < 0 ? 's137' : 's135');
     const rateDiffStr = r.diffRate > 0 ? `tăng ${r.diffRate.toFixed(2)} điểm %, từ ${(r.compRate*100).toFixed(2)}% lên ${(r.curRate*100).toFixed(2)}%` : `giảm ${Math.abs(r.diffRate).toFixed(2)} điểm %, từ ${(r.compRate*100).toFixed(2)}% xuống ${(r.curRate*100).toFixed(2)}%`;
     return `   <Row>
     <Cell ss:StyleID="s135"><Data ss:Type="Number">${r.stt}</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="String">${escapeXml(r.code)}</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="String">${escapeXml(r.name)}</Data></Cell>
-    <Cell ss:StyleID="s136"><Data ss:Type="Number">${r.curVol / (totalCurrentVol || 1)}</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">${totalCurrentVol > 0 ? (r.curVol / totalCurrentVol).toFixed(4) : 0}</Data></Cell>
     <Cell ss:StyleID="s135"><Data ss:Type="Number">${r.curVol}</Data></Cell>
     <Cell ss:StyleID="s135"><Data ss:Type="Number">${r.compVol}</Data></Cell>
     <Cell ss:StyleID="${slDiffStyle}"><Data ss:Type="String">${diffStr}</Data></Cell>
@@ -1395,7 +1416,7 @@ function renderV2ComparisonDashboardWorksheet(rows, tuyChonGR, from, to, compare
     <Cell ss:MergeAcross="11" ss:StyleID="m1730392434132"><Data ss:Type="String">📝 PHÂN TÍCH QUẢN TRỊ BI &amp; CHỈ ĐẠO ĐIỀU HÀNH TỰ ĐỘNG - ${escapeXml(entityName)}</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="110.0625">
-    <Cell ss:MergeAcross="11" ss:StyleID="m1730392431952"><Data ss:Type="String">📊 BÁO CÁO PHÂN TÍCH QUẢN TRỊ NĂNG SUẤT &amp; CHẤT LƯỢNG (BI EXECUTIVE REPORT) - ${escapeXml(entityName)}:&#10;1. Tổng sản lượng phát toàn mạng: ${totalCurrentVol.toLocaleString()} bưu gửi (kỳ trước ${totalCompareVol.toLocaleString()} đơn, ${totalCurrentVol - totalCompareVol > 0 ? 'tăng' : 'giảm'} ${(totalCurrentVol - totalCompareVol).toLocaleString()} đơn).&#10;2. Tỷ lệ phát thành công (F4.1) toàn mạng: ${(avgCurRate * 100).toFixed(2)}% (kỳ trước ${(avgCompRate * 100).toFixed(2)}%, ${avgCurRate - avgCompRate > 0 ? 'tăng' : 'giảm'} ${((avgCurRate - avgCompRate) * 100).toFixed(2)} điểm %).&#10;3. Đơn vị gánh sản lượng lớn nhất: ${escapeXml(highestVolUnit || 'N/A')} với ${highestVol.toLocaleString()} đơn (chiếm ${((highestVol / (totalCurrentVol||1)) * 100).toFixed(1)}% tổng sản lượng).&#10;4. ${topRisk.length > 0 ? `🔴 CẢNH BÁO NGUY CƠ CAO (${riskUnits.length} đơn vị): ${topRisk.map(r => `${r.name} (SL ${r.vol} đơn, đạt ${(r.rate*100).toFixed(1)}%)`).join('; ')}. Cần kiểm tra khâu phát gấp!` : '🟢 KHÔNG CÓ CẢNH BÁO NGUY CƠ CAO.'}&#10;5. CHỈ ĐẠO ĐIỀU HÀNH: Yêu cầu Trưởng các Đơn vị thuộc nhóm Cảnh báo nguy cơ tập trung rà soát lực lượng bưu tá và kiểm soát quét TMS hoàn thành đúng chỉ tiêu.</Data></Cell>
+    <Cell ss:MergeAcross="11" ss:StyleID="m1730392431952"><Data ss:Type="String">📊 BÁO CÁO PHÂN TÍCH QUẢN TRỊ NĂNG SUẤT &amp; CHẤT LƯỢNG (BI EXECUTIVE REPORT) - ${escapeXml(entityName)}:&#10;1. Tổng sản lượng phát toàn mạng: ${totalCurrentVol.toLocaleString()} bưu gửi (kỳ trước ${totalCompareVol.toLocaleString()} đơn, ${totalCurrentVol - totalCompareVol > 0 ? 'tăng' : 'giảm'} ${Math.abs(totalCurrentVol - totalCompareVol).toLocaleString()} đơn).&#10;2. Tỷ lệ phát thành công (F4.1) toàn mạng: ${(avgCurRate * 100).toFixed(2)}% (kỳ trước ${(avgCompRate * 100).toFixed(2)}%, ${avgCurRate - avgCompRate > 0 ? 'tăng' : 'giảm'} ${Math.abs((avgCurRate - avgCompRate) * 100).toFixed(2)} điểm %).&#10;3. Đơn vị gánh sản lượng lớn nhất: ${escapeXml(highestVolUnit || 'N/A')} với ${highestVol.toLocaleString()} đơn (chiếm ${((highestVol / (totalCurrentVol||1)) * 100).toFixed(1)}% tổng sản lượng).&#10;4. ${topRisk.length > 0 ? `🔴 CẢNH BÁO NGUY CƠ CAO (${riskUnits.length} đơn vị): ${escapeXml(topRisk.map(r => `${r.name} (SL ${r.vol.toLocaleString()} đơn, đạt ${(r.rate*100).toFixed(1)}%)`).join('; '))}. Cần kiểm tra khâu phát gấp!` : '🟢 KHÔNG CÓ CẢNH BÁO NGUY CƠ CAO.'}&#10;5. CHỈ ĐẠO ĐIỀU HÀNH: Yêu cầu Trưởng các Đơn vị thuộc nhóm Cảnh báo nguy cơ tập trung rà soát lực lượng bưu tá và kiểm soát quét TMS hoàn thành đúng chỉ tiêu.</Data></Cell>
    </Row>
   </Table>
  </Worksheet>`;
