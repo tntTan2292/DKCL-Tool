@@ -1101,7 +1101,7 @@ function downloadProvinceTemplateExcel({ currentRows, compareRows, comparisonRow
   ${renderComparisonWorksheet(comparisonRows, from, to, compareFrom, compareTo)}
 </Workbook>`;
 
-  const blob = new Blob(["\ufeff", workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
+  const blob = new Blob([workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
   saveBlobAsFile(blob, fileName);
 }
 
@@ -1141,7 +1141,7 @@ function renderV2ReportPreview({ rows, tuyChonGR, from, to, compareFrom, compare
 
 function downloadV2Excel({ rows, tuyChonGR, from, to, fileName }) {
   const workbookXml = buildV2WorkbookXml({ rows, tuyChonGR, from, to });
-  const blob = new Blob(["\ufeff", workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
+  const blob = new Blob([workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
   saveBlobAsFile(blob, fileName);
 }
 
@@ -1159,7 +1159,7 @@ function downloadV2ComparisonExcel({ currentRows, compareRows, comparisonRows, t
   ${renderV2DataWorksheet("Ky so sanh V2", compareRows, `Dữ liệu V2 kỳ so sánh: ${toApiDate(compareFrom)} - ${toApiDate(compareTo)}`)}
   ${renderV2ComparisonWorksheet(comparisonRows, from, to, compareFrom, compareTo)}
 </Workbook>`;
-  const blob = new Blob(["\ufeff", workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
+  const blob = new Blob([workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
   saveBlobAsFile(blob, fileName);
 }
 
