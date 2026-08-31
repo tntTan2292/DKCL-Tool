@@ -461,9 +461,6 @@ async function exportReportV2(tuyChonGR, mode = "data") {
       const compareRows = await fetchV2ReportRows(tuyChonGR, compareFrom, compareTo, weights, "kỳ so sánh");
       const comparisonRows = buildV2ComparisonRows(currentRows, compareRows);
       const provinceComparison = comparisonRows.find((row) => String(row.code) === "10");
-      if (!provinceComparison) {
-        throw new Error("Không tìm thấy dữ liệu mã tỉnh = 10 (BĐ Hà Nội) trong 2 kỳ báo cáo V2.");
-      }
       const fileName = `filebaocaov2_so_sanh_ky_${toFileDate(from)}_${toFileDate(to)}_vs_${toFileDate(compareFrom)}_${toFileDate(compareTo)}.xls`;
       renderV2ReportPreview({ rows: comparisonRows, tuyChonGR, from, to, compareFrom, compareTo, fileName, mode: "compare", provinceComparison });
       downloadV2ComparisonExcel({ currentRows, compareRows, comparisonRows, tuyChonGR, from, to, compareFrom, compareTo, fileName });
