@@ -1,0 +1,1955 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Version>16.00</Version>
+ </DocumentProperties>
+ <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+  <AllowPNG/>
+ </OfficeDocumentSettings>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>8805</WindowHeight>
+  <WindowWidth>20490</WindowWidth>
+  <WindowTopX>32767</WindowTopX>
+  <WindowTopY>32767</WindowTopY>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Center"/>
+   <Font ss:FontName="Arial"/>
+  </Style>
+  <Style ss:ID="m1730392431952">
+   <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial"/>
+  </Style>
+  <Style ss:ID="m1730392434032">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#1F4E78"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#1F4E78"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#1F4E78"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#B4C6E7"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Size="11" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F2F4F8" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392434052">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#274E13"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#274E13"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#274E13"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#C6E0B4"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Size="11" ss:Color="#003300" ss:Bold="1"/>
+   <Interior ss:Color="#F3F8F1" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392434072">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#7F6000"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#7F6000"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#7F6000"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#FFE599"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Size="11" ss:Color="#333300" ss:Bold="1"/>
+   <Interior ss:Color="#FFFCF5" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392434092">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#C00000"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#C00000"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#C00000"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#F8CBAD"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Size="11" ss:Color="#800000" ss:Bold="1"/>
+   <Interior ss:Color="#FDF4F0" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392434112">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392434132">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Size="11" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#FFF2CC" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392435924">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="m1730392435944">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#B4C6E7"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#1F4E78"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#1F4E78"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#1F4E78"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Size="9" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#D9E1F2" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392435964">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#C6E0B4"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#274E13"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#274E13"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#274E13"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Size="9" ss:Color="#333300" ss:Bold="1"/>
+   <Interior ss:Color="#E2EFDA" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392435984">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#FFE599"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#7F6000"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#7F6000"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#7F6000"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Size="9" ss:Color="#808000" ss:Bold="1"/>
+   <Interior ss:Color="#FFF2CC" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392436004">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#F8CBAD"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#C00000"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#C00000"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="2"
+     ss:Color="#C00000"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Size="9" ss:Color="#FF0000" ss:Bold="1"/>
+   <Interior ss:Color="#FCE4D6" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730348523584">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730348513620">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730348513640">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730348513660">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730348513680">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730348513700">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730348513720">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730348513740">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730348513760">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730348513780">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392432992">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392432804">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392432824">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392432844">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392432864">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392432884">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392432904">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392432924">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392432944">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392432964">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m1730392430724">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="m1730392430744">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="s63">
+   <Font ss:FontName="Arial" ss:Size="14" ss:Color="#003366" ss:Bold="1"/>
+  </Style>
+  <Style ss:ID="s64">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="s127">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#003366" ss:Bold="1"/>
+   <Interior ss:Color="#F8CBAD" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s134">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Bold="1"/>
+   <Interior ss:Color="#D9E1F2" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s135">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <NumberFormat ss:Format="#,##0"/>
+  </Style>
+  <Style ss:ID="s136">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <NumberFormat ss:Format="Percent"/>
+  </Style>
+  <Style ss:ID="s137">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#FF0000" ss:Bold="1"/>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="s138">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#008000" ss:Bold="1"/>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="s139">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#FF0000" ss:Bold="1"/>
+   <Interior ss:Color="#FCE4D6" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s140">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#333300" ss:Bold="1"/>
+   <Interior ss:Color="#E2EFDA" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s141">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#333333"/>
+  </Style>
+  <Style ss:ID="s142">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#808000" ss:Bold="1"/>
+   <Interior ss:Color="#FFF2CC" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s159">
+   <Alignment ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#D9D9D9"/>
+   </Borders>
+   <Font ss:FontName="Arial" ss:Color="#808080" ss:Bold="1"/>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Dashboard_BC_53">
+  <Table ss:ExpandedColumnCount="12" ss:ExpandedRowCount="18" x:FullColumns="1"
+   x:FullRows="1">
+   <Column ss:Width="45.75"/>
+   <Column ss:Width="84.75"/>
+   <Column ss:AutoFitWidth="0" ss:Width="141.75"/>
+   <Column ss:AutoFitWidth="0" ss:Width="72.75" ss:Span="4"/>
+   <Column ss:Index="9" ss:AutoFitWidth="0" ss:Width="74.25"/>
+   <Column ss:Width="180"/>
+   <Column ss:Width="150"/>
+   <Column ss:Width="230.25"/>
+   <Row ss:Height="18">
+    <Cell ss:MergeAcross="11" ss:StyleID="s63"><Data ss:Type="String">&#128202; BI EXECUTIVE DASHBOARD - TỔNG QUAN NĂNG SUẤT &amp; CHẤT LƯỢNG BƯU CỤC THỪA THIÊN HUẾ (MÃ 53)</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="11" ss:StyleID="m1730392435924"><Data ss:Type="String">Kỳ báo cáo: 25/08/2026 - 25/08/2026  |  Kỳ so sánh: 24/08/2026 - 24/08/2026</Data></Cell>
+   </Row>
+   <Row ss:Height="13.5"/>
+   <Row ss:AutoFitHeight="0" ss:Height="21.9375">
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392435944"><Data ss:Type="String">1. TỔNG SẢN LƯỢNG PHÁT TOÀN TỈNH</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392435964"><Data ss:Type="String">2. TỶ LỆ PHÁT THÀNH CÔNG BQ TỈNH</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392435984"><Data ss:Type="String">3. BƯU CỤC GÁNH SẢN LƯỢNG LỚN NHẤT</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392436004"><Data ss:Type="String">4. CẢNH BÁO NGUY CƠ NĂNG SUẤT</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="38.0625">
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392434032"><Data ss:Type="String">3,928 bưu gửi&#10;(-1,216 đơn so với kỳ trước)</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392434052"><Data ss:Type="String">60.23%&#10;(+17.47 điểm % so với kỳ trước)</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392434072"><Data ss:Type="String">BCVH Thuận Hóa&#10;(2,188 đơn - chiếm 55.7% toàn tỉnh)</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392434092"><Data ss:Type="String">&#128308; 3 Bưu cục nguy cơ cao&#10;(BCVH Thuận Hóa, Hương Thủy, Hương Trà)</Data></Cell>
+   </Row>
+   <Row ss:Index="7">
+    <Cell ss:MergeAcross="11" ss:StyleID="m1730392434112"><Data ss:Type="String">BẢNG PHÂN TÍCH SO SÁNH 2 KỲ KÉP: SẢN LƯỢNG (ĐƠN VỊ) &amp; TỶ LỆ CHẤT LƯỢNG PHÁT F4.1 (%)</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">STT</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Mã BC</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tên Bưu Cục Vận Hành</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ trọng SL (%)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL Kỳ này</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL Kỳ trước</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Biến động SL</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ Kỳ này</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ Kỳ trước</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">So sánh Tỷ lệ</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Biểu đồ Biến động</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Phân loại BI</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">533140</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận Hóa</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.55700000000000005</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2188</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2937</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">-749 đơn</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.63160000000000005</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.52200000000000002</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 10.97 điểm %, từ 52.20% lên 63.16%</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">&#128200; ████████ +10.97%</Data></Cell>
+    <Cell ss:StyleID="s139"><Data ss:Type="String">&#128308; NGUY CƠ CAO (SL lớn, Tỷ lệ giảm/thấp)</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">536250</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Thủy</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.1527</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">600</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">696</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">-96 đơn</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.55669999999999997</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.37359999999999999</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 18.31 điểm %, từ 37.36% lên 55.67%</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">&#128200; ████████ +18.31%</Data></Cell>
+    <Cell ss:StyleID="s139"><Data ss:Type="String">&#128308; NGUY CƠ CAO (SL lớn, Tỷ lệ giảm/thấp)</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">535470</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Trà</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.14330000000000001</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">563</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">771</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">-208 đơn</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.49199999999999999</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.29310000000000003</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 19.89 điểm %, từ 29.31% lên 49.20%</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">&#128200; ████████ +19.89%</Data></Cell>
+    <Cell ss:StyleID="s139"><Data ss:Type="String">&#128308; NGUY CƠ CAO (SL lớn, Tỷ lệ giảm/thấp)</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">537015</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận An</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">8.5000000000000006E-2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">334</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">344</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">-10 đơn</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.9042</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.81399999999999995</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 9.02 điểm %, từ 81.40% lên 90.42%</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">&#128200; ████████ +9.02%</Data></Cell>
+    <Cell ss:StyleID="s140"><Data ss:Type="String">&#128994; XUẤT SẮC (SL lớn, Tỷ lệ cao)</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">535790</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH A Lưới</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">3.6200000000000003E-2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">142</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">129</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">+13 đơn</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.88729999999999998</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.92249999999999999</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">giảm 3.52 điểm %, từ 92.25% xuống 88.73%</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">&#128201; ████ -3.52%</Data></Cell>
+    <Cell ss:StyleID="s141"><Data ss:Type="String">⚪ THÚC ĐẨY (SL nhỏ / Tỷ lệ chưa đạt)</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">537220</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Phú Lộc</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">2.5499999999999998E-2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">100</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">268</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">-168 đơn</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.36</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.1343</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 22.57 điểm %, từ 13.43% lên 36.00%</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">&#128200; ████████ +22.57%</Data></Cell>
+    <Cell ss:StyleID="s142"><Data ss:Type="String">&#128993; TIẾN BỘ (Tỷ lệ tăng tốt)</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">531120</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Khách hàng lớn</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">2.9999999999999997E-4</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">13</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">-12 đơn</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 100.00 điểm %, từ 0.00% lên 100.00%</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">&#128200; ████████ +100.00%</Data></Cell>
+    <Cell ss:StyleID="s142"><Data ss:Type="String">&#128993; TIẾN BỘ (Tỷ lệ tăng tốt)</Data></Cell>
+   </Row>
+   <Row ss:Index="17" ss:Height="15">
+    <Cell ss:MergeAcross="11" ss:StyleID="m1730392434132"><Data ss:Type="String">&#128221; PHÂN TÍCH QUẢN TRỊ BI &amp; CHỈ ĐẠO ĐIỀU HÀNH TỰ ĐỘNG - THỪA THIÊN HUẾ</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="110.0625">
+    <Cell ss:MergeAcross="11" ss:StyleID="m1730392431952"><Data ss:Type="String">&#128202; BÁO CÁO PHÂN TÍCH QUẢN TRỊ NĂNG SUẤT &amp; CHẤT LƯỢNG (BI EXECUTIVE REPORT) - THỪA THIÊN HUẾ:&#10;1. Tổng sản lượng phát toàn tỉnh: 3,928 bưu gửi (kỳ trước 5,144 đơn, giảm -1,216 đơn).&#10;2. Tỷ lệ phát thành công (F4.1) toàn tỉnh: 60.23% (kỳ trước 42.76%, tăng +17.47 điểm %).&#10;3. Bưu cục gánh sản lượng lớn nhất: BCVH Thuận Hóa với 2,188 đơn (chiếm 55.7% tổng sản lượng toàn tỉnh).&#10;4. &#128308; CẢNH BÁO NGUY CƠ CAO (3 bưu cục): BCVH Thuận Hóa (SL 2,188 đơn, đạt 63.2%); BCVH Hương Thủy (SL 600 đơn, đạt 55.7%); BCVH Hương Trà (SL 563 đơn, đạt 49.2%). Cần kiểm tra khâu phát 8h gấp!&#10;5. CHỈ ĐẠO ĐIỀU HÀNH: Yêu cầu Trưởng các Bưu cục thuộc nhóm Cảnh báo nguy cơ tập trung rà soát lực lượng bưu tá và kiểm soát quét TMS hoàn thành đúng chỉ tiêu 8h.</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <Zoom>85</Zoom>
+   <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>24</ActiveRow>
+     <ActiveCol>9</ActiveCol>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+ <Worksheet ss:Name="Du lieu dau ky V2">
+  <Table ss:ExpandedColumnCount="37" ss:ExpandedRowCount="10" x:FullColumns="1"
+   x:FullRows="1">
+   <Column ss:Width="45.75"/>
+   <Column ss:Width="78"/>
+   <Column ss:Width="189.75"/>
+   <Column ss:Width="114.75"/>
+   <Column ss:Width="150"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="114.75"/>
+   <Column ss:Width="150"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="114.75"/>
+   <Column ss:Width="150"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="114.75"/>
+   <Column ss:Width="150"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="120" ss:Span="1"/>
+   <Column ss:Index="24" ss:Width="150"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="140.25"/>
+   <Column ss:Width="150" ss:Span="1"/>
+   <Column ss:Index="30" ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="140.25"/>
+   <Column ss:Width="159.75"/>
+   <Column ss:Width="99.75"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="150"/>
+   <Column ss:Width="69.75"/>
+   <Row ss:Height="18">
+    <Cell ss:MergeAcross="36" ss:StyleID="s63"><Data ss:Type="String">Dữ liệu V2 đầu kỳ: 08/25/2026 - 08/25/2026</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730348513620"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:MergeAcross="3" ss:StyleID="m1730348513640"><Data ss:Type="String">Phát thành công TMĐT</Data></Cell>
+    <Cell ss:MergeAcross="3" ss:StyleID="m1730348513660"><Data ss:Type="String">Phát thành công Truyền thống</Data></Cell>
+    <Cell ss:MergeAcross="3" ss:StyleID="m1730348513680"><Data ss:Type="String">Thu gom bưu gửi</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="m1730348513700"><Data ss:Type="String">Tỷ lệ trung bình chung</Data></Cell>
+    <Cell ss:MergeAcross="3" ss:StyleID="m1730348513720"><Data ss:Type="String">Chất lượng phát thành công tại bưu cục (F4.1)</Data></Cell>
+    <Cell ss:MergeAcross="4" ss:StyleID="m1730348513740"><Data ss:Type="String">Nội tỉnh F1.1</Data></Cell>
+    <Cell ss:MergeAcross="4" ss:StyleID="m1730348513760"><Data ss:Type="String">Thu gom bưu gửi đi liên tỉnh (F1.2)</Data></Cell>
+    <Cell ss:MergeAcross="3" ss:StyleID="m1730348513780"><Data ss:Type="String">Chất lượng phát bưu gửi liên tỉnh (F1.3)</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="m1730348523584"><Data ss:Type="String">Tỷ lệ trung bình chung chất lượng (TGLT,PTC LT)</Data></Cell>
+   </Row>
+   <Row ss:Height="51">
+    <Cell ss:StyleID="s134"><Data ss:Type="String">STT</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Mã tỉnh chấp nhận</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tên tỉnh chấp nhận</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng PTC/ Nộp tiền/ CH</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC tại bưu cục trong thời gian 6 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ gửi PTC tại bưu cục trong thời gian 6 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng PTC/ Nộp tiền/ CH</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC tại bưu cục trong thời gian 6 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ gửi PTC tại bưu cục trong thời gian 6 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng thu gom thành công</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng thu gom thành công đúng QĐ (≤6 giờ)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ TG bưu gửi đúng thời gian QĐ (≤6 giờ)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ BQ</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng PTC/ Nộp tiền/ CH</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC tại bưu cục trong thời gian 8 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ gửi PTC tại bưu cục trong thời gian 8 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL bưu gửi phát thành công/Nộp tiền/chuyển hoàn</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC/nộp tiền</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC/nộp tiền đúng QĐ &lt;= 24h</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ bưu gửi PTC/Nộp tiền đúng QĐ</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL bưu gửi có BĐ10 đóng đi tại khai thác tỉnh chấp nhận</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL bưu gửi có BD10 quét TMS lên tại Khai thác tỉnh hoặc BC khớp nối</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL đúng thời gian quy định &lt;= 10 giờ</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ đúng thời gian quy định</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL bưu gửi phát thành công/Nộp tiền/CH</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC/nộp tiền đúng thời gian QĐ 2026</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ bưu gửi PTC/Nộp tiền đúng QĐ theo chi tiêu 2026</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ BQ( TGLT+ PTC LT)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">531120</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Khách hàng lớn</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.3</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">533140</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận Hóa</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">698</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">221</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.31661891117478508</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1490</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1161</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.7791946308724832</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.36040595373165901</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2188</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1382</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.63162705667276053</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1422</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">618</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.43459915611814348</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.21729957805907174</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">535470</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Trà</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">206</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">57</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.27669902912621358</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">357</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">220</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.61624649859943981</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.2955535612303174</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">563</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">277</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.49200710479573712</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">312</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">136</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.4358974358974359</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.21794871794871795</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">535790</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH A Lưới</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">41</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">29</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.70731707317073167</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">101</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">97</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.96039603960396036</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.57104564114948075</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">142</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">126</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.88732394366197187</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">58</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">37</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.63793103448275867</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.31896551724137934</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">536250</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Thủy</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">206</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">81</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.39320388349514562</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">394</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">253</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.64213197969543145</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.34992114730668766</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">600</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">334</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.55666666666666664</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">453</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">153</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.33774834437086093</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.16887417218543047</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">537015</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận An</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">239</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">214</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.89539748953974896</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">95</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">88</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.9263157894736842</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.63605373265800491</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">334</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">302</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.90419161676646709</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">274</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">204</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.74452554744525545</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.37226277372262773</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">537220</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Phú Lộc</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">73</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">19</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.26027397260273971</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">27</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">17</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.62962962962962965</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.29299847792998479</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">100</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">36</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.36</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">228</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">84</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.36842105263157893</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.18421052631578946</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <FreezePanes/>
+   <FrozenNoSplit/>
+   <SplitHorizontal>3</SplitHorizontal>
+   <TopRowBottomPane>3</TopRowBottomPane>
+   <ActivePane>2</ActivePane>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+    </Pane>
+    <Pane>
+     <Number>2</Number>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+ <Worksheet ss:Name="Ky so sanh V2">
+  <Table ss:ExpandedColumnCount="37" ss:ExpandedRowCount="11" x:FullColumns="1"
+   x:FullRows="1">
+   <Column ss:Width="45.75"/>
+   <Column ss:Width="78"/>
+   <Column ss:Width="189.75"/>
+   <Column ss:Width="114.75"/>
+   <Column ss:Width="150"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="114.75"/>
+   <Column ss:Width="150"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="114.75"/>
+   <Column ss:Width="150"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="114.75"/>
+   <Column ss:Width="150"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="120" ss:Span="1"/>
+   <Column ss:Index="24" ss:Width="150"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="140.25"/>
+   <Column ss:Width="150" ss:Span="1"/>
+   <Column ss:Index="30" ss:Width="90"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="140.25"/>
+   <Column ss:Width="159.75"/>
+   <Column ss:Width="99.75"/>
+   <Column ss:Width="69.75"/>
+   <Column ss:Width="150"/>
+   <Column ss:Width="69.75"/>
+   <Row ss:Height="18">
+    <Cell ss:MergeAcross="36" ss:StyleID="s63"><Data ss:Type="String">Dữ liệu V2 kỳ so sánh: 08/24/2026 - 08/24/2026</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="2" ss:StyleID="m1730392432804"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:MergeAcross="3" ss:StyleID="m1730392432824"><Data ss:Type="String">Phát thành công TMĐT</Data></Cell>
+    <Cell ss:MergeAcross="3" ss:StyleID="m1730392432844"><Data ss:Type="String">Phát thành công Truyền thống</Data></Cell>
+    <Cell ss:MergeAcross="3" ss:StyleID="m1730392432864"><Data ss:Type="String">Thu gom bưu gửi</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="m1730392432884"><Data ss:Type="String">Tỷ lệ trung bình chung</Data></Cell>
+    <Cell ss:MergeAcross="3" ss:StyleID="m1730392432904"><Data ss:Type="String">Chất lượng phát thành công tại bưu cục (F4.1)</Data></Cell>
+    <Cell ss:MergeAcross="4" ss:StyleID="m1730392432924"><Data ss:Type="String">Nội tỉnh F1.1</Data></Cell>
+    <Cell ss:MergeAcross="4" ss:StyleID="m1730392432944"><Data ss:Type="String">Thu gom bưu gửi đi liên tỉnh (F1.2)</Data></Cell>
+    <Cell ss:MergeAcross="3" ss:StyleID="m1730392432964"><Data ss:Type="String">Chất lượng phát bưu gửi liên tỉnh (F1.3)</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="m1730392432992"><Data ss:Type="String">Tỷ lệ trung bình chung chất lượng (TGLT,PTC LT)</Data></Cell>
+   </Row>
+   <Row ss:Height="51">
+    <Cell ss:StyleID="s134"><Data ss:Type="String">STT</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Mã tỉnh chấp nhận</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tên tỉnh chấp nhận</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng PTC/ Nộp tiền/ CH</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC tại bưu cục trong thời gian 6 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ gửi PTC tại bưu cục trong thời gian 6 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng PTC/ Nộp tiền/ CH</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC tại bưu cục trong thời gian 6 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ gửi PTC tại bưu cục trong thời gian 6 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng thu gom thành công</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng thu gom thành công đúng QĐ (≤6 giờ)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ TG bưu gửi đúng thời gian QĐ (≤6 giờ)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ BQ</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng PTC/ Nộp tiền/ CH</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC tại bưu cục trong thời gian 8 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ gửi PTC tại bưu cục trong thời gian 8 tiếng (có quét TMS)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL bưu gửi phát thành công/Nộp tiền/chuyển hoàn</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC/nộp tiền</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC/nộp tiền đúng QĐ &lt;= 24h</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ bưu gửi PTC/Nộp tiền đúng QĐ</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL bưu gửi có BĐ10 đóng đi tại khai thác tỉnh chấp nhận</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL bưu gửi có BD10 quét TMS lên tại Khai thác tỉnh hoặc BC khớp nối</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL đúng thời gian quy định &lt;= 10 giờ</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ đúng thời gian quy định</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">SL bưu gửi phát thành công/Nộp tiền/CH</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Sản lượng bưu gửi PTC/nộp tiền đúng thời gian QĐ 2026</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ bưu gửi PTC/Nộp tiền đúng QĐ theo chi tiêu 2026</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT mạng lưới</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ BQ( TGLT+ PTC LT)</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">TT</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">531110</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Trung tâm Hành chính công</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">114</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">113</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.99122807017543857</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.29736842105263156</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">114</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">113</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.99122807017543857</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">531120</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Khách hàng lớn</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">13</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">13</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">533140</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận Hóa</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">880</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">318</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.36136363636363639</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2057</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1215</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.59066601847350508</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.32174526008750604</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2937</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1533</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.52196118488253318</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2013</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">761</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.3780427223050174</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.1890213611525087</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">535470</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Trà</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">348</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">65</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.18678160919540229</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">423</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">161</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.38061465721040189</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.18889704084128148</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">771</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">226</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.29312581063553828</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">556</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">173</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.31115107913669066</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.15557553956834533</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">535790</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH A Lưới</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">67</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">59</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.88059701492537312</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">62</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">60</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.967741935483871</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.64256138661531059</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">129</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">119</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.92248062015503873</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">90</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">55</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.61111111111111116</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.30555555555555558</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">536250</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Thủy</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">269</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">109</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.40520446096654272</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">427</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">151</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.35362997658079626</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.26817077736085593</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">696</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">260</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.37356321839080459</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">700</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">168</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.24</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.12</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">537015</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận An</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">197</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">153</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.7766497461928934</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">147</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">127</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.86394557823129248</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.56984357194654511</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">344</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">280</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.81395348837209303</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">286</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">116</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.40559440559440557</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.20279720279720279</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">537220</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Phú Lộc</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">157</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">23</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.1464968152866242</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">111</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">13</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.11711711711711711</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">9.3733861249784806E-2</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">268</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">36</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.13432835820895522</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">475</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">101</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.21263157894736842</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.10631578947368421</Data></Cell>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <FreezePanes/>
+   <FrozenNoSplit/>
+   <SplitHorizontal>3</SplitHorizontal>
+   <TopRowBottomPane>3</TopRowBottomPane>
+   <ActivePane>2</ActivePane>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+    </Pane>
+    <Pane>
+     <Number>2</Number>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+ <Worksheet ss:Name="SoSanhV2_BC">
+  <Table ss:ExpandedColumnCount="6" ss:ExpandedRowCount="32" x:FullColumns="1"
+   x:FullRows="1">
+   <Column ss:Width="45.75"/>
+   <Column ss:Width="78"/>
+   <Column ss:Width="189.75"/>
+   <Column ss:Width="210"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="189.75"/>
+   <Row ss:Height="18">
+    <Cell ss:MergeAcross="5" ss:StyleID="s63"><Data ss:Type="String">&#128202; TTVH – Kết quả so sánh kỳ BĐTP HUẾ (7 đơn vị trực thuộc)</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="5" ss:StyleID="m1730392430724"><Data ss:Type="String">Kỳ báo cáo: 08/25/2026 - 08/25/2026</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="5" ss:StyleID="m1730392430744"><Data ss:Type="String">So sánh với kỳ: 08/24/2026 - 08/24/2026</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">STT</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Mã</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tên</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Chỉ số</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">Tỷ lệ</Data></Cell>
+    <Cell ss:StyleID="s134"><Data ss:Type="String">So sánh tỷ lệ</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">531120</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Khách hàng lớn</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC TMĐT</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s159"><Data ss:Type="String">không đổi 0,00 điểm %, từ 0,00% đến 0,00%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">531120</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Khách hàng lớn</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC Truyền thống</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 100,00 điểm %, từ 0,00% lên 100,00%</Data></Cell>
+   </Row>
+   <Row ss:Height="25.5">
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">531120</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Khách hàng lớn</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – Chất lượng phát thành công tại bưu cục</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 100,00 điểm %, từ 0,00% lên 100,00%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">531120</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Khách hàng lớn</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F1.3 – Chất lượng phát bưu gửi liên tỉnh</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s159"><Data ss:Type="String">không đổi 0,00 điểm %, từ 0,00% đến 0,00%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">533140</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận Hóa</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC TMĐT</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.31661891117478508</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">giảm 4,47 điểm %, từ 36,14% xuống 31,66%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">533140</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận Hóa</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC Truyền thống</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.7791946308724832</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 18,85 điểm %, từ 59,07% lên 77,92%</Data></Cell>
+   </Row>
+   <Row ss:Height="25.5">
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">533140</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận Hóa</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – Chất lượng phát thành công tại bưu cục</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.63162705667276053</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 10,97 điểm %, từ 52,20% lên 63,16%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">533140</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận Hóa</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F1.3 – Chất lượng phát bưu gửi liên tỉnh</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.43459915611814348</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 5,66 điểm %, từ 37,80% lên 43,46%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">535470</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Trà</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC TMĐT</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.27669902912621358</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 8,99 điểm %, từ 18,68% lên 27,67%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">535470</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Trà</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC Truyền thống</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.61624649859943981</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 23,56 điểm %, từ 38,06% lên 61,62%</Data></Cell>
+   </Row>
+   <Row ss:Height="25.5">
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">535470</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Trà</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – Chất lượng phát thành công tại bưu cục</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.49200710479573712</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 19,89 điểm %, từ 29,31% lên 49,20%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">535470</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Trà</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F1.3 – Chất lượng phát bưu gửi liên tỉnh</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.4358974358974359</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 12,47 điểm %, từ 31,12% lên 43,59%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">535790</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH A Lưới</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC TMĐT</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.70731707317073167</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">giảm 17,33 điểm %, từ 88,06% xuống 70,73%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">535790</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH A Lưới</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC Truyền thống</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.96039603960396036</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">giảm 0,73 điểm %, từ 96,77% xuống 96,04%</Data></Cell>
+   </Row>
+   <Row ss:Height="25.5">
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">535790</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH A Lưới</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – Chất lượng phát thành công tại bưu cục</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.88732394366197187</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">giảm 3,52 điểm %, từ 92,25% xuống 88,73%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">535790</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH A Lưới</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F1.3 – Chất lượng phát bưu gửi liên tỉnh</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.63793103448275867</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 2,68 điểm %, từ 61,11% lên 63,79%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">536250</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Thủy</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC TMĐT</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.39320388349514562</Data></Cell>
+    <Cell ss:StyleID="s137"><Data ss:Type="String">giảm 1,20 điểm %, từ 40,52% xuống 39,32%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">536250</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Thủy</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC Truyền thống</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.64213197969543145</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 28,85 điểm %, từ 35,36% lên 64,21%</Data></Cell>
+   </Row>
+   <Row ss:Height="25.5">
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">536250</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Thủy</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – Chất lượng phát thành công tại bưu cục</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.55666666666666664</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 18,31 điểm %, từ 37,36% lên 55,67%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">536250</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Hương Thủy</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F1.3 – Chất lượng phát bưu gửi liên tỉnh</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.33774834437086093</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 9,77 điểm %, từ 24,00% lên 33,77%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">537015</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận An</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC TMĐT</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.89539748953974896</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 11,87 điểm %, từ 77,66% lên 89,54%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">537015</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận An</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC Truyền thống</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.9263157894736842</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 6,24 điểm %, từ 86,39% lên 92,63%</Data></Cell>
+   </Row>
+   <Row ss:Height="25.5">
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">537015</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận An</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – Chất lượng phát thành công tại bưu cục</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.90419161676646709</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 9,02 điểm %, từ 81,40% lên 90,42%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">537015</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Thuận An</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F1.3 – Chất lượng phát bưu gửi liên tỉnh</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.74452554744525545</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 33,89 điểm %, từ 40,56% lên 74,45%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">537220</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Phú Lộc</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC TMĐT</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.26027397260273971</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 11,38 điểm %, từ 14,65% lên 26,03%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">537220</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Phú Lộc</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – PTC Truyền thống</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.62962962962962965</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 51,25 điểm %, từ 11,71% lên 62,96%</Data></Cell>
+   </Row>
+   <Row ss:Height="25.5">
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">537220</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Phú Lộc</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F4.1 – Chất lượng phát thành công tại bưu cục</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.36</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 22,57 điểm %, từ 13,43% lên 36,00%</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s135"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">537220</Data></Cell>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">BCVH Phú Lộc</Data></Cell>
+    <Cell ss:StyleID="s127"><Data ss:Type="String">F1.3 – Chất lượng phát bưu gửi liên tỉnh</Data></Cell>
+    <Cell ss:StyleID="s136"><Data ss:Type="Number">0.36842105263157893</Data></Cell>
+    <Cell ss:StyleID="s138"><Data ss:Type="String">tăng 15,58 điểm %, từ 21,26% lên 36,84%</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <FreezePanes/>
+   <FrozenNoSplit/>
+   <SplitHorizontal>4</SplitHorizontal>
+   <TopRowBottomPane>4</TopRowBottomPane>
+   <ActivePane>2</ActivePane>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+    </Pane>
+    <Pane>
+     <Number>2</Number>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>
