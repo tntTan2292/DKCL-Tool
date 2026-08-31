@@ -1491,9 +1491,11 @@ function renderExcelXmlGroupHeaderRow(groups) {
 }
 
 function excelXmlCell(value, type = "String", styleId = "Cell") {
-  const safeType = type === "Number" && Number.isFinite(Number(value)) ? "Number" : "String";
-  const safeValue = safeType === "Number" ? String(Number(value)) : escapeXml(value);
-  return `<Cell ss:StyleID="${styleId}"><Data ss:Type="${safeType}">${safeValue}</Data></Cell>`;
+  const isNumber = type === "Number" && value !== "" && Number.isFinite(Number(value));
+  const safeType = isNumber ? "Number" : "String";
+  const safeValue = isNumber ? String(Number(value)) : escapeXml(value);
+  const safeStyleId = !isNumber && (styleId === "Percent" || styleId === "Number") ? "Text" : styleId;
+  return `<Cell ss:StyleID="${safeStyleId}"><Data ss:Type="${safeType}">${safeValue}</Data></Cell>`;
 }
 
 function getExcelXmlStyle(index) {
