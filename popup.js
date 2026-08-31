@@ -687,7 +687,14 @@ function finalizeV2Rows(rows) {
   });
   assignRankByColumn(rows, 35, 36);
   rows.forEach((row, index) => (row[0] = String(index + 1)));
-}
+    
+    // Pad empty spaces to avoid sparse arrays that skip columns during XML Generation
+    rows.forEach((row) => {
+      for (let i = 0; i < V2_EXCEL_COLUMNS.length; i++) {
+        if (row[i] === undefined) row[i] = "";
+      }
+    });
+  }
 
 function buildPhatThanhCongV2Params(tuyChonGR, from, to) {
   return {
