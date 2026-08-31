@@ -141,6 +141,15 @@ const V2_SOURCE_CONFIGS = [
 
 const PROVINCE_CODE_INDEX = 1;
 const PROVINCE_NAME_INDEX = 2;
+const PROVINCE_NAMES = Object.freeze({
+  10: "TP. Hà Nội", 16: "Hưng Yên", 18: "TP. Hải Phòng", 20: "Quảng Ninh", 22: "Bắc Ninh",
+  24: "Lạng Sơn", 25: "Thái Nguyên", 27: "Cao Bằng", 29: "Phú Thọ", 30: "Tuyên Quang",
+  33: "Lào Cai", 36: "Sơn La", 38: "Điện Biên", 39: "Lai Châu", 43: "Ninh Bình",
+  44: "Thanh Hóa", 46: "Nghệ An", 48: "Hà Tĩnh", 52: "Quảng Trị", 53: "Thừa Thiên Huế",
+  55: "TP. Đà Nẵng", 57: "Quảng Ngãi", 60: "Gia Lai", 63: "Đắc Lắk", 65: "Khánh Hòa",
+  67: "Lâm Đồng", 70: "TP. Hồ Chí Minh", 81: "Đồng Nai", 84: "Tây Ninh", 87: "Đồng Tháp",
+  88: "An Giang", 89: "Vĩnh Long", 90: "TP. Cần Thơ", 97: "Cà Mau"
+});
 const form = document.getElementById("report-form");
 const fromDateInput = document.getElementById("from-date");
 const toDateInput = document.getElementById("to-date");
@@ -460,7 +469,8 @@ async function exportReportV2(tuyChonGR, mode = "data") {
       setStatus("Đang gọi dữ liệu V2: kỳ so sánh...");
       const compareRows = await fetchV2ReportRows(tuyChonGR, compareFrom, compareTo, weights, "kỳ so sánh");
       const comparisonRows = buildV2ComparisonRows(currentRows, compareRows);
-      const provinceComparison = comparisonRows.find((row) => String(row.code) === "10");
+      const selectedProvinceCode = getSelectedProvinceCode();
+      const provinceComparison = comparisonRows.find((row) => String(row.code) === String(selectedProvinceCode));
       const fileName = `filebaocaov2_so_sanh_ky_${toFileDate(from)}_${toFileDate(to)}_vs_${toFileDate(compareFrom)}_${toFileDate(compareTo)}.xls`;
       renderV2ReportPreview({ rows: comparisonRows, tuyChonGR, from, to, compareFrom, compareTo, fileName, mode: "compare", provinceComparison });
       downloadV2ComparisonExcel({ currentRows, compareRows, comparisonRows, tuyChonGR, from, to, compareFrom, compareTo, fileName });
@@ -517,17 +527,15 @@ function getActiveV2SourceConfigs() {
 
 async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "", selectedBcProvCode = null, selectedBcProvName = null) {
   let baseRows = [];
+  let selectedProvinceCodeInt = NaN;
+  let selectedProvinceName = "";
 
   if (tuyChonGR === "TINH") {
-    const PROVINCE_NAMES = {
-      10: "TP. Hà Nội", 16: "Hưng Yên", 18: "TP. Hải Phòng", 20: "Quảng Ninh", 22: "Bắc Ninh",
-      24: "Lạng Sơn", 25: "Thái Nguyên", 27: "Cao Bằng", 29: "Phú Thọ", 30: "Tuyên Quang",
-      33: "Lào Cai", 36: "Sơn La", 38: "Điện Biên", 39: "Lai Châu", 43: "Ninh Bình",
-      44: "Thanh Hóa", 46: "Nghệ An", 48: "Hà Tĩnh", 52: "Quảng Trị", 53: "Thừa Thiên Huế",
-      55: "TP. Đà Nẵng", 57: "Quảng Ngãi", 60: "Gia Lai", 63: "Đắc Lắk", 65: "Khánh Hòa",
-      67: "Lâm Đồng", 70: "TP. Hồ Chí Minh", 81: "Đồng Nai", 84: "Tây Ninh", 87: "Đồng Tháp",
-      88: "An Giang", 89: "Vĩnh Long", 90: "TP. Cần Thơ", 97: "Cà Mau"
-    };
+    selectedProvinceCodeInt = toIntegerCode(getSelectedProvinceCode());
+    selectedProvinceName = getSelectedProvinceName() || PROVINCE_NAMES[selectedProvinceCodeInt] || "Không xác định";
+    if (!Object.prototype.hasOwnProperty.call(PROVINCE_NAMES, selectedProvinceCodeInt)) {
+      throw new Error(`Tỉnh tiêu điểm mã ${getSelectedProvinceCode() || "trống"} (${selectedProvinceName}) không thuộc danh mục 34 tỉnh/TP.`);
+    }
 
     baseRows = Object.entries(PROVINCE_NAMES).map(([code, name], idx) => {
       const v2Row = Array(V2_EXCEL_COLUMNS.length).fill("");
@@ -555,6 +563,15 @@ async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "",
     console.log(`[DKCL][V2][${tuyChonGR}] ${config.name}: parsed records`, records.length, records.slice(0, 3));
     console.log(`[DKCL][V2][${tuyChonGR}] ${config.name}: aggregated records before join`, aggregatedRecords.length, aggregatedRecords.slice(0, 5));
 
+    if (tuyChonGR === "TINH") {
+      const hasSelectedProvinceRecord = records.some((record) => record.provinceCodeInt === selectedProvinceCodeInt);
+      if (!hasSelectedProvinceRecord) {
+        throw new Error(`Biểu "${config.name}" không join được tỉnh tiêu điểm mã ${selectedProvinceCodeInt} (${selectedProvinceName}) cho ${periodLabel || "kỳ báo cáo"} (${toApiDate(from)} - ${toApiDate(to)}). Dừng xuất để không thay số liệu bằng 0.\nLink curl: ${requestUrl}`);
+      }
+    } else if (!aggregatedRecords.length) {
+      throw new Error(buildMissingSourceDataMessage(config.name, periodLabel, from, to, requestUrl));
+    }
+
     if (!baseRows.length && aggregatedRecords.length) {
       aggregatedRecords.forEach((rec, idx) => {
         const v2Row = Array(V2_EXCEL_COLUMNS.length).fill("");
@@ -573,6 +590,7 @@ async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "",
         if (tuyChonGR === "TINH" && [1, 8].includes(record.provinceCodeInt)) continue;
         let row = rowMap.get(String(record.provinceCodeInt));
         if (!row) {
+          if (tuyChonGR === "TINH") continue;
           row = Array(V2_EXCEL_COLUMNS.length).fill("");
           row[0] = String(baseRows.length + 1);
           row[PROVINCE_CODE_INDEX] = String(record.provinceCodeInt);
@@ -1197,6 +1215,23 @@ function renderWorkbookPropertiesAndStyles() {
     <Style ss:ID="Up"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#008000"/><NumberFormat ss:Format="@"/></Style>
     <Style ss:ID="Down"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#C00000"/><NumberFormat ss:Format="@"/></Style>
     <Style ss:ID="Same"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#666666"/><NumberFormat ss:Format="@"/></Style>
+    <Style ss:ID="s134"><Font ss:FontName="Arial" ss:Bold="1"/><Interior ss:Color="#D9E1F2" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+    <Style ss:ID="s135"><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center"/></Style>
+    <Style ss:ID="s136"><Borders>${excelXmlBorders()}</Borders><NumberFormat ss:Format="0.00%"/><Alignment ss:Horizontal="Right"/></Style>
+    <Style ss:ID="s137"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#C00000"/><Alignment ss:Horizontal="Right"/></Style>
+    <Style ss:ID="s138"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#008000"/><Alignment ss:Horizontal="Right"/></Style>
+    <Style ss:ID="s139"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#C00000"/></Style>
+    <Style ss:ID="s140"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#00B050"/></Style>
+    <Style ss:ID="s141"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#A6A6A6"/></Style>
+    <Style ss:ID="s142"><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#FFC000"/></Style>
+    <Style ss:ID="s63"><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Font ss:FontName="Arial" ss:Size="14" ss:Bold="1"/></Style>
+    <Style ss:ID="s64"><Borders>${excelXmlBorders()}</Borders><NumberFormat ss:Format="@"/></Style>
+    <Style ss:ID="m1730392435924"><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Font ss:FontName="Arial" ss:Italic="1"/></Style>
+    <Style ss:ID="m1730392435944"><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Bold="1"/><Interior ss:Color="#D9E1F2" ss:Pattern="Solid"/></Style>
+    <Style ss:ID="m1730392434032"><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Size="12" ss:Bold="1"/><Interior ss:Color="#F2F2F2" ss:Pattern="Solid"/></Style>
+    <Style ss:ID="m1730392434112"><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Font ss:FontName="Arial" ss:Size="12" ss:Bold="1"/></Style>
+    <Style ss:ID="m1730392434132"><Font ss:FontName="Arial" ss:Size="12" ss:Bold="1"/><Interior ss:Color="#FFF2CC" ss:Pattern="Solid"/></Style>
+    <Style ss:ID="m1730392431952"><Alignment ss:Vertical="Top" ss:WrapText="1"/><Borders>${excelXmlBorders()}</Borders><Font ss:FontName="Arial" ss:Size="11"/><Interior ss:Color="#F2F2F2" ss:Pattern="Solid"/></Style>
     <Style ss:ID="ProvCard1Title"><Font ss:FontName="Arial" ss:Size="10" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#1B365D" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>
     <Style ss:ID="ProvCard1Val"><Font ss:FontName="Arial" ss:Size="11" ss:Bold="1" ss:Color="#1B365D"/><Interior ss:Color="#E8EEF5" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
     <Style ss:ID="ProvCard2Title"><Font ss:FontName="Arial" ss:Size="10" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#006666" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>
@@ -1349,7 +1384,7 @@ function renderV2ComparisonDashboardWorksheet(currentRows, compareRows, tuyChonG
   const avgCompRate = totalCompareVol > 0 ? (totalCompareSuccess / totalCompareVol) : 0;
   
   let headerXml = `<Worksheet ss:Name="${escapeXml(dashName)}">
-  <Table ss:ExpandedColumnCount="12" ss:ExpandedRowCount="${processedRows.length + 20}" x:FullColumns="1" x:FullRows="1">
+  <Table x:FullColumns="1" x:FullRows="1">
    <Column ss:Width="45.75" />
    <Column ss:Width="84.75" />
    <Column ss:AutoFitWidth="0" ss:Width="141.75" />
@@ -2036,12 +2071,12 @@ function setBusy(isBusy) {
 
 function getSelectedProvinceCode() {
   const select = document.getElementById("province-select");
-  return select ? select.value : "53";
+  return select ? cleanText(select.value) : "";
 }
 
 function getSelectedProvinceName() {
   const select = document.getElementById("province-select");
-  if (!select || !select.selectedOptions || !select.selectedOptions.length) return "Thừa Thiên Huế";
+  if (!select || !select.selectedOptions || !select.selectedOptions.length) return "";
   const text = select.selectedOptions[0].textContent.trim();
   return text.replace(/^\d+\s*-\s*/, "");
 }
@@ -2241,10 +2276,13 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
     });
   });
 
-  const focusSummary = unitSummaries.find(u => u.isTargetUnit) || unitSummaries[0];
+  const focusSummary = unitSummaries.find(u => u.isTargetUnit);
+  if (!focusSummary) {
+    throw new Error(`Không tìm thấy dữ liệu dashboard cho tỉnh tiêu điểm mã ${provCode} (${provName}).`);
+  }
 
   // -------------------------------------------------------------
-  // TAB 1: EXECUTIVE DASHBOARD FOR FOCUS TARGET UNIT (HUẾ)
+  // TAB 1: EXECUTIVE DASHBOARD FOR FOCUS TARGET UNIT
   // Clean 13-column grid (fits 100% on laptop/desktop screen)
   // -------------------------------------------------------------
   const dashColWidths = [40, 220];
@@ -2317,12 +2355,12 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
       <Row ss:Height="18"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Text"><Data ss:Type="String">Đơn vị tiêu điểm: ${escapeXml(provName)} (Mã ${provCode})  |  Theo dõi chuỗi xu hướng ${totalMonths} tháng liên tục (${escapeXml(fromLabel)} ➔ ${escapeXml(toLabel)})  |  Đối sánh ${units.length} BĐT/TP toàn quốc</Data></Cell></Row>
       <Row></Row>
 
-      <!-- KHỐI 1: 04 KPI CARDS TIÊU ĐIỂM QUẢN TRỊ RIÊNG CHO HUẾ -->
+      <!-- KHỐI 1: 04 KPI CARDS TIÊU ĐIỂM QUẢN TRỊ -->
       ${widgetTitleRow}
       ${widgetValRow}
       <Row></Row>
 
-      <!-- KHỐI 2: BẢNG CHUỖI XU HƯỚNG CHẤT LƯỢNG HÀNG THÁNG RIÊNG CHO HUẾ -->
+      <!-- KHỐI 2: BẢNG CHUỖI XU HƯỚNG CHẤT LƯỢNG HÀNG THÁNG -->
       <Row ss:Height="22"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Group"><Data ss:Type="String">📈 BẢNG CHUỖI XU HƯỚNG CHẤT LƯỢNG TỪNG THÁNG (MONTH-BY-MONTH TREND) RIÊNG CHO ${escapeXml(provName.toUpperCase())}</Data></Cell></Row>
       <Row ss:Height="24">
         ${excelXmlCell("STT", "String", "Header")}
@@ -2392,7 +2430,7 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
   const benchmarkMatrixSheet = `<Worksheet ss:Name="MaTran_34_Tinh_ToanQuoc">
     <Table>
       ${renderColumnWidths(colWidths)}
-      <Row ss:Height="24"><Cell ss:MergeAcross="${totalCols - 1}" ss:StyleID="Group"><Data ss:Type="String">📊 BẢNG MA TRẬN ĐỐI SÁNH &amp; XẾP HẠNG 34 BƯU ĐIỆN TỈNH/TP TOÀN QUỐC (${metricShortNames}) (${totalMonths} THÁNG - HIGHLIGHT DÒNG HUẾ ★)</Data></Cell></Row>
+      <Row ss:Height="24"><Cell ss:MergeAcross="${totalCols - 1}" ss:StyleID="Group"><Data ss:Type="String">📊 BẢNG MA TRẬN ĐỐI SÁNH &amp; XẾP HẠNG 34 BƯU ĐIỆN TỈNH/TP TOÀN QUỐC (${metricShortNames}) (${totalMonths} THÁNG - HIGHLIGHT DÒNG ${escapeXml(provName.toUpperCase())} ★)</Data></Cell></Row>
       <Row ss:Height="24">${headerCols.map(c => excelXmlCell(c, "String", "Header")).join("")}</Row>
       ${unitMatrixRowsXml}
     </Table>
