@@ -3,6 +3,9 @@
   "name": "DKCL Báo cáo BĐTP HUẾ",
   "version": "1.2.3",
   "description": "Lấy dữ liệu KPI DKCL BĐTP HUẾ từ dkcl.vnpost.vn và xuất Excel theo tỉnh hoặc bưu cục.",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
@@ -35,7 +38,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["popup.html", "popup.css", "popup.js", "icons/icon16.png", "icons/icon32.png", "icons/icon48.png", "icons/icon128.png"],
+      "resources": ["popup.html", "popup.css", "popup.js", "xlsx-export.js", "vendor/fflate.min.js", "icons/icon16.png", "icons/icon32.png", "icons/icon48.png", "icons/icon128.png"],
       "matches": ["https://dkcl.vnpost.vn/*"]
     }
   ]

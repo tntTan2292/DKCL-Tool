@@ -178,6 +178,7 @@ const datePickerButtons = [...document.querySelectorAll(".date-picker-btn")];
 const allActionButtons = templateReportButton ? [...buttons, templateReportButton, ...v2Buttons] : [...buttons, ...v2Buttons];
 const pinUiButton = document.getElementById("pin-ui");
 const PIN_STORAGE_KEY = "dkclSidebarPinned";
+const NATIVE_XLSX_FEATURE_FLAG_KEY = "dkclNativeXlsxExportEnabled";
 
 const modeDateRadio = document.getElementById("mode-date");
 const modeMonthRadio = document.getElementById("mode-month");
@@ -316,6 +317,10 @@ function togglePinnedUi() {
   updatePinUiButton(pinned);
   notifyParentPinnedState(pinned);
   setStatus(pinned ? "Đã ghim giao diện: sidebar sẽ luôn mở." : "Đã bỏ ghim giao diện: có thể ẩn/hiện sidebar bằng nút DKCL.", "ok");
+}
+
+function isNativeV2XlsxExportEnabled() {
+  return localStorage.getItem(NATIVE_XLSX_FEATURE_FLAG_KEY) !== "false";
 }
 
 function updatePinUiButton(pinned) {
@@ -1243,6 +1248,11 @@ function renderWorkbookPropertiesAndStyles() {
     <Style ss:ID="RankTop"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#004085"/><Interior ss:Color="#CCE5FF" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders></Style>
     <Style ss:ID="RankUp"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#155724"/><Interior ss:Color="#D4EDDA" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders></Style>
     <Style ss:ID="RankDown"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#721C24"/><Interior ss:Color="#F8D7DA" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders></Style>
+    <Style ss:ID="KpiGreen"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#155724"/><Interior ss:Color="#D4EDDA" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><NumberFormat ss:Format="0.00%"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+    <Style ss:ID="KpiYellow"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#856404"/><Interior ss:Color="#FFF3CD" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><NumberFormat ss:Format="0.00%"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+    <Style ss:ID="KpiRed"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#721C24"/><Interior ss:Color="#F8D7DA" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><NumberFormat ss:Format="0.00%"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+    <Style ss:ID="KpiGray"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#5A6268"/><Interior ss:Color="#E2E3E5" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><NumberFormat ss:Format="0.00%"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+    <Style ss:ID="KpiTargetLine"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#1F4E78"/><Interior ss:Color="#D9EAF7" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#1F4E78"/></Borders><NumberFormat ss:Format="0.00%"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
     <Style ss:ID="NoteHeader"><Font ss:FontName="Arial" ss:Bold="1" ss:Color="#383D41"/><Interior ss:Color="#E2E3E5" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Left" ss:Vertical="Center"/></Style>
     <Style ss:ID="NoteText"><Font ss:FontName="Arial" ss:Size="10" ss:Color="#1B1E21"/><Interior ss:Color="#F8F9FA" ss:Pattern="Solid"/><Borders>${excelXmlBorders()}</Borders><Alignment ss:Horizontal="Left" ss:Vertical="Top" ss:WrapText="1"/></Style>
   </Styles>`;
@@ -2159,7 +2169,7 @@ async function fetchMultiMonthV2Report(monthsList, tuyChonGR, selectedBcProvCode
 }
 
 function buildVisualTrendBar(diffPts) {
-  if (diffPts == null || isNaN(diffPts)) return "⚪ 0.00%";
+  if (diffPts == null || isNaN(diffPts)) return "⚪ N/A";
   const sign = diffPts >= 0 ? "+" : "";
   const valStr = `${sign}${diffPts.toFixed(2)}%`;
   if (diffPts >= 3.0) return `🟢▲▲ ${valStr}`;
@@ -2170,11 +2180,36 @@ function buildVisualTrendBar(diffPts) {
 }
 
 const MULTI_MONTH_METRICS_MAP = {
-  "F1.1 – Nội tỉnh": { shortName: "F1.1", totalCol: 21, onTimeCol: 23 },
-  "F1.2 – Thu gom bưu gửi đi liên tỉnh": { shortName: "F1.2", totalCol: 26, onTimeCol: 28 },
-  "F1.3 – Chất lượng phát bưu gửi liên tỉnh": { shortName: "F1.3", totalCol: 31, onTimeCol: 32 },
-  "F4.1 – Chất lượng phát thành công tại bưu cục": { shortName: "F4.1", totalCol: 17, onTimeCol: 18 }
+  "F1.1 – Nội tỉnh": { shortName: "F1.1", target: 0.95, totalCol: 21, onTimeCol: 23 },
+  "F1.2 – Thu gom bưu gửi đi liên tỉnh": { shortName: "F1.2", target: 0.95, totalCol: 26, onTimeCol: 28 },
+  "F1.3 – Chất lượng phát bưu gửi liên tỉnh": { shortName: "F1.3", target: 0.90, totalCol: 31, onTimeCol: 32 },
+  "F4.1 – Chất lượng phát thành công tại bưu cục": { shortName: "F4.1", target: 0.90, totalCol: 17, onTimeCol: 18 }
 };
+
+function getKpiStatus(rate, target) {
+  if (rate == null || !Number.isFinite(Number(rate))) {
+    return { key: "gray", label: "⚪ N/A", styleId: "KpiGray", gapPoints: null };
+  }
+
+  const gapPoints = (Number(rate) - Number(target)) * 100;
+  if (gapPoints >= 0) {
+    return { key: "green", label: "🟢 ĐẠT MỤC TIÊU", styleId: "KpiGreen", gapPoints };
+  }
+  if (gapPoints >= -5 - 1e-9) {
+    return { key: "yellow", label: "🟡 THẤP HƠN ≤ 5 ĐIỂM %", styleId: "KpiYellow", gapPoints };
+  }
+  return { key: "red", label: "🔴 THẤP HƠN > 5 ĐIỂM %", styleId: "KpiRed", gapPoints };
+}
+
+function formatKpiRate(rate) {
+  return rate == null || !Number.isFinite(Number(rate)) ? "N/A" : `${(Number(rate) * 100).toFixed(2)}%`;
+}
+
+function formatKpiGap(gapPoints) {
+  if (gapPoints == null || !Number.isFinite(Number(gapPoints))) return "N/A";
+  const sign = gapPoints >= 0 ? "+" : "";
+  return `${sign}${Number(gapPoints).toFixed(2)} điểm %`;
+}
 
 function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyChonGR) {
   const provCode = getSelectedProvinceCode();
@@ -2219,9 +2254,11 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
       let sumVol = 0;
       let sumOnTime = 0;
       const rates = [];
+      let hasData = false;
 
       u.monthRows.forEach(r => {
         if (r) {
+          hasData = true;
           const v = toNumberValue(r[m.totalCol]);
           const o = toNumberValue(r[m.onTimeCol]);
           const rate = v > 0 ? o / v : 0;
@@ -2229,32 +2266,31 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
           sumOnTime += o;
           rates.push(rate);
         } else {
-          rates.push(0);
+          rates.push(null);
         }
       });
 
-      const cumRate = sumVol > 0 ? sumOnTime / sumVol : 0;
-      const firstRate = rates[0] || 0;
-      const lastRate = rates[totalMonths - 1] || 0;
-      const diffRate = (lastRate - firstRate) * 100;
+      const cumRate = sumVol > 0 ? sumOnTime / sumVol : hasData ? 0 : null;
+      const firstRate = rates[0];
+      const lastRate = rates[totalMonths - 1];
+      const diffRate = firstRate == null || lastRate == null ? null : (lastRate - firstRate) * 100;
+      const status = getKpiStatus(cumRate, m.target);
 
-      return { rates, sumVol, sumOnTime, cumRate, diffRate, rank: 0 };
+      return { rates, sumVol, sumOnTime, cumRate, diffRate, rank: 0, hasData, status };
     });
 
-    const minDiff = metricStats.length ? Math.min(...metricStats.map(s => s.diffRate)) : 0;
-    const minCum = metricStats.length ? Math.min(...metricStats.map(s => s.cumRate)) : 0;
-
-    let segment = "⚪ ỔN ĐỊNH DUY TRÌ";
-    let segStyle = isTargetUnit ? "RankTop" : "Same";
-    if (minDiff >= 2.0) {
-      segment = "🟢 TĂNG TRƯỞNG MẠNH (MoM >= +2%)";
-      segStyle = "RankUp";
-    } else if (minDiff < -2.0) {
-      segment = "🔴 CẢNH BÁO SUY GIẢM (MoM < -2%)";
-      segStyle = "RankDown";
-    } else if (minCum >= 0.95) {
-      segment = "🥇 TOP CHẤT LƯỢNG CAO (>=95%)";
-      segStyle = "RankTop";
+    const statusKeys = metricStats.map(s => s.status.key);
+    let segment = "⚪ N/A";
+    let segStyle = "KpiGray";
+    if (statusKeys.includes("red")) {
+      segment = "🔴 CẢNH BÁO: CÓ KPI THẤP HƠN MỤC TIÊU > 5 ĐIỂM %";
+      segStyle = "KpiRed";
+    } else if (statusKeys.includes("yellow")) {
+      segment = "🟡 CẦN CẢI THIỆN: CÓ KPI THẤP HƠN MỤC TIÊU ≤ 5 ĐIỂM %";
+      segStyle = "KpiYellow";
+    } else if (statusKeys.includes("green")) {
+      segment = "🟢 ĐẠT MỤC TIÊU KPI";
+      segStyle = "KpiGreen";
     }
 
     return {
@@ -2269,7 +2305,7 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
 
   activeMetrics.forEach((m, mIdx) => {
     const sorted = [...unitSummaries]
-      .filter(u => u.metricStats[mIdx].sumVol > 0)
+      .filter(u => u.metricStats[mIdx].hasData)
       .sort((a, b) => b.metricStats[mIdx].cumRate - a.metricStats[mIdx].cumRate);
     sorted.forEach((u, rankIdx) => {
       u.metricStats[mIdx].rank = rankIdx + 1;
@@ -2288,18 +2324,19 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
   const dashColWidths = [40, 220];
   monthsList.forEach(() => dashColWidths.push(80));
   dashColWidths.push(95, 120, 110);
+  while (dashColWidths.length < 12) dashColWidths.push(70);
   const dashTotalCols = dashColWidths.length;
 
   const widgets = activeMetrics.map((m, mIdx) => {
-    const ms = focusSummary ? focusSummary.metricStats[mIdx] : { sumVol: 0, cumRate: 0, diffRate: 0, rank: 0 };
+    const ms = focusSummary ? focusSummary.metricStats[mIdx] : { sumVol: 0, cumRate: null, diffRate: null, rank: 0, status: getKpiStatus(null, m.target) };
     const rankText = ms.rank > 0 ? `Hạng ${ms.rank}/${units.length} toàn quốc` : "";
-    const diffSign = ms.diffRate >= 0 ? `+${ms.diffRate.toFixed(2)}%` : `${ms.diffRate.toFixed(2)}%`;
+    const diffSign = ms.diffRate == null ? "N/A" : ms.diffRate >= 0 ? `+${ms.diffRate.toFixed(2)}%` : `${ms.diffRate.toFixed(2)}%`;
 
     return {
-      title: `${mIdx + 1}. CHẤT LƯỢNG BQ (${m.shortName})`,
-      value: `${(ms.cumRate * 100).toFixed(2)}%\nMoM: ${diffSign} | ${rankText}\n(SL: ${ms.sumVol.toLocaleString()} bg)`,
+      title: `${mIdx + 1}. ${m.shortName} | MỤC TIÊU ${(m.target * 100).toFixed(0)}%`,
+      value: `${formatKpiRate(ms.cumRate)} | ${ms.status.label}\nChênh: ${formatKpiGap(ms.status.gapPoints)} | MoM: ${diffSign}\n${rankText} (SL: ${ms.sumVol.toLocaleString()} bg)`,
       styleTitle: `ProvCard${mIdx % 4 + 1}Title`,
-      styleVal: `ProvCard${mIdx % 4 + 1}Val`
+      styleVal: ms.status.styleId
     };
   });
 
@@ -2321,7 +2358,7 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
   }).join("")}</Row>`;
 
   const focusTrendRowsXml = activeMetrics.map((m, mIdx) => {
-    const ms = focusSummary ? focusSummary.metricStats[mIdx] : { rates: [], cumRate: 0, diffRate: 0, rank: 0 };
+    const ms = focusSummary ? focusSummary.metricStats[mIdx] : { rates: [], cumRate: null, diffRate: null, rank: 0, status: getKpiStatus(null, m.target) };
     const fullName = m.shortName === 'F4.1' ? 'Chất lượng phát thành công tại bưu cục'
                    : m.shortName === 'F1.3' ? 'Chất lượng phát bưu gửi liên tỉnh'
                    : m.shortName === 'F1.1' ? 'Chất lượng phát bưu gửi nội tỉnh'
@@ -2330,10 +2367,33 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
       <Row ss:Height="22">
         ${excelXmlCell(mIdx + 1, "Number", "Number")}
         ${excelXmlCell(`${m.shortName} – ${fullName}`, "String", "Text")}
-        ${ms.rates.map(r => excelXmlCell(r, "Number", "Percent")).join("")}
-        ${excelXmlCell(ms.cumRate, "Number", "Percent")}
+        ${ms.rates.map(r => excelXmlCell(r, "Number", getKpiStatus(r, m.target).styleId)).join("")}
+        ${excelXmlCell(ms.cumRate, "Number", ms.status.styleId)}
         ${excelXmlCell(buildVisualTrendBar(ms.diffRate), "String", trendStyle(ms.diffRate))}
         ${excelXmlCell(ms.rank > 0 ? `${ms.rank} / ${units.length}` : "", "String", "Text")}
+      </Row>`;
+  }).join("");
+
+  const comboChartRowsXml = activeMetrics.map((m, mIdx) => {
+    const ms = focusSummary.metricStats[mIdx];
+    const actualCells = ms.rates.map(rate => excelXmlCell(rate, "Number", getKpiStatus(rate, m.target).styleId)).join("");
+    const targetCells = monthsList.map(() => excelXmlCell(m.target, "Number", "KpiTargetLine")).join("");
+    return `
+      <Row ss:Height="22">
+        ${excelXmlCell(mIdx + 1, "Number", "Number")}
+        ${excelXmlCell(`${m.shortName} – Cột tỷ lệ thực tế`, "String", "Text")}
+        ${actualCells}
+        ${excelXmlCell(ms.cumRate, "Number", ms.status.styleId)}
+        ${excelXmlCell(formatKpiGap(ms.status.gapPoints), "String", ms.status.styleId)}
+        ${excelXmlCell(ms.status.label, "String", ms.status.styleId)}
+      </Row>
+      <Row ss:Height="20">
+        ${excelXmlCell("", "String", "Text")}
+        ${excelXmlCell(`${m.shortName} – Đường mục tiêu riêng`, "String", "KpiTargetLine")}
+        ${targetCells}
+        ${excelXmlCell(m.target, "Number", "KpiTargetLine")}
+        ${excelXmlCell("", "String", "KpiTargetLine")}
+        ${excelXmlCell(`Mục tiêu ${(m.target * 100).toFixed(0)}%`, "String", "KpiTargetLine")}
       </Row>`;
   }).join("");
 
@@ -2342,10 +2402,18 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
     `1. ĐƠN VỊ TRỌNG ĐIỂM QUAN SÁT: ${provName} (Mã ${provCode}) | KHOẢNG THỜI GIAN: ${fromLabel} ➔ ${toLabel} (${totalMonths} tháng liên tục).`
   ];
   activeMetrics.forEach((m, mIdx) => {
-    const ms = focusSummary ? focusSummary.metricStats[mIdx] : { sumVol: 0, cumRate: 0, rank: 0 };
-    notesTextLines.push(`${mIdx + 2}. TIÊU ĐIỂM ${m.shortName} (${provName}): Sản lượng lũy kế ${ms.sumVol.toLocaleString()} bưu gửi, Tỷ lệ bình quân ${(ms.cumRate * 100).toFixed(2)}% (Xếp hạng ${ms.rank}/${units.length} toàn quốc).`);
+    const ms = focusSummary ? focusSummary.metricStats[mIdx] : { sumVol: 0, cumRate: null, rank: 0, status: getKpiStatus(null, m.target) };
+    notesTextLines.push(`${mIdx + 2}. TIÊU ĐIỂM ${m.shortName} (${provName}): Mục tiêu SSOT ${(m.target * 100).toFixed(0)}%, thực tế ${formatKpiRate(ms.cumRate)}, chênh ${formatKpiGap(ms.status.gapPoints)}, trạng thái ${ms.status.label}; sản lượng lũy kế ${ms.sumVol.toLocaleString()} bưu gửi${ms.rank > 0 ? `, xếp hạng ${ms.rank}/${units.length} toàn quốc` : ""}.`);
   });
-  notesTextLines.push(`${activeMetrics.length + 2}. 🎯 CHỈ ĐẠO ĐIỀU HÀNH BAN GIÁM ĐỐC: Đề nghị các đơn vị có biến động suy giảm (🔴 MoM < -2%) rà soát lại các công đoạn để cải thiện chất lượng.`);
+  const redKpis = activeMetrics.filter((m, idx) => focusSummary.metricStats[idx].status.key === "red").map(m => m.shortName);
+  const yellowKpis = activeMetrics.filter((m, idx) => focusSummary.metricStats[idx].status.key === "yellow").map(m => m.shortName);
+  const naKpis = activeMetrics.filter((m, idx) => focusSummary.metricStats[idx].status.key === "gray").map(m => m.shortName);
+  const executiveActions = [];
+  if (redKpis.length) executiveActions.push(`ưu tiên xử lý KPI đỏ ${redKpis.join(", ")} đang thấp hơn mục tiêu riêng trên 5 điểm %`);
+  if (yellowKpis.length) executiveActions.push(`lập kế hoạch cải thiện KPI vàng ${yellowKpis.join(", ")} đang thấp hơn mục tiêu riêng không quá 5 điểm %`);
+  if (naKpis.length) executiveActions.push(`rà soát dữ liệu N/A của ${naKpis.join(", ")}`);
+  if (!executiveActions.length) executiveActions.push("duy trì cả bốn KPI đạt ngưỡng mục tiêu riêng");
+  notesTextLines.push(`${activeMetrics.length + 2}. 🎯 CHỈ ĐẠO ĐIỀU HÀNH BAN GIÁM ĐỐC: Ngưỡng SSOT F1.1/F1.2 = 95%, F1.3/F4.1 = 90%; ${executiveActions.join("; ")}.`);
   const notesText = notesTextLines.join("\n");
 
   const executiveDashboardSheet = `<Worksheet ss:Name="Dashboard_${escapeXml(provName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, ''))}">
@@ -2373,7 +2441,20 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
       ${focusTrendRowsXml}
       <Row></Row>
 
-      <!-- KHỐI 3: PHÂN TÍCH QUẢN TRỊ & CHỈ ĐẠO ĐIỀU HÀNH -->
+      <!-- KHỐI 3: COMBO CHART - CỘT THỰC TẾ & ĐƯỜNG MỤC TIÊU RIÊNG -->
+      <Row ss:Height="22"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Group"><Data ss:Type="String">📊 COMBO CHART KPI - CỘT TỶ LỆ THỰC TẾ &amp; ĐƯỜNG MỤC TIÊU RIÊNG THEO SSOT</Data></Cell></Row>
+      <Row ss:Height="24">
+        ${excelXmlCell("STT", "String", "Header")}
+        ${excelXmlCell("KPI / Series", "String", "Header")}
+        ${monthsList.map(m => excelXmlCell(m.monthKey, "String", "Header")).join("")}
+        ${excelXmlCell("BQ / Mục tiêu", "String", "Header")}
+        ${excelXmlCell("Chênh mục tiêu", "String", "Header")}
+        ${excelXmlCell("Trạng thái", "String", "Header")}
+      </Row>
+      ${comboChartRowsXml}
+      <Row></Row>
+
+      <!-- KHỐI 4: PHÂN TÍCH QUẢN TRỊ & CHỈ ĐẠO ĐIỀU HÀNH -->
       <Row ss:Height="22"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="NoteHeader"><Data ss:Type="String">📝 BẢN PHÂN TÍCH TIÊU ĐIỂM BI &amp; CHỈ ĐẠO ĐIỀU HÀNH - ${escapeXml(provName.toUpperCase())}</Data></Cell></Row>
       <Row ss:Height="80"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="NoteText"><Data ss:Type="String">${escapeXml(notesText).replace(/\n/g, '&#10;')}</Data></Cell></Row>
     </Table>
@@ -2415,9 +2496,10 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
         ${excelXmlCell(u.code, "String", rowStyle || "Text")}
         ${excelXmlCell(displayName, "String", rowStyle || "Text")}`;
 
-    u.metricStats.forEach(ms => {
-      rowXml += ms.rates.map(r => excelXmlCell(r, "Number", rowStyle || "Percent")).join("");
-      rowXml += excelXmlCell(ms.cumRate, "Number", rowStyle || "Percent");
+    u.metricStats.forEach((ms, mIdx) => {
+      const metric = activeMetrics[mIdx];
+      rowXml += ms.rates.map(r => excelXmlCell(r, "Number", getKpiStatus(r, metric.target).styleId)).join("");
+      rowXml += excelXmlCell(ms.cumRate, "Number", ms.status.styleId);
       rowXml += excelXmlCell(buildVisualTrendBar(ms.diffRate), "String", trendStyle(ms.diffRate));
     });
 
@@ -2471,14 +2553,35 @@ async function exportReportV2MultiMonth(tuyChonGR) {
       throw new Error("Không lấy được dữ liệu cho các tháng đã chọn.");
     }
 
-    setStatus("Đang khởi tạo Dashboard Ma trận Lũy kế Đa tháng XML...");
-    const dashboardSheetXml = renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyChonGR);
-
-    const dataSheetsXml = monthlyResults.map(({ monthObj, rows }) => {
-      return renderV2DataWorksheet(monthObj.sheetName, rows, `Dữ liệu V2 ${monthObj.label} (${tuyChonGR})`);
-    }).join("\n");
-
-    const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+    let fileName;
+    let blob;
+    if (isNativeV2XlsxExportEnabled()) {
+      setStatus("Đang tạo Dashboard .xlsx native với Combo Chart OOXML...");
+      if (!globalThis.DkclXlsxExport || !globalThis.DkclXlsxExport.isAvailable()) {
+        throw new Error(`Không nạp được fflate offline để tạo .xlsx. Có thể rollback tạm thời bằng localStorage.${NATIVE_XLSX_FEATURE_FLAG_KEY} = "false".`);
+      }
+      const packageResult = globalThis.DkclXlsxExport.buildNativeV2MultiMonthXlsx({
+        monthlyResults,
+        monthsList,
+        tuyChonGR,
+        selectedProvinceCode: provCode,
+        selectedProvinceName: provName,
+        metrics: Object.values(MULTI_MONTH_METRICS_MAP),
+        columns: V2_EXCEL_COLUMNS,
+        classifyKpi: getKpiStatus
+      });
+      if (packageResult.bytes[0] !== 0x50 || packageResult.bytes[1] !== 0x4B) {
+        throw new Error("Package .xlsx không có magic bytes PK.");
+      }
+      fileName = `filebaocaov2_luyke_thang_${tuyChonGR === "TINH" ? "tinh" : "bc"}_${fromMonthInput.value}_vs_${toMonthInput.value}.xlsx`;
+      blob = new Blob([packageResult.bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    } else {
+      setStatus("Feature flag rollback đang bật: xuất SpreadsheetML .xls tương thích...");
+      const dashboardSheetXml = renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyChonGR);
+      const dataSheetsXml = monthlyResults.map(({ monthObj, rows }) => {
+        return renderV2DataWorksheet(monthObj.sheetName, rows, `Dữ liệu V2 ${monthObj.label} (${tuyChonGR})`);
+      }).join("\n");
+      const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
 <?mso-application progid="Excel.Sheet"?>
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
           xmlns:o="urn:schemas-microsoft-com:office:office"
@@ -2488,9 +2591,9 @@ async function exportReportV2MultiMonth(tuyChonGR) {
   ${dashboardSheetXml}
   ${dataSheetsXml}
 </Workbook>`;
-
-    const fileName = `filebaocaov2_luyke_thang_${tuyChonGR === "TINH" ? "tinh" : "bc"}_${fromMonthInput.value}_vs_${toMonthInput.value}.xls`;
-    const blob = new Blob([xmlContent], { type: "application/vnd.ms-excel;charset=utf-8" });
+      fileName = `filebaocaov2_luyke_thang_${tuyChonGR === "TINH" ? "tinh" : "bc"}_${fromMonthInput.value}_vs_${toMonthInput.value}.xls`;
+      blob = new Blob([xmlContent], { type: "application/vnd.ms-excel;charset=utf-8" });
+    }
     saveBlobAsFile(blob, fileName);
 
     renderV2MultiMonthPreview(monthlyResults, monthsList, tuyChonGR);
