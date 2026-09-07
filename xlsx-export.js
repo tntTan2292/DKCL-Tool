@@ -44,11 +44,38 @@
     return cleaned || fallback || "Sheet";
   }
 
-  function toNumber(value) {
+  // SSOT: must read a row cell exactly the way popup.js does (cleanNumber/toNumberValue),
+  // i.e. "," is a THOUSANDS separator and "." is the decimal point. The previous local
+  // implementation used the inverse (European) convention -- stripping "." and turning
+  // "," into the decimal point -- so the same cell produced different numbers in the
+  // legacy .xls and the native .xlsx. Worse, its `.replace(",", ".")` had no /g flag, so
+  // any value with two or more separators ("1,234,567") became NaN -> 0, which is the
+  // total/denominator = 0 seen in the native dashboard. popup.js injects its own
+  // toNumberValue; this fallback only exists for standalone use and mirrors it exactly.
+  function localToNumber(value) {
     if (typeof value === "number") return Number.isFinite(value) ? value : 0;
-    const normalized = String(value ?? "").replace(/\s/g, "").replaceAll(".", "").replace(",", ".");
-    const parsed = Number(normalized);
+    const parsed = Number(String(value ?? "").replace(/,/g, "").trim());
     return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function hasSourceValue(value) {
+    return value !== null && value !== undefined && String(value).trim() !== "";
+  }
+
+  function monthlyMetricPoint(row, metric, month, toNumber) {
+    const hasData = Boolean(row)
+      && hasSourceValue(row[metric.totalCol])
+      && hasSourceValue(row[metric.onTimeCol]);
+    if (!hasData) return { month, volume: null, onTime: null, rate: null, rank: null, rankCount: 0, hasData: false };
+    const volume = Number(toNumber(row[metric.totalCol]));
+    const onTime = Number(toNumber(row[metric.onTimeCol]));
+    return { month, volume, onTime, rate: volume > 0 ? onTime / volume : 0, rank: null, rankCount: 0, hasData: true };
+  }
+
+  function monthlyTrendDirection(delta) {
+    if (!Number.isFinite(delta)) return null;
+    if (Math.abs(delta) < 1e-12) return 0;
+    return delta > 0 ? 1 : -1;
   }
 
   function localKpiStatus(rate, target) {
@@ -158,6 +185,35 @@
     return styles[status?.key] ?? styles.gray;
   }
 
+  // BC has no province row of its own: the province total is the sum of its post offices.
+  // The synthetic rows only carry the metric columns, which is all monthlyMetricPoint reads.
+  function aggregateUnits(units, code, name, monthsList, metrics, toNumber) {
+    const rows = monthsList.map((_, monthIndex) => {
+      const row = [];
+      row[1] = code;
+      row[2] = name;
+      let monthHasData = false;
+      metrics.forEach(metric => {
+        let total = 0;
+        let onTime = 0;
+        let hasData = false;
+        units.forEach(unit => {
+          const point = monthlyMetricPoint(unit.rows[monthIndex], metric, "", toNumber);
+          if (!point.hasData) return;
+          hasData = true;
+          total += point.volume;
+          onTime += point.onTime;
+        });
+        if (!hasData) return;
+        monthHasData = true;
+        row[metric.totalCol] = String(total);
+        row[metric.onTimeCol] = String(onTime);
+      });
+      return monthHasData ? row : null;
+    });
+    return { code, name, rows, isAggregate: true };
+  }
+
   function buildModel(options) {
     const {
       monthlyResults,
@@ -166,12 +222,16 @@
       selectedProvinceCode,
       selectedProvinceName,
       metrics,
-      classifyKpi = localKpiStatus
+      classifyKpi = localKpiStatus,
+      toNumberValue: toNumber = localToNumber
     } = options;
 
     if (!Array.isArray(monthlyResults) || !monthlyResults.length) throw new Error("Không có dữ liệu tháng để tạo .xlsx.");
     if (!Array.isArray(monthsList) || monthsList.length !== monthlyResults.length) throw new Error("Danh sách tháng không khớp dữ liệu .xlsx.");
-    if (!Array.isArray(metrics) || metrics.length !== 4) throw new Error("Dashboard .xlsx yêu cầu đủ bốn KPI F1.1/F1.2/F1.3/F4.1.");
+    // Only the KPIs the user ticked are exported: an unticked KPI is never fetched, so
+    // emitting a card/series/matrix column for it would be a fake 0. Cards, DuLieu_Chart
+    // blocks, matrix columns, charts and their relationships are all driven by this list.
+    if (!Array.isArray(metrics) || !metrics.length) throw new Error("Dashboard .xlsx yêu cầu ít nhất một KPI được chọn.");
 
     const selectedCode = String(selectedProvinceCode);
     const unitMap = new Map();
@@ -188,75 +248,147 @@
       throw new Error(`Dashboard .xlsx cấp TINH yêu cầu đúng 34 tỉnh, nhận được ${units.length}.`);
     }
 
-    const focus = unitMap.get(selectedCode);
+    // TINH has a focus province among its units. BC does not: its units are the post
+    // offices of the selected province, so the province itself is never a row. The focus
+    // there is the province total, aggregated from its own post offices.
+    const focus = tuyChonGR === "BC"
+      ? aggregateUnits(units, selectedCode, selectedProvinceName, monthsList, metrics, toNumber)
+      : unitMap.get(selectedCode);
     if (!focus) throw new Error(`Không tìm thấy tỉnh tiêu điểm mã ${selectedCode} (${selectedProvinceName}) trong dữ liệu .xlsx.`);
-    const missingMonthIndex = focus.rows.findIndex(row => !row);
-    if (missingMonthIndex >= 0) {
-      throw new Error(`Tỉnh tiêu điểm mã ${selectedCode} (${selectedProvinceName}) không có bản ghi tháng ${monthsList[missingMonthIndex]?.label || missingMonthIndex + 1}.`);
-    }
+    const monthlyRankings = metrics.map(metric => monthsList.map((month, monthIndex) => {
+      const ranked = units
+        .map(unit => ({ unit, point: monthlyMetricPoint(unit.rows[monthIndex], metric, month.monthKey || month.label, toNumber) }))
+        .filter(({ point }) => point.hasData)
+        .sort((a, b) => b.point.rate - a.point.rate || Number(a.unit.code) - Number(b.unit.code) || a.unit.code.localeCompare(b.unit.code));
+      return new Map(ranked.map(({ unit }, rankIndex) => [unit.code, { rank: rankIndex + 1, rankCount: ranked.length }]));
+    }));
 
-    const focusMetrics = metrics.map(metric => {
+    const focusMetrics = metrics.map((metric, metricIndex) => {
       let total = 0;
       let onTime = 0;
-      const points = focus.rows.map((row, monthIndex) => {
-        const volume = toNumber(row[metric.totalCol]);
-        const completed = toNumber(row[metric.onTimeCol]);
-        const rate = volume > 0 ? completed / volume : 0;
-        total += volume;
-        onTime += completed;
-        return { month: monthsList[monthIndex].monthKey || monthsList[monthIndex].label, volume, onTime: completed, rate, target: metric.target };
+      let hasData = false;
+      const points = [];
+      focus.rows.forEach((row, monthIndex) => {
+        const point = monthlyMetricPoint(row, metric, monthsList[monthIndex].monthKey || monthsList[monthIndex].label, toNumber);
+        if (point.hasData) {
+          total += point.volume;
+          onTime += point.onTime;
+          hasData = true;
+          const ranking = monthlyRankings[metricIndex][monthIndex].get(focus.code);
+          point.rank = ranking?.rank ?? null;
+          point.rankCount = ranking?.rankCount ?? 0;
+        }
+        const previous = monthIndex > 0 ? points[monthIndex - 1] : null;
+        point.rateDelta = previous?.hasData && point.hasData ? point.rate - previous.rate : null;
+        point.trend = monthIndex === 0 ? null : monthlyTrendDirection(point.rateDelta);
+        point.target = metric.target;
+        points.push(point);
       });
-      const cumulativeRate = total > 0 ? onTime / total : 0;
+      const cumulativeRate = hasData ? (total > 0 ? onTime / total : 0) : null;
       return { ...metric, points, total, onTime, cumulativeRate, status: normalizeKpiStatus(classifyKpi(cumulativeRate, metric.target)) };
     });
+
+    // BC needs a per-month breakdown per post office and per KPI: volume, rate, rank,
+    // month-over-month delta and direction, N/A where a month has no data.
+    //
+    // Ranking sample (confirmed by the PO): the post offices of the SELECTED province that
+    // have valid data, ranked inside one KPI and one month at a time. `units` already
+    // contains only that province's post offices, and monthlyRankings already drops units
+    // without data, so the sample is correct by construction. The 34-province scale is
+    // never reused here. Ties follow the project's existing rule (assignRankByColumn):
+    // ordinal ranking, equal rates ordered by ascending unit code.
+    const monthlyByMetricFor = (unit) => {
+      if (tuyChonGR !== "BC") return undefined;
+      return metrics.map((metric, metricIndex) => {
+        const points = [];
+        unit.rows.forEach((row, monthIndex) => {
+          const month = monthsList[monthIndex];
+          const point = monthlyMetricPoint(row, metric, month.monthKey || month.label, toNumber);
+          if (point.hasData) {
+            const ranking = monthlyRankings[metricIndex][monthIndex].get(unit.code);
+            point.rank = ranking?.rank ?? null;
+            point.rankCount = ranking?.rankCount ?? 0;
+          }
+          const previous = monthIndex > 0 ? points[monthIndex - 1] : null;
+          point.rateDelta = previous?.hasData && point.hasData ? point.rate - previous.rate : null;
+          point.trend = point.rateDelta == null ? null : monthlyTrendDirection(point.rateDelta);
+          point.isFirstMonth = monthIndex === 0;
+          points.push(point);
+        });
+        return points;
+      });
+    };
 
     const matrix = units.map(unit => ({
       code: unit.code,
       name: unit.name,
+      monthlyByMetric: monthlyByMetricFor(unit),
       metrics: metrics.map(metric => {
         let total = 0;
         let onTime = 0;
         let hasData = false;
         unit.rows.forEach(row => {
-          if (!row) return;
-          hasData = true;
-          total += toNumber(row[metric.totalCol]);
-          onTime += toNumber(row[metric.onTimeCol]);
+        const point = monthlyMetricPoint(row, metric, "", toNumber);
+        if (!point.hasData) return;
+        hasData = true;
+        total += point.volume;
+        onTime += point.onTime;
         });
         const rate = hasData ? (total > 0 ? onTime / total : 0) : null;
         return { total, onTime, rate, status: normalizeKpiStatus(classifyKpi(rate, metric.target)) };
       })
     }));
 
-    return { selectedCode, selectedName: selectedProvinceName || focus.name, metrics: focusMetrics, units, matrix };
+    const rankingSample = tuyChonGR === "BC"
+      ? `Hạng trong các Bưu cục có dữ liệu hợp lệ thuộc tỉnh được chọn (mã ${selectedCode}) trong từng tháng, tính riêng theo từng KPI. Đồng tỷ lệ: xếp theo mã Bưu cục tăng dần.`
+      : "Hạng trong 34 Bưu điện Tỉnh/TP toàn quốc trong từng tháng, tính riêng theo từng KPI.";
+
+    return { selectedCode, selectedName: selectedProvinceName || focus.name, metrics: focusMetrics, units, matrix, rankingSample };
   }
 
   function buildDashboardSheet(model, monthsList) {
     const rows = [];
-    rows.push(rowXml(1, [inlineCell("A1", `DASHBOARD BI LŨY KẾ KPI – ${model.selectedName.toUpperCase()} (MÃ ${model.selectedCode})`, 1)], { height: 28 }));
-    rows.push(rowXml(2, [inlineCell("A2", `Combo Chart native: cột sản lượng, đường tỷ lệ và đường mục tiêu riêng | ${monthsList[0].label} – ${monthsList[monthsList.length - 1].label}`, 13)], { height: 24 }));
-    rows.push(rowXml(4, [
-      inlineCell("A4", "KPI", 2), inlineCell("B4", "Mục tiêu", 2), inlineCell("C4", "Tỷ lệ lũy kế", 2),
-      inlineCell("D4", "Chênh mục tiêu", 2), inlineCell("E4", "Trạng thái", 2), inlineCell("F4", "Sản lượng", 2)
-    ], { height: 24 }));
+    const tableLastColumn = monthsList.length * 5;
+    const tableLastRef = columnName(tableLastColumn);
+    rows.push(rowXml(1, [inlineCell("A1", `DASHBOARD KPI TỪNG THÁNG – ${model.selectedName.toUpperCase()} (MÃ ${model.selectedCode})`, 1)], { height: 28 }));
+    rows.push(rowXml(2, [inlineCell("A2", `Sản lượng, tỷ lệ, hạng và biến động tỷ lệ giữa hai tháng liền kề | ${monthsList[0].label} – ${monthsList[monthsList.length - 1].label}`, 13)], { height: 24 }));
+    const headerCells = [inlineCell("A4", "KPI", 2)];
+    monthsList.forEach((month, monthIndex) => {
+      const base = 1 + monthIndex * 5;
+      ["Sản lượng", "Tỷ lệ", "Hạng", "Chênh TL", "Xu hướng"].forEach((label, offset) => {
+        headerCells.push(inlineCell(`${columnName(base + offset)}4`, `${month.monthKey || month.label} ${label}`, 2));
+      });
+    });
+    rows.push(rowXml(4, headerCells, { height: 32 }));
 
-    model.metrics.forEach((metric, index) => {
-      const row = 5 + index;
-      rows.push(rowXml(row, [
-        inlineCell(`A${row}`, metric.shortName, 2),
-        formulaCell(`B${row}`, `${quoteSheetName("DuLieu_Chart")}!${columnName(index + 1)}2`, metric.target, 4),
-        formulaCell(`C${row}`, `IF(F${row}=0,0,SUM(${quoteSheetName("DuLieu_Chart")}!${columnName(2 + index * 4)}5:${columnName(2 + index * 4)}${4 + monthsList.length})/F${row})`, metric.cumulativeRate, statusStyle(metric.status)),
-        formulaCell(`D${row}`, `C${row}-B${row}`, metric.status.gapPoints == null ? null : metric.status.gapPoints / 100, statusStyle(metric.status)),
-        inlineCell(`E${row}`, metric.status.label, statusStyle(metric.status, true)),
-        formulaCell(`F${row}`, `SUM(${quoteSheetName("DuLieu_Chart")}!${columnName(1 + index * 4)}5:${columnName(1 + index * 4)}${4 + monthsList.length})`, metric.total, 3)
-      ], { height: 24 }));
+    model.metrics.forEach((metric, metricIndex) => {
+      const row = 5 + metricIndex;
+      const cells = [inlineCell(`A${row}`, metric.shortName, 2)];
+      metric.points.forEach((point, monthIndex) => {
+        const base = 1 + monthIndex * 5;
+        const delta = point.rateDelta;
+        const trendStyleId = point.trend == null ? 12 : point.trend > 0 ? 9 : point.trend < 0 ? 11 : 12;
+        if (!point.hasData) {
+          cells.push(inlineCell(`${columnName(base)}${row}`, "N/A", 12));
+          cells.push(inlineCell(`${columnName(base + 1)}${row}`, "N/A", 12));
+          cells.push(inlineCell(`${columnName(base + 2)}${row}`, "N/A", 12));
+        } else {
+          cells.push(inlineCell(`${columnName(base)}${row}`, point.volume, 3));
+          cells.push(inlineCell(`${columnName(base + 1)}${row}`, point.rate, 4));
+          cells.push(inlineCell(`${columnName(base + 2)}${row}`, `${point.rank} / ${point.rankCount}`, 0));
+        }
+        cells.push(inlineCell(`${columnName(base + 3)}${row}`, monthIndex === 0 ? "—" : delta == null ? "N/A" : delta, monthIndex === 0 || delta == null ? 12 : trendStyleId));
+        cells.push(inlineCell(`${columnName(base + 4)}${row}`, monthIndex === 0 ? "—" : point.trend == null ? "N/A" : point.trend > 0 ? "▲" : point.trend < 0 ? "▼" : "→", trendStyleId));
+      });
+      rows.push(rowXml(row, cells, { height: 24 }));
     });
 
-    rows.push(rowXml(10, [inlineCell("A10", "Biểu đồ native OOXML – mỗi KPI dùng trục phụ tỷ lệ 0–100%", 13)], { height: 22 }));
+    const chartRow = 6 + model.metrics.length;
+    rows.push(rowXml(chartRow, [inlineCell(`A${chartRow}`, "Biểu đồ native OOXML – mỗi KPI dùng trục phụ tỷ lệ 0–100%", 13)], { height: 22 }));
     return worksheetXml({
       rows,
-      columns: [13, 13, 16, 18, 26, 16, 3, 12, 12, 12, 12, 3, 12, 12, 12, 12],
-      merges: ["A1:P1", "A2:P2", "A10:P10"],
+      columns: [18, ...monthsList.flatMap(() => [16, 13, 11, 13, 12])],
+      merges: [`A1:${tableLastRef}1`, `A2:${tableLastRef}2`, `A${chartRow}:${tableLastRef}${chartRow}`],
       drawingRelId: "rId1",
       freezeRow: 4
     });
@@ -292,17 +424,21 @@
         const point = metric.points[monthIndex];
         cells.push(inlineCell(`${columnName(base)}${row}`, point.volume, 3));
         cells.push(inlineCell(`${columnName(base + 1)}${row}`, point.onTime, 3));
-        cells.push(formulaCell(`${columnName(base + 2)}${row}`, `IF(${columnName(base)}${row}=0,0,${columnName(base + 1)}${row}/${columnName(base)}${row})`, point.rate, 4));
+        cells.push(point.hasData
+          ? formulaCell(`${columnName(base + 2)}${row}`, `IF(${columnName(base)}${row}=0,0,${columnName(base + 1)}${row}/${columnName(base)}${row})`, point.rate, 4)
+          : inlineCell(`${columnName(base + 2)}${row}`, null, 4));
         cells.push(formulaCell(`${columnName(base + 3)}${row}`, `=${columnName(metricIndex + 1)}$2`, metric.target, 4));
       });
       rows.push(rowXml(row, cells, { height: 20 }));
     });
 
+    // Each KPI occupies 4 columns (volume/onTime/rate/target) after the month column.
+    const chartDataLastColumn = 4 * model.metrics.length;
     return worksheetXml({
       rows,
-      columns: [14, ...Array(16).fill(15)],
+      columns: [14, ...Array(chartDataLastColumn).fill(15)],
       freezeRow: 4,
-      autoFilter: `A4:${columnName(16)}${4 + monthsList.length}`
+      autoFilter: `A4:${columnName(chartDataLastColumn)}${4 + monthsList.length}`
     });
   }
 
@@ -325,12 +461,14 @@
       });
       rows.push(rowXml(row, cells, { height: 20 }));
     });
+    // Each KPI occupies 3 columns (volume/rate/status) after the code and name columns.
+    const matrixLastColumn = 3 * model.metrics.length + 1;
     return worksheetXml({
       rows,
-      columns: [10, 28, ...Array(12).fill(16)],
+      columns: [10, 28, ...Array(3 * model.metrics.length).fill(16)],
       freezeRow: 1,
       freezeCol: 2,
-      autoFilter: `A1:${columnName(13)}${model.matrix.length + 1}`
+      autoFilter: `A1:${columnName(matrixLastColumn)}${model.matrix.length + 1}`
     });
   }
 
@@ -357,7 +495,10 @@
   }
 
   function chartNumberCache(values, formatCode) {
-    return `<c:numCache><c:formatCode>${xmlEscape(formatCode)}</c:formatCode><c:ptCount val="${values.length}"/>${values.map((value, index) => `<c:pt idx="${index}"><c:v>${Number(value)}</c:v></c:pt>`).join("")}</c:numCache>`;
+    const points = values
+      .map((value, index) => value != null && Number.isFinite(Number(value)) ? `<c:pt idx="${index}"><c:v>${Number(value)}</c:v></c:pt>` : "")
+      .join("");
+    return `<c:numCache><c:formatCode>${xmlEscape(formatCode)}</c:formatCode><c:ptCount val="${values.length}"/>${points}</c:numCache>`;
   }
 
   function chartTitle(text) {

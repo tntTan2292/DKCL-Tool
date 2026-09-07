@@ -133,10 +133,10 @@ const SOURCE_CONFIGS = [
 ];
 
 const V2_SOURCE_CONFIGS = [
-  { key: "phatThanhCongBuuCuc", name: "Chất lượng phát thành công tại bưu cục (F4.1)", status: "Đang gọi curl V2 F4.1...", buildParams: buildPhatThanhCongV2Params, values: { total: 10, onTime: 25 }, targets: { total: 17, onTime: 18, rate: 19, rank: 20 } },
-  { key: "noiTinhF11", name: "Nội tỉnh F1.1", status: "Đang gọi curl V2 Nội tỉnh F1.1...", buildParams: buildNoiTinhF11Params, codeIndex: 1, nameIndex: 2, values: { total: 10, subTotal: 11, onTime: 12 }, targets: { total: 21, subTotal: 22, onTime: 23, rate: 24, rank: 25 } },
-  { key: "thuGomLienTinhF12", name: "Thu gom bưu gửi đi liên tỉnh (F1.2)", status: "Đang gọi curl V2 Thu gom liên tỉnh F1.2...", buildParams: buildThuGomLienTinhF12Params, codeIndex: 1, nameIndex: 2, values: { total: 5, subTotal: 6, onTime: 7 }, targets: { total: 26, subTotal: 27, onTime: 28, rate: 29, rank: 30 } },
-  { key: "phatLienTinhF13", name: "Chất lượng phát bưu gửi liên tỉnh (F1.3)", status: "Đang gọi curl V2 Phát liên tỉnh F1.3...", buildParams: buildPhatLienTinhF13Params, codeIndex: 1, nameIndex: 2, values: { total: 8, onTime: 16 }, targets: { total: 31, onTime: 32, rate: 33, rank: 34 } }
+  { key: "phatThanhCongBuuCuc", name: "Chất lượng phát thành công tại bưu cục (F4.1)", status: "Đang gọi curl V2 F4.1...", buildParams: buildPhatThanhCongV2Params, codeIndex: 1, nameIndex: 2, bcCodeIndex: 5, bcNameIndex: 6, values: { total: 10, onTime: 27 }, bcValues: { total: 10, onTime: 27 }, targets: { total: 17, onTime: 18, rate: 19, rank: 20 }, denominatorField: "total" },
+  { key: "noiTinhF11", name: "Nội tỉnh F1.1", status: "Đang gọi curl V2 Nội tỉnh F1.1...", buildParams: buildNoiTinhF11Params, codeIndex: 1, nameIndex: 2, bcCodeIndex: 3, bcNameIndex: 4, values: { total: 11, subTotal: 18, onTime: 19 }, bcValues: { total: 13, subTotal: 20, onTime: 21 }, targets: { total: 21, subTotal: 22, onTime: 23, rate: 24, rank: 25 }, denominatorField: "subTotal" },
+  { key: "thuGomLienTinhF12", name: "Thu gom bưu gửi đi liên tỉnh (F1.2)", status: "Đang gọi curl V2 Thu gom liên tỉnh F1.2...", buildParams: buildThuGomLienTinhF12Params, codeIndex: 1, nameIndex: 2, bcCodeIndex: 3, bcNameIndex: 4, values: { total: 7, subTotal: 8, onTime: 9 }, bcValues: { total: 9, subTotal: 10, onTime: 11 }, targets: { total: 26, subTotal: 27, onTime: 28, rate: 29, rank: 30 }, denominatorField: "total" },
+  { key: "phatLienTinhF13", name: "Chất lượng phát bưu gửi liên tỉnh (F1.3)", status: "Đang gọi curl V2 Phát liên tỉnh F1.3...", buildParams: buildPhatLienTinhF13Params, codeIndex: 1, nameIndex: 2, bcCodeIndex: 3, bcNameIndex: 4, values: { total: 10, onTime: 18 }, bcValues: { total: 10, onTime: 18 }, targets: { total: 31, onTime: 32, rate: 33, rank: 34 }, denominatorField: "total" }
 ];
 
 const PROVINCE_CODE_INDEX = 1;
@@ -473,10 +473,12 @@ async function exportReportV2(tuyChonGR, mode = "data") {
     if (mode === "compare") {
       setStatus("Đang gọi dữ liệu V2: kỳ so sánh...");
       const compareRows = await fetchV2ReportRows(tuyChonGR, compareFrom, compareTo, weights, "kỳ so sánh");
-      const comparisonRows = buildV2ComparisonRows(currentRows, compareRows);
-      const selectedProvinceCode = getSelectedProvinceCode();
-      const provinceComparison = comparisonRows.find((row) => String(row.code) === String(selectedProvinceCode));
-      const fileName = `filebaocaov2_so_sanh_ky_${toFileDate(from)}_${toFileDate(to)}_vs_${toFileDate(compareFrom)}_${toFileDate(compareTo)}.xls`;
+      const comparisonRows = buildV2ComparisonRows(currentRows, compareRows, tuyChonGR);
+      const provinceComparison = tuyChonGR === "TINH"
+        ? comparisonRows.find((row) => String(row.code) === String(getSelectedProvinceCode()))
+        : null;
+      const suffix = tuyChonGR === "TINH" ? "tinh" : "bc";
+      const fileName = `filebaocaov2_so_sanh_ky_${suffix}_${toFileDate(from)}_${toFileDate(to)}_vs_${toFileDate(compareFrom)}_${toFileDate(compareTo)}.xls`;
       renderV2ReportPreview({ rows: comparisonRows, tuyChonGR, from, to, compareFrom, compareTo, fileName, mode: "compare", provinceComparison });
       downloadV2ComparisonExcel({ currentRows, compareRows, comparisonRows, tuyChonGR, from, to, compareFrom, compareTo, fileName });
       setStatus(`Hoàn tất Báo cáo so sánh kỳ V2: ${comparisonRows.length} dòng, đã xuất ${fileName}.`, "ok");
@@ -498,7 +500,13 @@ async function exportReportV2(tuyChonGR, mode = "data") {
 async function fetchCombinedReport(tuyChonGR, from, to, periodLabel = "") {
   const sourceTables = [];
 
-  for (const config of SOURCE_CONFIGS) {
+  // BC only has the "phát thành công tại bưu cục" legacy sources; the others are
+  // province-level and would join nothing.
+  const configs = tuyChonGR === "BC"
+    ? SOURCE_CONFIGS.filter((config) => config.key === "phatThanhCongBuuCuc")
+    : SOURCE_CONFIGS;
+
+  for (const config of configs) {
     setStatus(config.status);
     const requestUrl = buildApiRequestUrl(config.key, config.buildParams(tuyChonGR, from, to));
     const payload = await fetchApi(config.key, config.buildParams(tuyChonGR, from, to));
@@ -519,18 +527,40 @@ function buildMissingSourceDataMessage(sourceName, periodLabel, from, to, reques
   return `Biểu "${sourceName}" không có dữ liệu cho ${periodText}(${toApiDate(from)} - ${toApiDate(to)}).${curlText}\nVui lòng kiểm tra đăng nhập, khoảng ngày hoặc điều kiện lọc.`;
 }
 
-function getActiveV2SourceConfigs() {
+// BC reports only ever carried F4.1 and F1.3 in the original extension: F1.1 (nội tỉnh) and
+// F1.2 (thu gom liên tỉnh) are province-level indicators with no post-office breakdown, so
+// fetching them for BC would only manufacture rows the legacy report never had.
+const V2_BC_SOURCE_KEYS = new Set(["phatThanhCongBuuCuc", "phatLienTinhF13"]);
+const V2_BC_SHORT_NAMES = ["F4.1", "F1.3"];
+
+// Both the source list and the dashboard metric list must agree on what BC supports.
+// Selecting only F1.1/F1.2 for BC is refused outright rather than answered with zero rows.
+function assertBcKpiSelection(activeCount) {
+  if (activeCount > 0) return;
+  throw new Error(
+    `Cấp Bưu cục chỉ hỗ trợ ${V2_BC_SHORT_NAMES.join(" và ")} theo Extension gốc. ` +
+    "F1.1 và F1.2 là chỉ tiêu cấp tỉnh, không có chia nhỏ theo bưu cục nên không hỗ trợ. " +
+    "Vui lòng chọn ít nhất 1 chỉ tiêu chất lượng cấp Bưu cục."
+  );
+}
+
+function getActiveV2SourceConfigs(tuyChonGR) {
   const selected = getSelectedMetricLabels();
-  return V2_SOURCE_CONFIGS.filter((config) => {
+  const scoped = tuyChonGR === "BC"
+    ? V2_SOURCE_CONFIGS.filter((config) => V2_BC_SOURCE_KEYS.has(config.key))
+    : V2_SOURCE_CONFIGS;
+  const active = scoped.filter((config) => {
     if (config.key === "phatThanhCongBuuCuc") return selected.includes("F4.1 – Chất lượng phát thành công tại bưu cục");
     if (config.key === "noiTinhF11") return selected.includes("F1.1 – Nội tỉnh");
     if (config.key === "thuGomLienTinhF12") return selected.includes("F1.2 – Thu gom bưu gửi đi liên tỉnh");
     if (config.key === "phatLienTinhF13") return selected.includes("F1.3 – Chất lượng phát bưu gửi liên tỉnh");
     return true;
   });
+  if (tuyChonGR === "BC") assertBcKpiSelection(active.length);
+  return active;
 }
 
-async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "", selectedBcProvCode = null, selectedBcProvName = null) {
+async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "", selectedBcProvCode = null, selectedBcProvName = null, options = {}) {
   let baseRows = [];
   let selectedProvinceCodeInt = NaN;
   let selectedProvinceName = "";
@@ -549,9 +579,23 @@ async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "",
       v2Row[PROVINCE_NAME_INDEX] = name;
       return v2Row;
     });
+  } else {
+    // BC keeps the legacy seeding: the post-office catalogue (code, name and the V1
+    // PTC TMĐT / Truyền thống columns) comes from the combined report, and the V2 sources
+    // are joined onto it. Without this seed the BC report has no unit list of its own.
+    const combinedRows = await fetchCombinedReport(tuyChonGR, from, to, periodLabel);
+    const finalizedBaseRows = finalizeRows(combinedRows, weights, tuyChonGR);
+    if (!finalizedBaseRows.length) {
+      throw new Error(buildMissingSourceDataMessage(SOURCE_CONFIGS.map((config) => config.name).join(" / "), periodLabel, from, to));
+    }
+    baseRows = finalizedBaseRows.map((row) => {
+      const v2Row = Array(V2_EXCEL_COLUMNS.length).fill("");
+      TEMPLATE_EXCEL_COLUMNS.forEach((_, index) => (v2Row[index] = row[index] ?? ""));
+      return v2Row;
+    });
   }
 
-  const activeConfigs = getActiveV2SourceConfigs();
+  const activeConfigs = getActiveV2SourceConfigs(tuyChonGR);
   if (!activeConfigs.length) {
     throw new Error("Vui lòng chọn ít nhất 1 chỉ tiêu chất lượng.");
   }
@@ -564,13 +608,15 @@ async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "",
     const requestUrl = buildApiRequestUrl(config.key, config.buildParams(tuyChonGR, from, to));
     const payload = await fetchApi(config.key, config.buildParams(tuyChonGR, from, to));
     const records = parseV2ApiRows(payload.data || "", config, tuyChonGR, joinCodeSet);
+    const integrityContext = { periodLabel, requestUrl, headerCells: records.headerCells };
+    records.forEach((record) => assertV2RecordIntegrity(record, config, integrityContext));
     const aggregatedRecords = aggregateV2RecordsByCode(records, config);
     console.log(`[DKCL][V2][${tuyChonGR}] ${config.name}: parsed records`, records.length, records.slice(0, 3));
     console.log(`[DKCL][V2][${tuyChonGR}] ${config.name}: aggregated records before join`, aggregatedRecords.length, aggregatedRecords.slice(0, 5));
 
     if (tuyChonGR === "TINH") {
       const hasSelectedProvinceRecord = records.some((record) => record.provinceCodeInt === selectedProvinceCodeInt);
-      if (!hasSelectedProvinceRecord) {
+      if (!hasSelectedProvinceRecord && !options.allowMissingSelectedProvince) {
         throw new Error(`Biểu "${config.name}" không join được tỉnh tiêu điểm mã ${selectedProvinceCodeInt} (${selectedProvinceName}) cho ${periodLabel || "kỳ báo cáo"} (${toApiDate(from)} - ${toApiDate(to)}). Dừng xuất để không thay số liệu bằng 0.\nLink curl: ${requestUrl}`);
       }
     } else if (!aggregatedRecords.length) {
@@ -603,6 +649,7 @@ async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "",
           baseRows.push(row);
           rowMap.set(String(record.provinceCodeInt), row);
         }
+        assertV2RecordIntegrity(record, config, integrityContext);
         Object.entries(config.targets).forEach(([field, target]) => {
           if (field === "rate" || field === "rank") return;
           row[target] = zeroIfBlank(record[field]);
@@ -615,9 +662,24 @@ async function fetchV2ReportRows(tuyChonGR, from, to, weights, periodLabel = "",
     throw new Error(buildMissingSourceDataMessage(activeConfigs.map((c) => c.name).join(" / "), periodLabel, from, to));
   }
 
-  finalizeV2Rows(baseRows);
-  console.log(`[DKCL][V2][${tuyChonGR}] final rows after V2 join`, baseRows.length, baseRows.slice(0, 10));
-  return baseRows;
+  // BC keeps only operating post offices (BCVH) that actually carry data, exactly as the
+  // legacy report did. TINH never drops a row for a zero volume — there a 0 is real data
+  // and must stay visible rather than vanish from the report.
+  const finalRows = tuyChonGR === "BC"
+    ? baseRows.filter((row) => isBcOperatingRowWithData(row, activeConfigs))
+    : baseRows;
+
+  finalizeV2Rows(finalRows, tuyChonGR);
+  console.log(`[DKCL][V2][${tuyChonGR}] final rows after V2 join`, finalRows.length, finalRows.slice(0, 10));
+  return finalRows;
+}
+
+// BC-only row filter, restored from the original extension. Kept out of fetchV2ReportRows
+// so the province path provably never drops a row for having a zero volume.
+function isBcOperatingRowWithData(row, activeConfigs) {
+  const isOperatingPostOffice = String(row[PROVINCE_NAME_INDEX] || "").toUpperCase().includes("BCVH");
+  const hasData = activeConfigs.some((config) => toNumberValue(row[config.targets.total]) > 0);
+  return isOperatingPostOffice && hasData;
 }
 
 function parseV2ApiRows(html, config, tuyChonGR, joinCodeSet = null) {
@@ -627,29 +689,107 @@ function parseV2ApiRows(html, config, tuyChonGR, joinCodeSet = null) {
   const cellRows = rows.map((tr) => [...tr.children].map((td) => cleanText(td.textContent)));
   console.log(`[DKCL][V2][${tuyChonGR}] ${config.name}: raw rows`, rows.length, "sample cells", cellRows.slice(0, 10));
 
-  return cellRows
+  const records = cellRows
     .map((cells) => {
       const provinceCodeText = pickV2JoinCodeText(cells, config, tuyChonGR, joinCodeSet);
       const provinceCodeInt = toIntegerCode(provinceCodeText);
       const provinceName = pickReportName(cells, config, tuyChonGR);
+      const valuesConfig = tuyChonGR === "BC" && config.bcValues ? config.bcValues : config.values;
       return {
         cells,
         provinceCodeText,
         provinceCodeInt,
         provinceName,
-        total: cells[config.values.total] || "",
-        subTotal: Number.isInteger(config.values.subTotal) ? cells[config.values.subTotal] || "" : "",
-        onTime: cells[config.values.onTime] || ""
+        total: cells[valuesConfig.total] || "",
+        subTotal: Number.isInteger(valuesConfig.subTotal) ? cells[valuesConfig.subTotal] || "" : "",
+        onTime: cells[valuesConfig.onTime] || ""
       };
     })
     .filter((record) => Number.isInteger(record.provinceCodeInt));
+
+  // The golden extension defines positional offsets for this upstream table layout.
+  // Preserve a non-data row as context when an invariant fails, but never use it to
+  // infer or shift an offset at runtime.
+  records.headerCells = cellRows.find((cells) => !Number.isInteger(toIntegerCode(pickV2JoinCodeText(cells, config, tuyChonGR, joinCodeSet)))) || null;
+  return records;
+}
+
+// V2_SOURCE_CONFIGS is the golden mapping for the upstream fixed table layout. A changed
+// layout must fail loudly; validation is a safety net, never evidence for selecting cells.
+function assertV2RecordIntegrity(record, config, context) {
+  const total = readV2IntegrityNumber(record.total, "total", record, config, context);
+  const onTime = readV2IntegrityNumber(record.onTime, "onTime", record, config, context);
+  const hasSubTotal = Number.isInteger(config.values.subTotal);
+  const subTotal = hasSubTotal ? readV2IntegrityNumber(record.subTotal, "subTotal", record, config, context) : null;
+  const denominatorField = config.denominatorField || "total";
+  const denominator = denominatorField === "subTotal" ? subTotal : total;
+
+  let violation = "";
+  if (onTime > 0 && denominator <= 0) {
+    violation = `mẫu số ${denominatorField} = ${denominator} trong khi onTime = ${onTime}`;
+  } else if (onTime > denominator) {
+    violation = `onTime = ${onTime} lớn hơn mẫu số ${denominatorField} = ${denominator}`;
+  }
+  if (!violation) return;
+
+  throw new Error(buildV2MappingErrorMessage(violation, record, config, context));
+}
+
+function readV2IntegrityNumber(value, field, record, config, context) {
+  const cleaned = cleanNumber(value);
+  let violation = "";
+  if (cleaned === "") violation = `cột ${field} trống`;
+  else if (!Number.isFinite(Number(cleaned))) violation = `cột ${field} không phải số hợp lệ (${JSON.stringify(value)})`;
+  else if (Number(cleaned) < 0) violation = `cột ${field} âm (${cleaned})`;
+  if (violation) throw new Error(buildV2MappingErrorMessage(violation, record, config, context));
+  return Number(cleaned);
+}
+
+// Last line of defence, expressed against the sheet columns the Dashboard and DuLieu_Chart
+// read: nothing may reach the workbook with a numerator larger than its denominator.
+function assertV2SheetRowIntegrity(row, config) {
+  const onTime = toNumberValue(row[config.targets.onTime]);
+  const denominatorField = config.denominatorField || "total";
+  const denominatorTarget = config.targets[denominatorField];
+  const denominator = toNumberValue(row[denominatorTarget]);
+
+  let violation = "";
+  if (onTime > 0 && denominator <= 0) {
+    violation = `mẫu số ${denominatorField} cột ${denominatorTarget} = ${denominator} trong khi đúng hạn cột ${config.targets.onTime} = ${onTime}`;
+  } else if (onTime > denominator) {
+    violation = `đúng hạn cột ${config.targets.onTime} = ${onTime} lớn hơn mẫu số ${denominatorField} cột ${denominatorTarget} = ${denominator}`;
+  }
+  if (!violation) return;
+
+  throw new Error([
+    `Dòng báo cáo V2 vi phạm bất biến ở biểu "${config.name}": ${violation}.`,
+    `Đơn vị: mã ${row[PROVINCE_CODE_INDEX]} (${row[PROVINCE_NAME_INDEX] || "?"}).`,
+    "Dừng xuất: không ghi số 0 giả vào sheet tháng / DuLieu_Chart / Dashboard."
+  ].join("\n"));
+}
+
+function buildV2MappingErrorMessage(violation, record, config, context = {}) {
+  const period = context.periodLabel ? ` cho ${context.periodLabel}` : "";
+  const lines = [
+    `Dữ liệu nguồn không thỏa invariant ở biểu "${config.name}"${period}: ${violation}.`,
+    `Đơn vị: mã ${record.provinceCodeInt} (${record.provinceName || "?"}).`,
+    `Offset đang dùng: ${JSON.stringify(config.values)}.`,
+    `Ô đọc được: ${JSON.stringify(record.cells)}.`
+  ];
+  if (context.headerCells) lines.push(`Header nguồn: ${JSON.stringify(context.headerCells)}.`);
+  if (context.requestUrl) lines.push(`Link curl: ${context.requestUrl}`);
+  lines.push("Dừng xuất để rà soát dữ liệu nguồn hoặc mapping đã được phê duyệt; không thay bằng 0.");
+  return lines.join("\n");
 }
 
 function pickV2JoinCodeText(cells, config, tuyChonGR, joinCodeSet) {
   if (tuyChonGR === "BC" && joinCodeSet?.size) {
+    // Skip the province column so the post-office code wins the join. The province is read
+    // from the dropdown, never hardcoded.
+    const provinceCode = String(toIntegerCode(getSelectedProvinceCode()));
     const matchedCode = cells
       .map((cell) => String(toIntegerCode(cell)))
-      .find((code) => code !== "10" && joinCodeSet.has(code));
+      .find((code) => code !== provinceCode && joinCodeSet.has(code));
     if (matchedCode) return matchedCode;
   }
 
@@ -690,15 +830,31 @@ function toNumberValue(value) {
   return Number.isFinite(number) ? number : 0;
 }
 
-function finalizeV2Rows(rows) {
-  const activeConfigs = getActiveV2SourceConfigs();
+function finalizeV2Rows(rows, tuyChonGR) {
+  const activeConfigs = getActiveV2SourceConfigs(tuyChonGR);
   activeConfigs.forEach((config) => {
     rows.forEach((row) => {
-      const denominator = zeroIfBlank(row[config.targets.total]);
-      const numerator = zeroIfBlank(row[config.targets.onTime]);
-      row[config.targets.total] = denominator;
+      const denominatorTarget = config.targets[config.denominatorField || "total"];
+      const totalRaw = row[config.targets.total];
+      const denominatorRaw = row[denominatorTarget];
+      const numeratorRaw = row[config.targets.onTime];
+      // A source record with 0/0 is valid data. A blank cell means this province/KPI
+      // has no valid record for this month and must stay N/A, rather than becoming 0.
+      if (![totalRaw, denominatorRaw, numeratorRaw].every(hasV2SourceValue)) {
+        row[config.targets.total] = "";
+        row[config.targets.onTime] = "";
+        if (Number.isInteger(config.targets.subTotal)) row[config.targets.subTotal] = "";
+        row[config.targets.rate] = "";
+        row[config.targets.rank] = "";
+        return;
+      }
+      const total = zeroIfBlank(totalRaw);
+      const denominator = zeroIfBlank(denominatorRaw);
+      const numerator = zeroIfBlank(numeratorRaw);
+      row[config.targets.total] = total;
       row[config.targets.onTime] = numerator;
       if (Number.isInteger(config.targets.subTotal)) row[config.targets.subTotal] = zeroIfBlank(row[config.targets.subTotal]);
+      assertV2SheetRowIntegrity(row, config);
       row[config.targets.rate] = percentFrom(numerator, denominator);
     });
     assignRankByColumn(rows, config.targets.rate, config.targets.rank);
@@ -719,12 +875,22 @@ function finalizeV2Rows(rows) {
     });
   }
 
+function getV2SelectedProvinceFilter(tuyChonGR) {
+  if (tuyChonGR !== "BC") return "ALL";
+  const selectedCode = String(getSelectedProvinceCode() || "").trim();
+  return /^\d+$/.test(selectedCode) ? selectedCode : "ALL";
+}
+
+function hasV2SourceValue(value) {
+  return value !== null && value !== undefined && String(value).trim() !== "";
+}
+
 function buildPhatThanhCongV2Params(tuyChonGR, from, to) {
   return {
     TuyChonGR: tuyChonGR,
-    stMaTinhPhat: tuyChonGR === "BC" ? "10" : "ALL",
-    stMaLoaiBCPhat: tuyChonGR === "BC" ? "ALL" : "NULL",
-    stMaBuuCucPhat: "ALL",
+    stMaTinhPhat: getV2SelectedProvinceFilter(tuyChonGR),
+    stMaLoaiBCPhat: "NULL",
+    stMaBuuCucPhat: tuyChonGR === "BC" ? "ALL" : "NULL",
     stLoaiDichVu: "ALL",
     stNhomLoaiKH: "ALL",
     stPhamViTinh: "NULL",
@@ -740,7 +906,7 @@ function buildPhatThanhCongV2Params(tuyChonGR, from, to) {
 function buildNoiTinhF11Params(tuyChonGR, from, to) {
   return {
     TuyChonGR: tuyChonGR,
-    stMaTinhChapNhan: tuyChonGR === "BC" ? "10" : "ALL",
+    stMaTinhChapNhan: getV2SelectedProvinceFilter(tuyChonGR),
     stMaBuuCucNhan: "NULL",
     stMaTinhPhat: "ALL",
     stMaBCKTTinhChapNhan: "NULL",
@@ -759,7 +925,7 @@ function buildNoiTinhF11Params(tuyChonGR, from, to) {
 function buildThuGomLienTinhF12Params(tuyChonGR, from, to) {
   return {
     TuyChonGR: tuyChonGR,
-    stMaTinhNhan: tuyChonGR === "BC" ? "10" : "ALL",
+    stMaTinhNhan: getV2SelectedProvinceFilter(tuyChonGR),
     stMaBuuCucNhan: "NULL",
     stMaBCKTTinhNhan: "ALL",
     stLoaiDichVu: "ALL",
@@ -774,7 +940,7 @@ function buildThuGomLienTinhF12Params(tuyChonGR, from, to) {
 function buildPhatLienTinhF13Params(tuyChonGR, from, to) {
   return {
     TuyChonGR: tuyChonGR,
-    stMaTinhPhat: tuyChonGR === "BC" ? "10" : "ALL",
+    stMaTinhPhat: getV2SelectedProvinceFilter(tuyChonGR),
     stMaBCKTTinhPhat: "ALL",
     stMaBuuCucPhat: "ALL",
     stLoaiDichVu: "ALL",
@@ -849,7 +1015,7 @@ function buildPhatThanhCongTmdtParams(tuyChonGR, from, to) {
   return {
     TuyChonGR: tuyChonGR,
     stMaHuyenPhat: "",
-    stMaTinhPhat: tuyChonGR === "BC" ? "10" : "ALL",
+    stMaTinhPhat: getV2SelectedProvinceFilter(tuyChonGR),
     stMaLoaiBCPhat: tuyChonGR === "BC" ? "ALL" : "NULL",
     stMaBuuCucPhat: "ALL",
     stLoaiDichVu: "ALL",
@@ -874,7 +1040,7 @@ function buildPhatThanhCongTruyenThongParams(tuyChonGR, from, to) {
 function buildThuGomParams(tuyChonGR, from, to) {
   return {
     TuyChonGR: tuyChonGR,
-    stMaTinhThuGom: tuyChonGR === "BC" ? "10" : "ALL",
+    stMaTinhThuGom: getV2SelectedProvinceFilter(tuyChonGR),
     stMaBuuCucThuGom: "NULL",
     stMaBCKTTinhNhan: "NULL",
     stLoaiDichVu: "ALL",
@@ -961,7 +1127,9 @@ function finalizeRows(rows, weights, tuyChonGR) {
     row[15] = weightedAveragePercent([row[5], row[9], row[13]], weights);
   });
 
-  const finalRows = tuyChonGR === "BC" ? rows : rows.filter(hasAllPositiveRateColumns);
+  const finalRows = tuyChonGR === "BC"
+    ? rows.filter((row) => String(row[PROVINCE_NAME_INDEX]).toUpperCase().includes("BCVH"))
+    : rows.filter(hasAllPositiveRateColumns);
 
   assignRankByColumn(finalRows, 5, 6);
   assignRankByColumn(finalRows, 9, 10);
@@ -1151,16 +1319,22 @@ function renderV2ReportPreview({ rows, tuyChonGR, from, to, compareFrom, compare
   summaryItems.push(metricTemplate("File Excel", fileName));
   reportSummary.innerHTML = summaryItems.join("");
 
-  if (mode === "compare" && provinceComparison) {
-    reportText.textContent = buildProvinceComparisonText({
-      rows,
-      provinceComparison,
-      from,
-      to,
-      compareFrom,
-      compareTo
-    });
-    return;
+  if (mode === "compare") {
+    if (tuyChonGR === "TINH" && provinceComparison) {
+      reportText.textContent = buildProvinceComparisonText({
+        rows,
+        provinceComparison,
+        from,
+        to,
+        compareFrom,
+        compareTo
+      });
+      return;
+    }
+    if (tuyChonGR === "BC") {
+      reportText.textContent = buildBcComparisonText({ rows, from, to, compareFrom, compareTo });
+      return;
+    }
   }
 
   reportText.textContent = `Đã lấy ${rows.length.toLocaleString("vi-VN")} dòng dữ liệu ${reportName}.\nFile Excel: ${fileName}`;
@@ -1181,10 +1355,12 @@ function downloadV2ComparisonExcel({ currentRows, compareRows, comparisonRows, t
   xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
   xmlns:html="http://www.w3.org/TR/REC-html40">
   ${renderWorkbookPropertiesAndStyles()}
-  ${renderV2ComparisonDashboardWorksheet(currentRows, compareRows, tuyChonGR, from, to, compareFrom, compareTo)}
+  ${tuyChonGR === "TINH" ? renderV2ComparisonDashboardWorksheet(currentRows, compareRows, tuyChonGR, from, to, compareFrom, compareTo) : ""}
   ${renderV2DataWorksheet("Du lieu dau ky V2", currentRows, `Dữ liệu V2 đầu kỳ: ${toApiDate(from)} - ${toApiDate(to)}`)}
   ${renderV2DataWorksheet("Ky so sanh V2", compareRows, `Dữ liệu V2 kỳ so sánh: ${toApiDate(compareFrom)} - ${toApiDate(compareTo)}`)}
-  ${renderV2ComparisonWorksheet(comparisonRows, from, to, compareFrom, compareTo)}
+  ${tuyChonGR === "TINH"
+    ? renderV2ComparisonWorksheet(comparisonRows, from, to, compareFrom, compareTo)
+    : renderV2BcComparisonWorksheet(comparisonRows, from, to, compareFrom, compareTo)}
 </Workbook>`;
   const blob = new Blob([workbookXml], { type: "application/vnd.ms-excel;charset=utf-8" });
   saveBlobAsFile(blob, fileName);
@@ -1271,15 +1447,74 @@ function renderV2DataWorksheet(sheetName, rows, title) {
   </Worksheet>`;
 }
 
-function buildV2ComparisonRows(currentRows, compareRows) {
+// Restored verbatim from the original extension: the BC comparison sheet and its preview
+// text. Dropping them made BC fall through to the province layout.
+function renderV2BcComparisonWorksheet(rows, from, to, compareFrom, compareTo) {
+  return `<Worksheet ss:Name="SoSanhV2_BC">
+    <Table>
+      ${renderColumnWidths([46, 78, 190, 210, 90, 190])}
+      <Row><Cell ss:MergeAcross="5" ss:StyleID="Title"><Data ss:Type="String">📊 TTVH – Kết quả so sánh kỳ ${escapeXml(getSelectedProvinceName() || "")} (${rows.length} đơn vị trực thuộc)</Data></Cell></Row>
+      <Row><Cell ss:MergeAcross="5" ss:StyleID="Text"><Data ss:Type="String">Kỳ báo cáo: ${escapeXml(toApiDate(from))} - ${escapeXml(toApiDate(to))}</Data></Cell></Row>
+      <Row><Cell ss:MergeAcross="5" ss:StyleID="Text"><Data ss:Type="String">So sánh với kỳ: ${escapeXml(toApiDate(compareFrom))} - ${escapeXml(toApiDate(compareTo))}</Data></Cell></Row>
+      <Row>${["STT", "Mã", "Tên", "Chỉ số", "Tỷ lệ", "So sánh tỷ lệ"].map((column) => excelXmlCell(column, "String", "Header")).join("")}</Row>
+      ${rows.map(renderBcComparisonXmlRows).join("")}
+    </Table>
+    <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>4</SplitHorizontal><TopRowBottomPane>4</TopRowBottomPane><ActivePane>2</ActivePane></WorksheetOptions>
+  </Worksheet>`;
+}
+
+function renderBcComparisonXmlRows(row, index) {
+  return row.metrics
+    .map((metric) => {
+      return `<Row>
+        ${excelXmlCell(index + 1, "Number", "Number")}
+        ${excelXmlCell(row.code, "String", "Text")}
+        ${excelXmlCell(row.name, "String", "Text")}
+        ${excelXmlCell(metric.label, "String", "Group")}
+        ${excelXmlCell(metric.currentRate, "Number", "Percent")}
+        ${excelXmlCell(rateTrendText(metric, { plain: true }), "String", trendStyle(metric.rateDiffPoints))}
+      </Row>`;
+    })
+    .join("");
+}
+
+function buildBcComparisonText({ rows, from, to, compareFrom, compareTo }) {
+  const periodText = `${toApiDate(from)} - ${toApiDate(to)}`;
+  const comparePeriodText = `${toApiDate(compareFrom)} - ${toApiDate(compareTo)}`;
+
+  const bcBlocks = rows.map((row) => {
+    const metricBlocks = row.metrics.map((metric) => {
+      return `  🔹 ${metric.label}\n  Tỷ lệ: ${formatPercentValue(metric.currentRate)} (${rateTrendText(metric)})`;
+    });
+    return `📍 ${row.code} - ${row.name}\n${metricBlocks.join("\n")}`;
+  });
+
+  return [
+    `📊 Kết quả so sánh Bưu cục Vận hành (Tổng số: ${rows.length} bưu cục)`,
+    `Kỳ báo cáo: ${periodText}`,
+    `So sánh với kỳ: ${comparePeriodText}`,
+    "",
+    bcBlocks.join("\n\n")
+  ].join("\n");
+}
+
+function buildV2ComparisonRows(currentRows, compareRows, tuyChonGR) {
+  // Join is by unit code only. Names are display data and may differ between periods
+  // (spacing, Unicode form), so they must never take part in the join.
   const compareMap = new Map(compareRows.map((row) => [String(row[PROVINCE_CODE_INDEX]), row]));
   const rows = currentRows.map((currentRow) => {
     const compareRow = compareMap.get(String(currentRow[PROVINCE_CODE_INDEX]));
     if (!compareRow) return null;
-    return {
-      code: currentRow[PROVINCE_CODE_INDEX],
-      name: currentRow[PROVINCE_NAME_INDEX],
-      metrics: [
+
+    // BC carries only the indicators the post-office report actually has.
+    const metrics = tuyChonGR === "BC"
+      ? [
+        buildMetricComparison("F4.1 – PTC TMĐT", currentRow, compareRow, 5, 6),
+        buildMetricComparison("F4.1 – PTC Truyền thống", currentRow, compareRow, 9, 10),
+        buildMetricComparison("F4.1 – Chất lượng phát thành công tại bưu cục", currentRow, compareRow, 19, 20),
+        buildMetricComparison("F1.3 – Chất lượng phát bưu gửi liên tỉnh", currentRow, compareRow, 33, 34)
+      ]
+      : [
         buildMetricComparison("F4.1 – PTC TMĐT", currentRow, compareRow, 5, 6),
         buildMetricComparison("F4.1 – PTC Truyền thống", currentRow, compareRow, 9, 10),
         buildMetricComparison("F3.3 – Thu gom", currentRow, compareRow, 13, 14),
@@ -1289,11 +1524,16 @@ function buildV2ComparisonRows(currentRows, compareRows) {
         buildMetricComparison("F1.2 – Thu gom bưu gửi đi liên tỉnh", currentRow, compareRow, 29, 30),
         buildMetricComparison("F1.3 – Chất lượng phát bưu gửi liên tỉnh", currentRow, compareRow, 33, 34),
         buildMetricComparison("Tỷ lệ trung bình chung chất lượng (TGLT,PTC LT)", currentRow, compareRow, 35, 36)
-      ]
+      ];
+
+    return {
+      code: currentRow[PROVINCE_CODE_INDEX],
+      name: currentRow[PROVINCE_NAME_INDEX],
+      metrics
     };
   }).filter(Boolean).sort((a, b) => compareNumberOrText(a.code, b.code));
 
-  rows.forEach((row) => (row.totalUnits = rows.length));
+  rows.forEach((row) => (row.totalUnits = tuyChonGR === "TINH" ? 34 : rows.length));
   return rows;
 }
 
@@ -1848,7 +2088,7 @@ function formatRankNumber(rank) {
 
 function assignRankByColumn(rows, valueIndex, rankIndex) {
   const sorted = [...rows]
-    .filter((row) => Number.isFinite(Number(row[valueIndex])) && Number(row[valueIndex]) > 0)
+    .filter((row) => hasV2SourceValue(row[valueIndex]) && Number.isFinite(Number(row[valueIndex])) && Number(row[valueIndex]) >= 0)
     .sort((a, b) => Number(b[valueIndex]) - Number(a[valueIndex]) || compareNumberOrText(a[PROVINCE_CODE_INDEX], b[PROVINCE_CODE_INDEX]));
 
   rows.forEach((row) => {
@@ -1994,12 +2234,17 @@ function pickReportCodeText(cells, config, tuyChonGR) {
 
 function pickReportName(cells, config, tuyChonGR) {
   const codeIndex = getReportCodeIndex(cells, config, tuyChonGR);
-  const nameIndex = Number.isInteger(config.nameIndex) ? config.nameIndex : codeIndex + 1;
+  const configuredNameIndex = tuyChonGR === "BC" && Number.isInteger(config.bcNameIndex) ? config.bcNameIndex : config.nameIndex;
+  const nameIndex = Number.isInteger(configuredNameIndex) ? configuredNameIndex : codeIndex + 1;
   if (cells[nameIndex] && !Number.isInteger(toIntegerCode(cells[nameIndex]))) return cells[nameIndex];
   return cells.find((cell, index) => index > codeIndex && /[A-Za-zÀ-ỹ]/.test(cell) && !isPercentLike(cell)) || "";
 }
 
 function getReportCodeIndex(cells, config, tuyChonGR) {
+  // BC rows are keyed by the post-office code, which sits in its own column. Without this
+  // branch every BC row falls back to config.codeIndex (the province column) and the whole
+  // report collapses into a single province row.
+  if (tuyChonGR === "BC" && Number.isInteger(config.bcCodeIndex)) return config.bcCodeIndex;
   if (Number.isInteger(config.codeIndex)) return config.codeIndex;
   if (tuyChonGR === "BC") return (config.key === "thuGomLienTinh" || config.key === "thuGomLienTinhF12") ? 3 : 5;
   return getProvinceCodeIndex(cells);
@@ -2157,7 +2402,8 @@ async function fetchMultiMonthV2Report(monthsList, tuyChonGR, selectedBcProvCode
       weights,
       monthObj.label,
       selectedBcProvCode,
-      selectedBcProvName
+      selectedBcProvName,
+      { allowMissingSelectedProvince: true }
     );
     results.push({
       monthObj,
@@ -2180,11 +2426,34 @@ function buildVisualTrendBar(diffPts) {
 }
 
 const MULTI_MONTH_METRICS_MAP = {
-  "F1.1 – Nội tỉnh": { shortName: "F1.1", target: 0.95, totalCol: 21, onTimeCol: 23 },
+  "F1.1 – Nội tỉnh": { shortName: "F1.1", target: 0.95, totalCol: 22, onTimeCol: 23 },
   "F1.2 – Thu gom bưu gửi đi liên tỉnh": { shortName: "F1.2", target: 0.95, totalCol: 26, onTimeCol: 28 },
   "F1.3 – Chất lượng phát bưu gửi liên tỉnh": { shortName: "F1.3", target: 0.90, totalCol: 31, onTimeCol: 32 },
   "F4.1 – Chất lượng phát thành công tại bưu cục": { shortName: "F4.1", target: 0.90, totalCol: 17, onTimeCol: 18 }
 };
+
+// SSOT for which KPIs a multi-month export renders. The legacy .xls dashboard and the
+// native .xlsx exporter must both honour the PO's tick boxes: an unticked KPI is never
+// fetched, so rendering it would only produce fake 0 volumes and 0% rates.
+function getActiveMultiMonthMetrics(tuyChonGR) {
+  const activeMetrics = getSelectedMetricLabels()
+    .map(label => MULTI_MONTH_METRICS_MAP[label])
+    .filter(Boolean);
+
+  if (activeMetrics.length === 0) {
+    activeMetrics.push(MULTI_MONTH_METRICS_MAP["F4.1 – Chất lượng phát thành công tại bưu cục"]);
+    activeMetrics.push(MULTI_MONTH_METRICS_MAP["F1.3 – Chất lượng phát bưu gửi liên tỉnh"]);
+  }
+
+  // BC never fetches F1.1/F1.2 (see V2_BC_SOURCE_KEYS), so rendering a card, a series or a
+  // matrix column for them would be a fabricated 0.
+  if (tuyChonGR === "BC") {
+    const bcMetrics = activeMetrics.filter((metric) => V2_BC_SHORT_NAMES.includes(metric.shortName));
+    assertBcKpiSelection(bcMetrics.length);
+    return bcMetrics;
+  }
+  return activeMetrics;
+}
 
 function getKpiStatus(rate, target) {
   if (rate == null || !Number.isFinite(Number(rate))) {
@@ -2211,6 +2480,41 @@ function formatKpiGap(gapPoints) {
   return `${sign}${Number(gapPoints).toFixed(2)} điểm %`;
 }
 
+function getMonthlyRateTrendDirection(delta) {
+  if (!Number.isFinite(delta)) return null;
+  if (Math.abs(delta) < 1e-12) return 0;
+  return delta > 0 ? 1 : -1;
+}
+
+// BC has no province row of its own, so the province headline is the sum of its post
+// offices. Only the metric columns are synthesised — that is all the summary reads.
+function aggregateUnitRows(units, code, name, totalMonths, activeMetrics) {
+  const monthRows = Array.from({ length: totalMonths }, (_, monthIdx) => {
+    const row = [];
+    row[PROVINCE_CODE_INDEX] = String(code);
+    row[PROVINCE_NAME_INDEX] = name;
+    let monthHasData = false;
+    activeMetrics.forEach((metric) => {
+      let total = 0;
+      let onTime = 0;
+      let hasData = false;
+      units.forEach((unit) => {
+        const unitRow = unit.monthRows[monthIdx];
+        if (!unitRow || !hasV2SourceValue(unitRow[metric.totalCol]) || !hasV2SourceValue(unitRow[metric.onTimeCol])) return;
+        hasData = true;
+        total += toNumberValue(unitRow[metric.totalCol]);
+        onTime += toNumberValue(unitRow[metric.onTimeCol]);
+      });
+      if (!hasData) return;
+      monthHasData = true;
+      row[metric.totalCol] = String(total);
+      row[metric.onTimeCol] = String(onTime);
+    });
+    return monthHasData ? row : null;
+  });
+  return { code: String(code), name, monthRows };
+}
+
 function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyChonGR) {
   const provCode = getSelectedProvinceCode();
   const provName = getSelectedProvinceName();
@@ -2218,15 +2522,15 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
   const toLabel = monthsList[monthsList.length - 1]?.label || "";
   const totalMonths = monthsList.length;
 
-  const selectedLabels = getSelectedMetricLabels();
-  const activeMetrics = selectedLabels
-    .map(label => MULTI_MONTH_METRICS_MAP[label])
-    .filter(Boolean);
+  const activeMetrics = getActiveMultiMonthMetrics(tuyChonGR);
 
-  if (activeMetrics.length === 0) {
-    activeMetrics.push(MULTI_MONTH_METRICS_MAP["F4.1 – Chất lượng phát thành công tại bưu cục"]);
-    activeMetrics.push(MULTI_MONTH_METRICS_MAP["F1.3 – Chất lượng phát bưu gửi liên tỉnh"]);
-  }
+  // BC lists post offices of one province; TINH lists the 34 provinces. Every wording that
+  // names the peer set has to follow, so a BC rank is never read as a national one.
+  const isBcMatrix = tuyChonGR === "BC";
+  const peerScopeLabel = isBcMatrix ? `Bưu cục thuộc ${provName}` : "BĐT/TP toàn quốc";
+  const rankScopeLabel = isBcMatrix
+    ? "xếp hạng trong các Bưu cục có dữ liệu hợp lệ của tỉnh được chọn"
+    : "xếp hạng toàn quốc";
 
   const unitMap = new Map();
 
@@ -2247,36 +2551,29 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
 
   const units = Array.from(unitMap.values()).sort((a, b) => compareNumberOrText(a.code, b.code));
 
-  const unitSummaries = units.map((u) => {
+  const summariseUnit = (u) => {
     const isTargetUnit = String(u.code) === String(provCode);
 
     const metricStats = activeMetrics.map((m) => {
-      let sumVol = 0;
-      let sumOnTime = 0;
-      const rates = [];
-      let hasData = false;
-
-      u.monthRows.forEach(r => {
-        if (r) {
-          hasData = true;
-          const v = toNumberValue(r[m.totalCol]);
-          const o = toNumberValue(r[m.onTimeCol]);
-          const rate = v > 0 ? o / v : 0;
-          sumVol += v;
-          sumOnTime += o;
-          rates.push(rate);
-        } else {
-          rates.push(null);
-        }
+      const points = u.monthRows.map((row) => {
+        const hasData = Boolean(row)
+          && hasV2SourceValue(row[m.totalCol])
+          && hasV2SourceValue(row[m.onTimeCol]);
+        if (!hasData) return { volume: null, onTime: null, rate: null, rank: null, rankCount: 0, hasData: false };
+        const volume = toNumberValue(row[m.totalCol]);
+        const onTime = toNumberValue(row[m.onTimeCol]);
+        return { volume, onTime, rate: volume > 0 ? onTime / volume : 0, rank: null, rankCount: 0, hasData: true };
       });
-
-      const cumRate = sumVol > 0 ? sumOnTime / sumVol : hasData ? 0 : null;
-      const firstRate = rates[0];
-      const lastRate = rates[totalMonths - 1];
-      const diffRate = firstRate == null || lastRate == null ? null : (lastRate - firstRate) * 100;
+      const sumVol = points.reduce((sum, point) => sum + (point.hasData ? point.volume : 0), 0);
+      const sumOnTime = points.reduce((sum, point) => sum + (point.hasData ? point.onTime : 0), 0);
+      const hasData = points.some(point => point.hasData);
+      const cumRate = hasData ? (sumVol > 0 ? sumOnTime / sumVol : 0) : null;
+      const lastPoint = points[totalMonths - 1];
+      const previousPoint = points[totalMonths - 2];
+      const diffRate = lastPoint?.hasData && previousPoint?.hasData ? (lastPoint.rate - previousPoint.rate) * 100 : null;
       const status = getKpiStatus(cumRate, m.target);
 
-      return { rates, sumVol, sumOnTime, cumRate, diffRate, rank: 0, hasData, status };
+      return { points, rates: points.map(point => point.rate), sumVol, sumOnTime, cumRate, diffRate, rank: 0, hasData, status };
     });
 
     const statusKeys = metricStats.map(s => s.status.key);
@@ -2301,18 +2598,35 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
       segment,
       segStyle
     };
-  });
+  };
 
+  const unitSummaries = units.map(summariseUnit);
+
+  // Ranking sample, per KPI and per month, over the units that have valid data. For TINH
+  // that is the 34 provinces; for BC it is the post offices of the SELECTED province —
+  // `unitSummaries` holds exactly those, so no post office of another province can enter
+  // the sample and the 34-province scale is never reused. N/A months are filtered out and
+  // stay N/A. Ties follow the project's existing rule (assignRankByColumn): ordinal
+  // ranking with equal rates ordered by ascending unit code.
   activeMetrics.forEach((m, mIdx) => {
-    const sorted = [...unitSummaries]
-      .filter(u => u.metricStats[mIdx].hasData)
-      .sort((a, b) => b.metricStats[mIdx].cumRate - a.metricStats[mIdx].cumRate);
-    sorted.forEach((u, rankIdx) => {
-      u.metricStats[mIdx].rank = rankIdx + 1;
+    monthsList.forEach((_, monthIdx) => {
+      const sorted = [...unitSummaries]
+        .filter(u => u.metricStats[mIdx].points[monthIdx].hasData)
+        .sort((a, b) => b.metricStats[mIdx].points[monthIdx].rate - a.metricStats[mIdx].points[monthIdx].rate
+          || compareNumberOrText(a.code, b.code));
+      sorted.forEach((u, rankIdx) => {
+        const point = u.metricStats[mIdx].points[monthIdx];
+        point.rank = rankIdx + 1;
+        point.rankCount = sorted.length;
+      });
     });
   });
 
-  const focusSummary = unitSummaries.find(u => u.isTargetUnit);
+  // TINH focuses on one province among its units. BC has no province row — its units are
+  // that province's post offices — so the focus is their aggregate.
+  const focusSummary = tuyChonGR === "BC"
+    ? summariseUnit(aggregateUnitRows(units, provCode, provName, totalMonths, activeMetrics))
+    : unitSummaries.find(u => u.isTargetUnit);
   if (!focusSummary) {
     throw new Error(`Không tìm thấy dữ liệu dashboard cho tỉnh tiêu điểm mã ${provCode} (${provName}).`);
   }
@@ -2322,55 +2636,51 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
   // Clean 13-column grid (fits 100% on laptop/desktop screen)
   // -------------------------------------------------------------
   const dashColWidths = [40, 220];
-  monthsList.forEach(() => dashColWidths.push(80));
-  dashColWidths.push(95, 120, 110);
-  while (dashColWidths.length < 12) dashColWidths.push(70);
+  monthsList.forEach(() => dashColWidths.push(90, 80, 72, 82, 70));
   const dashTotalCols = dashColWidths.length;
 
-  const widgets = activeMetrics.map((m, mIdx) => {
-    const ms = focusSummary ? focusSummary.metricStats[mIdx] : { sumVol: 0, cumRate: null, diffRate: null, rank: 0, status: getKpiStatus(null, m.target) };
-    const rankText = ms.rank > 0 ? `Hạng ${ms.rank}/${units.length} toàn quốc` : "";
-    const diffSign = ms.diffRate == null ? "N/A" : ms.diffRate >= 0 ? `+${ms.diffRate.toFixed(2)}%` : `${ms.diffRate.toFixed(2)}%`;
-
-    return {
-      title: `${mIdx + 1}. ${m.shortName} | MỤC TIÊU ${(m.target * 100).toFixed(0)}%`,
-      value: `${formatKpiRate(ms.cumRate)} | ${ms.status.label}\nChênh: ${formatKpiGap(ms.status.gapPoints)} | MoM: ${diffSign}\n${rankText} (SL: ${ms.sumVol.toLocaleString()} bg)`,
-      styleTitle: `ProvCard${mIdx % 4 + 1}Title`,
-      styleVal: ms.status.styleId
-    };
-  });
-
-  const widgetSpanList = [
-    { start: 0, span: 3 },
-    { start: 3, span: 3 },
-    { start: 6, span: 3 },
-    { start: 9, span: dashTotalCols - 9 }
-  ];
-
-  const widgetTitleRow = `<Row ss:Height="22">${widgets.map((w, idx) => {
-    const sp = widgetSpanList[idx] || { span: 3 };
-    return `<Cell ss:MergeAcross="${sp.span - 1}" ss:StyleID="${w.styleTitle}"><Data ss:Type="String">${escapeXml(w.title)}</Data></Cell>`;
-  }).join("")}</Row>`;
-
-  const widgetValRow = `<Row ss:Height="56">${widgets.map((w, idx) => {
-    const sp = widgetSpanList[idx] || { span: 3 };
-    return `<Cell ss:MergeAcross="${sp.span - 1}" ss:StyleID="${w.styleVal}"><Data ss:Type="String">${escapeXml(w.value).replace(/\n/g, '&#10;')}</Data></Cell>`;
-  }).join("")}</Row>`;
-
   const focusTrendRowsXml = activeMetrics.map((m, mIdx) => {
-    const ms = focusSummary ? focusSummary.metricStats[mIdx] : { rates: [], cumRate: null, diffRate: null, rank: 0, status: getKpiStatus(null, m.target) };
+    const ms = focusSummary.metricStats[mIdx];
     const fullName = m.shortName === 'F4.1' ? 'Chất lượng phát thành công tại bưu cục'
                    : m.shortName === 'F1.3' ? 'Chất lượng phát bưu gửi liên tỉnh'
                    : m.shortName === 'F1.1' ? 'Chất lượng phát bưu gửi nội tỉnh'
                    : 'Chất lượng thu gom bưu gửi đi liên tỉnh';
+    const monthCells = ms.points.map((point, monthIdx) => {
+      const previous = monthIdx > 0 ? ms.points[monthIdx - 1] : null;
+      const delta = previous?.hasData && point.hasData ? point.rate - previous.rate : null;
+      const direction = getMonthlyRateTrendDirection(delta);
+      const deltaCell = monthIdx === 0
+        ? excelXmlCell("—", "String", "Same")
+        : delta == null
+          ? excelXmlCell("N/A", "String", "KpiGray")
+          : excelXmlCell(delta, "Number", direction > 0 ? "Up" : direction < 0 ? "Down" : "Same");
+      const trendCell = monthIdx === 0
+        ? excelXmlCell("—", "String", "Same")
+        : direction == null
+          ? excelXmlCell("N/A", "String", "KpiGray")
+          : excelXmlCell(direction > 0 ? "▲" : direction < 0 ? "▼" : "→", "String", direction > 0 ? "Up" : direction < 0 ? "Down" : "Same");
+      if (!point.hasData) {
+        return [
+          excelXmlCell("N/A", "String", "KpiGray"),
+          excelXmlCell("N/A", "String", "KpiGray"),
+          excelXmlCell("N/A", "String", "KpiGray"),
+          deltaCell,
+          trendCell
+        ].join("");
+      }
+      return [
+        excelXmlCell(point.volume, "Number", "Number"),
+        excelXmlCell(point.rate, "Number", "Number"),
+        excelXmlCell(`${point.rank} / ${point.rankCount}`, "String", "Text"),
+        deltaCell,
+        trendCell
+      ].join("");
+    }).join("");
     return `
       <Row ss:Height="22">
         ${excelXmlCell(mIdx + 1, "Number", "Number")}
         ${excelXmlCell(`${m.shortName} – ${fullName}`, "String", "Text")}
-        ${ms.rates.map(r => excelXmlCell(r, "Number", getKpiStatus(r, m.target).styleId)).join("")}
-        ${excelXmlCell(ms.cumRate, "Number", ms.status.styleId)}
-        ${excelXmlCell(buildVisualTrendBar(ms.diffRate), "String", trendStyle(ms.diffRate))}
-        ${excelXmlCell(ms.rank > 0 ? `${ms.rank} / ${units.length}` : "", "String", "Text")}
+        ${monthCells}
       </Row>`;
   }).join("");
 
@@ -2383,17 +2693,11 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
         ${excelXmlCell(mIdx + 1, "Number", "Number")}
         ${excelXmlCell(`${m.shortName} – Cột tỷ lệ thực tế`, "String", "Text")}
         ${actualCells}
-        ${excelXmlCell(ms.cumRate, "Number", ms.status.styleId)}
-        ${excelXmlCell(formatKpiGap(ms.status.gapPoints), "String", ms.status.styleId)}
-        ${excelXmlCell(ms.status.label, "String", ms.status.styleId)}
       </Row>
       <Row ss:Height="20">
         ${excelXmlCell("", "String", "Text")}
         ${excelXmlCell(`${m.shortName} – Đường mục tiêu riêng`, "String", "KpiTargetLine")}
         ${targetCells}
-        ${excelXmlCell(m.target, "Number", "KpiTargetLine")}
-        ${excelXmlCell("", "String", "KpiTargetLine")}
-        ${excelXmlCell(`Mục tiêu ${(m.target * 100).toFixed(0)}%`, "String", "KpiTargetLine")}
       </Row>`;
   }).join("");
 
@@ -2403,7 +2707,7 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
   ];
   activeMetrics.forEach((m, mIdx) => {
     const ms = focusSummary ? focusSummary.metricStats[mIdx] : { sumVol: 0, cumRate: null, rank: 0, status: getKpiStatus(null, m.target) };
-    notesTextLines.push(`${mIdx + 2}. TIÊU ĐIỂM ${m.shortName} (${provName}): Mục tiêu SSOT ${(m.target * 100).toFixed(0)}%, thực tế ${formatKpiRate(ms.cumRate)}, chênh ${formatKpiGap(ms.status.gapPoints)}, trạng thái ${ms.status.label}; sản lượng lũy kế ${ms.sumVol.toLocaleString()} bưu gửi${ms.rank > 0 ? `, xếp hạng ${ms.rank}/${units.length} toàn quốc` : ""}.`);
+    notesTextLines.push(`${mIdx + 2}. TIÊU ĐIỂM ${m.shortName} (${provName}): Mục tiêu SSOT ${(m.target * 100).toFixed(0)}%, thực tế ${formatKpiRate(ms.cumRate)}, chênh ${formatKpiGap(ms.status.gapPoints)}, trạng thái ${ms.status.label}; sản lượng lũy kế ${ms.sumVol.toLocaleString()} bưu gửi${ms.rank > 0 ? `, xếp hạng ${ms.rank}/${units.length} ${peerScopeLabel}` : ""}.`);
   });
   const redKpis = activeMetrics.filter((m, idx) => focusSummary.metricStats[idx].status.key === "red").map(m => m.shortName);
   const yellowKpis = activeMetrics.filter((m, idx) => focusSummary.metricStats[idx].status.key === "yellow").map(m => m.shortName);
@@ -2412,49 +2716,41 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
   if (redKpis.length) executiveActions.push(`ưu tiên xử lý KPI đỏ ${redKpis.join(", ")} đang thấp hơn mục tiêu riêng trên 5 điểm %`);
   if (yellowKpis.length) executiveActions.push(`lập kế hoạch cải thiện KPI vàng ${yellowKpis.join(", ")} đang thấp hơn mục tiêu riêng không quá 5 điểm %`);
   if (naKpis.length) executiveActions.push(`rà soát dữ liệu N/A của ${naKpis.join(", ")}`);
-  if (!executiveActions.length) executiveActions.push("duy trì cả bốn KPI đạt ngưỡng mục tiêu riêng");
-  notesTextLines.push(`${activeMetrics.length + 2}. 🎯 CHỈ ĐẠO ĐIỀU HÀNH BAN GIÁM ĐỐC: Ngưỡng SSOT F1.1/F1.2 = 95%, F1.3/F4.1 = 90%; ${executiveActions.join("; ")}.`);
+  if (!executiveActions.length) executiveActions.push(`duy trì ${activeMetrics.length} KPI đã chọn đạt ngưỡng mục tiêu riêng`);
+  // The narrative must name only the KPIs actually exported: quoting a threshold for an
+  // unticked KPI implies data the workbook does not contain.
+  const thresholdText = activeMetrics.map((m) => `${m.shortName} = ${(m.target * 100).toFixed(0)}%`).join(", ");
+  notesTextLines.push(`${activeMetrics.length + 2}. 🎯 CHỈ ĐẠO ĐIỀU HÀNH BAN GIÁM ĐỐC: Ngưỡng SSOT ${thresholdText}; ${executiveActions.join("; ")}.`);
   const notesText = notesTextLines.join("\n");
 
   const executiveDashboardSheet = `<Worksheet ss:Name="Dashboard_${escapeXml(provName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, ''))}">
     <Table>
       ${renderColumnWidths(dashColWidths)}
       <Row ss:Height="26"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Title"><Data ss:Type="String">🏆 BAN GIÁM ĐỐC BI DASHBOARD - TỔNG QUAN CHẤT LƯỢNG KÉP &amp; CHUỖI XU HƯỚNG BƯU ĐIỆN TỈNH ${escapeXml(provName.toUpperCase())} (MÃ ${provCode})</Data></Cell></Row>
-      <Row ss:Height="18"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Text"><Data ss:Type="String">Đơn vị tiêu điểm: ${escapeXml(provName)} (Mã ${provCode})  |  Theo dõi chuỗi xu hướng ${totalMonths} tháng liên tục (${escapeXml(fromLabel)} ➔ ${escapeXml(toLabel)})  |  Đối sánh ${units.length} BĐT/TP toàn quốc</Data></Cell></Row>
+      <Row ss:Height="18"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Text"><Data ss:Type="String">Đơn vị tiêu điểm: ${escapeXml(provName)} (Mã ${provCode})  |  Theo dõi chuỗi xu hướng ${totalMonths} tháng liên tục (${escapeXml(fromLabel)} ➔ ${escapeXml(toLabel)})  |  Đối sánh ${units.length} ${peerScopeLabel}</Data></Cell></Row>
       <Row></Row>
 
-      <!-- KHỐI 1: 04 KPI CARDS TIÊU ĐIỂM QUẢN TRỊ -->
-      ${widgetTitleRow}
-      ${widgetValRow}
-      <Row></Row>
-
-      <!-- KHỐI 2: BẢNG CHUỖI XU HƯỚNG CHẤT LƯỢNG HÀNG THÁNG -->
-      <Row ss:Height="22"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Group"><Data ss:Type="String">📈 BẢNG CHUỖI XU HƯỚNG CHẤT LƯỢNG TỪNG THÁNG (MONTH-BY-MONTH TREND) RIÊNG CHO ${escapeXml(provName.toUpperCase())}</Data></Cell></Row>
+      <!-- KHỐI 1: BẢNG DỮ LIỆU KPI RIÊNG TỪNG THÁNG -->
+      <Row ss:Height="22"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Group"><Data ss:Type="String">📈 BẢNG DỮ LIỆU KPI TỪNG THÁNG RIÊNG CHO ${escapeXml(provName.toUpperCase())} — mỗi tháng lấy trực tiếp từ monthlyResults và ${rankScopeLabel} của tháng đó</Data></Cell></Row>
       <Row ss:Height="24">
         ${excelXmlCell("STT", "String", "Header")}
         ${excelXmlCell("Chỉ Tiêu Chất Lượng", "String", "Header")}
-        ${monthsList.map(m => excelXmlCell(m.monthKey, "String", "Header")).join("")}
-        ${excelXmlCell("BQ Lũy Kế", "String", "Header")}
-        ${excelXmlCell(`MoM (${monthsList[totalMonths - 1]?.monthKey} vs ${monthsList[0]?.monthKey})`, "String", "Header")}
-        ${excelXmlCell("Hạng Toàn Quốc", "String", "Header")}
+        ${monthsList.map(m => ["Sản lượng", "Tỷ lệ", "Hạng", "Chênh TL", "Xu hướng"].map(label => excelXmlCell(`${m.monthKey} ${label}`, "String", "Header")).join("")).join("")}
       </Row>
       ${focusTrendRowsXml}
       <Row></Row>
 
-      <!-- KHỐI 3: COMBO CHART - CỘT THỰC TẾ & ĐƯỜNG MỤC TIÊU RIÊNG -->
+      <!-- KHỐI 2: COMBO CHART - CỘT THỰC TẾ & ĐƯỜNG MỤC TIÊU RIÊNG -->
       <Row ss:Height="22"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="Group"><Data ss:Type="String">📊 COMBO CHART KPI - CỘT TỶ LỆ THỰC TẾ &amp; ĐƯỜNG MỤC TIÊU RIÊNG THEO SSOT</Data></Cell></Row>
       <Row ss:Height="24">
         ${excelXmlCell("STT", "String", "Header")}
         ${excelXmlCell("KPI / Series", "String", "Header")}
         ${monthsList.map(m => excelXmlCell(m.monthKey, "String", "Header")).join("")}
-        ${excelXmlCell("BQ / Mục tiêu", "String", "Header")}
-        ${excelXmlCell("Chênh mục tiêu", "String", "Header")}
-        ${excelXmlCell("Trạng thái", "String", "Header")}
       </Row>
       ${comboChartRowsXml}
       <Row></Row>
 
-      <!-- KHỐI 4: PHÂN TÍCH QUẢN TRỊ & CHỈ ĐẠO ĐIỀU HÀNH -->
+      <!-- KHỐI 3: PHÂN TÍCH QUẢN TRỊ & CHỈ ĐẠO ĐIỀU HÀNH -->
       <Row ss:Height="22"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="NoteHeader"><Data ss:Type="String">📝 BẢN PHÂN TÍCH TIÊU ĐIỂM BI &amp; CHỈ ĐẠO ĐIỀU HÀNH - ${escapeXml(provName.toUpperCase())}</Data></Cell></Row>
       <Row ss:Height="80"><Cell ss:MergeAcross="${dashTotalCols - 1}" ss:StyleID="NoteText"><Data ss:Type="String">${escapeXml(notesText).replace(/\n/g, '&#10;')}</Data></Cell></Row>
     </Table>
@@ -2465,12 +2761,26 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
   // TAB 2: FULL BENCHMARK MATRIX FOR 34 PROVINCES TOÀN QUỐC
   // Full detailed matrix table
   // -------------------------------------------------------------
+  // BC lists each post office with volume, rate, month-over-month delta and direction per
+  // month, so a reader can follow one post office across the period. TINH keeps its
+  // rate-only layout untouched.
+
   const headerCols = [
     "STT", "Mã", "Tên Đơn Vị"
   ];
   activeMetrics.forEach(m => {
     monthsList.forEach(month => {
-      headerCols.push(`${m.shortName} ${month.monthKey}`);
+      if (isBcMatrix) {
+        headerCols.push(
+          `${m.shortName} ${month.monthKey} – Sản lượng`,
+          `${m.shortName} ${month.monthKey} – Tỷ lệ`,
+          `${m.shortName} ${month.monthKey} – Hạng`,
+          `${m.shortName} ${month.monthKey} – Chênh lệch`,
+          `${m.shortName} ${month.monthKey} – Xu hướng`
+        );
+      } else {
+        headerCols.push(`${m.shortName} ${month.monthKey}`);
+      }
     });
     headerCols.push(`Lũy Kế ${m.shortName} BQ`, `MoM ${m.shortName} (Tn vs T1)`);
   });
@@ -2478,7 +2788,10 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
 
   const colWidths = [40, 60, 190];
   activeMetrics.forEach(() => {
-    monthsList.forEach(() => colWidths.push(85));
+    monthsList.forEach(() => {
+      if (isBcMatrix) colWidths.push(95, 80, 70, 90, 80);
+      else colWidths.push(85);
+    });
     colWidths.push(100, 130);
   });
   colWidths.push(180);
@@ -2498,7 +2811,37 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
 
     u.metricStats.forEach((ms, mIdx) => {
       const metric = activeMetrics[mIdx];
-      rowXml += ms.rates.map(r => excelXmlCell(r, "Number", getKpiStatus(r, metric.target).styleId)).join("");
+      if (isBcMatrix) {
+        rowXml += ms.points.map((point, monthIdx) => {
+          if (!point.hasData) {
+            return excelXmlCell("N/A", "String", "KpiGray").repeat(5);
+          }
+          const previous = monthIdx > 0 ? ms.points[monthIdx - 1] : null;
+          const delta = previous?.hasData ? (point.rate - previous.rate) * 100 : null;
+          const direction = getMonthlyRateTrendDirection(delta);
+          // The first month has no predecessor, so its delta/trend are "—" rather than
+          // N/A — the month itself still carries a real rank.
+          const deltaCell = monthIdx === 0
+            ? excelXmlCell("—", "String", "Same")
+            : delta == null
+              ? excelXmlCell("N/A", "String", "KpiGray")
+              : excelXmlCell(delta, "Number", trendStyle(delta));
+          const trendCell = monthIdx === 0
+            ? excelXmlCell("—", "String", "Same")
+            : direction == null
+              ? excelXmlCell("N/A", "String", "KpiGray")
+              : excelXmlCell(direction > 0 ? "▲" : direction < 0 ? "▼" : "→", "String", direction > 0 ? "Up" : direction < 0 ? "Down" : "Same");
+          return [
+            excelXmlCell(point.volume, "Number", "Number"),
+            excelXmlCell(point.rate, "Number", getKpiStatus(point.rate, metric.target).styleId),
+            excelXmlCell(point.rank ? `${point.rank}/${point.rankCount}` : "N/A", "String", point.rank ? "Text" : "KpiGray"),
+            deltaCell,
+            trendCell
+          ].join("");
+        }).join("");
+      } else {
+        rowXml += ms.rates.map(r => excelXmlCell(r, "Number", getKpiStatus(r, metric.target).styleId)).join("");
+      }
       rowXml += excelXmlCell(ms.cumRate, "Number", ms.status.styleId);
       rowXml += excelXmlCell(buildVisualTrendBar(ms.diffRate), "String", trendStyle(ms.diffRate));
     });
@@ -2509,10 +2852,22 @@ function renderV2MultiMonthDashboardWorksheet(monthlyResults, monthsList, tuyCho
     return rowXml;
   }).join("");
 
-  const benchmarkMatrixSheet = `<Worksheet ss:Name="MaTran_34_Tinh_ToanQuoc">
+  const matrixSheetName = isBcMatrix ? "MaTran_BuuCuc" : "MaTran_34_Tinh_ToanQuoc";
+  const matrixTitle = isBcMatrix
+    ? `📊 BẢNG MA TRẬN BƯU CỤC TRỰC THUỘC ${escapeXml(provName.toUpperCase())} (MÃ ${escapeXml(String(provCode))}) – ${units.length} BƯU CỤC (${metricShortNames}) (${totalMonths} THÁNG)`
+    : `📊 BẢNG MA TRẬN ĐỐI SÁNH &amp; XẾP HẠNG 34 BƯU ĐIỆN TỈNH/TP TOÀN QUỐC (${metricShortNames}) (${totalMonths} THÁNG - HIGHLIGHT DÒNG ${escapeXml(provName.toUpperCase())} ★)`;
+
+  // The ranking sample must be stated on the sheet so no reader mistakes a BC rank for a
+  // national one.
+  const rankingSampleNote = isBcMatrix
+    ? `Hạng trong các Bưu cục có dữ liệu hợp lệ thuộc tỉnh được chọn (mã ${escapeXml(String(provCode))}) trong từng tháng, tính riêng theo từng KPI. Đồng tỷ lệ: xếp theo mã Bưu cục tăng dần. Tháng không có dữ liệu: N/A, không tham gia xếp hạng.`
+    : "Hạng trong 34 Bưu điện Tỉnh/TP toàn quốc trong từng tháng, tính riêng theo từng KPI.";
+
+  const benchmarkMatrixSheet = `<Worksheet ss:Name="${matrixSheetName}">
     <Table>
       ${renderColumnWidths(colWidths)}
-      <Row ss:Height="24"><Cell ss:MergeAcross="${totalCols - 1}" ss:StyleID="Group"><Data ss:Type="String">📊 BẢNG MA TRẬN ĐỐI SÁNH &amp; XẾP HẠNG 34 BƯU ĐIỆN TỈNH/TP TOÀN QUỐC (${metricShortNames}) (${totalMonths} THÁNG - HIGHLIGHT DÒNG ${escapeXml(provName.toUpperCase())} ★)</Data></Cell></Row>
+      <Row ss:Height="24"><Cell ss:MergeAcross="${totalCols - 1}" ss:StyleID="Group"><Data ss:Type="String">${matrixTitle}</Data></Cell></Row>
+      <Row ss:Height="20"><Cell ss:MergeAcross="${totalCols - 1}" ss:StyleID="Text"><Data ss:Type="String">${escapeXml(rankingSampleNote)}</Data></Cell></Row>
       <Row ss:Height="24">${headerCols.map(c => excelXmlCell(c, "String", "Header")).join("")}</Row>
       ${unitMatrixRowsXml}
     </Table>
@@ -2566,9 +2921,12 @@ async function exportReportV2MultiMonth(tuyChonGR) {
         tuyChonGR,
         selectedProvinceCode: provCode,
         selectedProvinceName: provName,
-        metrics: Object.values(MULTI_MONTH_METRICS_MAP),
+        metrics: getActiveMultiMonthMetrics(tuyChonGR),
         columns: V2_EXCEL_COLUMNS,
-        classifyKpi: getKpiStatus
+        classifyKpi: getKpiStatus,
+        // SSOT: the native .xlsx must read row cells with the same numeric semantics the
+        // legacy .xls dashboard uses, otherwise the two exports disagree on total/rate.
+        toNumberValue
       });
       if (packageResult.bytes[0] !== 0x50 || packageResult.bytes[1] !== 0x4B) {
         throw new Error("Package .xlsx không có magic bytes PK.");
