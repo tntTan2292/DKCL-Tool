@@ -66,7 +66,7 @@ Tùy theo nhu cầu công việc, lựa chọn nút chức năng tương ứng t
 
 #### Nhóm Báo cáo V2 (Mẫu biểu mới):
 * **Báo cáo theo tỉnh V2:** Sử dụng biểu mẫu nâng cao `filebaocaov2.xlsx` tổng hợp toàn diện chỉ số chất lượng tỉnh.
-* **Báo cáo theo bưu cục V2:** Lấy dữ liệu chi tiết cho bưu cục thuộc mã tỉnh 53.
+* **Báo cáo theo bưu cục V2:** Lấy dữ liệu chi tiết từng bưu cục (F4.1, F1.3) thuộc tỉnh đang chọn ở mục "Tỉnh/Thành phố báo cáo" — không cố định vào một tỉnh nào; F1.1/F1.2 không hỗ trợ ở cấp bưu cục do không có chia nhỏ theo bưu cục trong dữ liệu nguồn.
 * **Báo cáo so sánh kỳ V2:** Tải dữ liệu 2 kỳ và so sánh chi tiết các chỉ số F4.1, F1.1, F1.2 và F1.3 để đánh giá biến động chất lượng dịch vụ toàn trình.
 
 ### Bước 5: Tải file kết quả
